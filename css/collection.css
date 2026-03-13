@@ -1,0 +1,166 @@
+/* ============================================
+   WAQTORO — Collection Pages (Men's & Women's)
+   ============================================ */
+
+/* ---- COLLECTION HERO ---- */
+.collection-hero {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: flex-end;
+}
+.collection-hero-bg {
+  position: absolute;
+  inset: 0;
+}
+.collection-hero-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.collection-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    rgba(5,5,5,0.95) 0%,
+    rgba(5,5,5,0.7) 55%,
+    rgba(5,5,5,0.2) 100%
+  );
+}
+.womens-overlay {
+  background: linear-gradient(
+    110deg,
+    rgba(10,5,8,0.95) 0%,
+    rgba(10,5,8,0.72) 55%,
+    rgba(10,5,8,0.15) 100%
+  );
+}
+.collection-hero-content {
+  position: relative;
+  z-index: 1;
+  padding-top: calc(var(--navbar-h) + 3rem);
+  padding-bottom: 4rem;
+}
+.collection-hero-content .label-caps { display: block; margin-bottom: 0.75rem; }
+.collection-hero-content h1 { color: var(--clr-white); margin-bottom: 1.25rem; }
+.collection-hero-content h1 em { color: var(--clr-gold); font-style: italic; }
+.collection-hero-sub {
+  max-width: 520px;
+  font-size: 1rem;
+  color: var(--clr-white-dim);
+  line-height: 1.75;
+  margin-bottom: 2rem;
+}
+
+/* ---- CATEGORY PILLS ---- */
+.category-pills-section {
+  background: var(--clr-bg-2);
+  border-top: 1px solid var(--clr-border);
+  border-bottom: 1px solid var(--clr-border);
+  padding: 1.25rem 0;
+}
+.category-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.cat-pill {
+  padding: 0.5rem 1.5rem;
+  background: transparent;
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-full);
+  color: var(--clr-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all var(--transition-fast);
+}
+.cat-pill:hover { color: var(--clr-white); border-color: var(--clr-border-gold); }
+.cat-pill.active {
+  background: var(--clr-gold);
+  color: #0a0a0a;
+  border-color: var(--clr-gold);
+}
+
+/* ---- COLLECTION TOOLBAR ---- */
+.collection-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+/* ---- STYLE CARDS ---- */
+.style-guide-section { background: var(--clr-bg-2); }
+.style-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+.style-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: border-color var(--transition-base), transform var(--transition-base);
+}
+.style-card:hover { border-color: var(--clr-border-gold); transform: translateY(-4px); }
+.style-card-icon { font-size: 2rem; margin-bottom: 1rem; }
+.style-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--clr-white);
+  margin-bottom: 0.5rem;
+}
+.style-card p { font-size: 0.83rem; color: var(--clr-muted); line-height: 1.6; margin-bottom: 1.25rem; }
+
+/* ---- GIFT GUIDE ---- */
+.gift-guide-section { background: var(--clr-bg-2); }
+.gift-banner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border-gold);
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+.gift-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+}
+.gift-banner-content .label-caps { display: block; margin-bottom: 0.75rem; }
+.gift-banner-content h3 { color: var(--clr-white); margin-bottom: 1rem; }
+.gift-banner-content p { font-size: 0.9rem; color: var(--clr-white-dim); line-height: 1.75; }
+.gift-banner-img {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 1/1;
+  background: var(--clr-bg-3);
+  border: 1px solid var(--clr-border);
+}
+.gift-banner-img img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 1024px) {
+  .style-cards { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .collection-hero { min-height: 60vh; }
+  .gift-banner { grid-template-columns: 1fr; }
+  .gift-banner-img { aspect-ratio: 16/9; }
+}
+@media (max-width: 480px) {
+  .style-cards { grid-template-columns: 1fr 1fr; }
+  .collection-hero { min-height: 50vh; }
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Women's Replica Watches — WAQTORO</title>
+  <meta name="description" content="Shop our premium women's replica watches. Elegant, timeless, and exquisite. Inspired by the world's most iconic luxury women's watches." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/collection.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="nav-logo"><span class="nav-logo-name">Waqtoro</span><span class="nav-logo-tagline">Fine Timepieces</span></a>
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="mens.html" class="nav-link">Men</a></li>
+        <li><a href="womens.html" class="nav-link active">Women</a></li>
+        <li><a href="shop.html" class="nav-link">Shop</a></li>
+        <li><a href="brands.html" class="nav-link">Brands</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="nav-action-btn" id="search-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></button>
+        <a href="wishlist.html" class="nav-action-btn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
+        <a href="cart.html" class="nav-action-btn" style="position:relative;"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-count" id="cart-count">0</span></a>
+        <a href="account.html" class="nav-action-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+        <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="mobile-menu-close" id="mobile-close">✕</button>
+    <a href="../index.html" class="nav-link">Home</a><a href="mens.html" class="nav-link">Men</a><a href="womens.html" class="nav-link">Women</a><a href="shop.html" class="nav-link">Shop All</a><a href="brands.html" class="nav-link">Brands</a>
+  </div>
+  <div class="search-overlay" id="search-overlay">
+    <button class="search-close" id="search-close">✕</button>
+    <div class="search-inner"><p>Search the collection</p>
+      <div class="search-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+        <input type="text" id="search-input" placeholder="Search watches, brands…" autocomplete="off" /></div>
+    </div>
+  </div>
+
+  <!-- COLLECTION HERO -->
+  <section class="collection-hero womens-hero">
+    <div class="collection-hero-bg"><img src="../images/womens_banner.png" alt="Women's Collection" /></div>
+    <div class="collection-hero-overlay womens-overlay"></div>
+    <div class="container collection-hero-content">
+      <nav class="breadcrumb" style="margin-bottom:1.5rem;"><a href="../index.html">Home</a><span>›</span><span>Women's Collection</span></nav>
+      <p class="label-caps" data-animate>Crafted For Her</p>
+      <h1 class="display-xl" data-animate data-animate-delay="1">Women's<br /><em>Timepieces</em></h1>
+      <p class="collection-hero-sub" data-animate data-animate-delay="2">Graceful designs. Elegant replicas. Inspired by the world's most iconic women's watches — worn to be admired.</p>
+      <div data-animate data-animate-delay="3">
+        <a href="shop.html?gender=women" class="btn btn-primary btn-lg">Shop All Women's</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORY PILLS -->
+  <section class="category-pills-section">
+    <div class="container">
+      <div class="category-pills">
+        <button class="cat-pill active" data-filter="all">All</button>
+        <button class="cat-pill" data-filter="Luxury">Luxury</button>
+        <button class="cat-pill" data-filter="Classic">Classic</button>
+        <button class="cat-pill" data-filter="Mid-Range">Mid-Range</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS GRID -->
+  <section class="section-pad">
+    <div class="container">
+      <div class="collection-toolbar">
+        <p id="mens-count" class="text-muted" style="font-size:0.82rem;"></p>
+        <select id="mens-sort" class="sort-select">
+          <option value="default">Sort: Featured</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Top Rated</option>
+        </select>
+      </div>
+      <div class="products-grid" id="mens-grid"></div>
+    </div>
+  </section>
+
+  <!-- GIFT GUIDE -->
+  <section class="section-pad gift-guide-section">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <span class="label-caps">Gift Ideas</span>
+        <h2 class="display-lg">The Perfect Gift</h2>
+        <p>Looking for the ideal gift for her? Our replica watches arrive in premium packaging — she'll love every detail.</p>
+      </div>
+      <div class="gift-banner" data-animate>
+        <div class="gift-banner-content">
+          <span class="label-caps">Free Gift Wrapping</span>
+          <h3 class="display-md">Every Watch, Gift-Ready</h3>
+          <p>All our watches ship in a luxury presentation box with a velvet pillow — perfect for birthdays, anniversaries, and special occasions.</p>
+          <a href="shop.html?gender=women" class="btn btn-primary" style="margin-top:1.5rem;">Shop Women's Gifts</a>
+        </div>
+        <div class="gift-banner-img">
+          <img src="../images/womens_watch_1.png" alt="Gift watch" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand"><div class="nav-logo" style="margin-bottom:1rem;"><span class="nav-logo-name">Waqtoro</span><span class="nav-logo-tagline">Fine Timepieces</span></div><p>Premium replica timepieces for the modern man and woman.</p></div>
+        <div class="footer-col"><h4>Shop</h4><ul><li><a href="mens.html">Men's</a></li><li><a href="womens.html">Women's</a></li><li><a href="shop.html">All Watches</a></li><li><a href="brands.html">Brands</a></li></ul></div>
+        <div class="footer-col"><h4>Support</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="about.html">About</a></li><li><a href="#">Returns</a></li></ul></div>
+        <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Quality Guarantee</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>© 2026 <strong>Waqtoro</strong> — All rights reserved.</p><div class="payment-icons"><span class="payment-icon">VISA</span><span class="payment-icon">MC</span><span class="payment-icon">PayPal</span><span class="payment-icon">COD</span></div></div>
+    </div>
+  </footer>
+
+  <button id="back-to-top"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="../js/products-data.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/collection.js"></script>
+  <script>initCollection('women');</script>
+</body>
+</html>

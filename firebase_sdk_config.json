@@ -1,0 +1,18 @@
+﻿{
+  "status": "success",
+  "result": {
+    "fileName": "firebase-js-config.json",
+    "fileContents": "{\n  \"projectId\": \"waqtoro-8b2d8\",\n  \"appId\": \"1:367188242571:web:3adfb3930e4ae9b5e0648e\",\n  \"storageBucket\": \"waqtoro-8b2d8.firebasestorage.app\",\n  \"apiKey\": \"AIzaSyDBtBrF2Uhlt_08_TT-80LXpjhmoYPS83c\",\n  \"authDomain\": \"waqtoro-8b2d8.firebaseapp.com\",\n  \"messagingSenderId\": \"367188242571\",\n  \"measurementId\": \"G-HGJTEQ1DLF\",\n  \"projectNumber\": \"367188242571\",\n  \"version\": \"2\"\n}",
+    "sdkConfig": {
+      "projectId": "waqtoro-8b2d8",
+      "appId": "1:367188242571:web:3adfb3930e4ae9b5e0648e",
+      "storageBucket": "waqtoro-8b2d8.firebasestorage.app",
+      "apiKey": "AIzaSyDBtBrF2Uhlt_08_TT-80LXpjhmoYPS83c",
+      "authDomain": "waqtoro-8b2d8.firebaseapp.com",
+      "messagingSenderId": "367188242571",
+      "measurementId": "G-HGJTEQ1DLF",
+      "projectNumber": "367188242571",
+      "version": "2"
+    }
+  }
+}

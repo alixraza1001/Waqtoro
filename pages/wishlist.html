@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Wishlist — WAQTORO</title>
+  <meta name="description" content="Your saved replica watches — curated for later." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/cart.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="nav-logo"><span class="nav-logo-name">Waqtoro</span><span class="nav-logo-tagline">Fine Timepieces</span></a>
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="mens.html" class="nav-link">Men</a></li>
+        <li><a href="womens.html" class="nav-link">Women</a></li>
+        <li><a href="shop.html" class="nav-link">Shop</a></li>
+        <li><a href="brands.html" class="nav-link">Brands</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="nav-action-btn" id="search-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></button>
+        <a href="wishlist.html" class="nav-action-btn active-nav"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
+        <a href="cart.html" class="nav-action-btn" style="position:relative;"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-count" id="cart-count">0</span></a>
+        <a href="account.html" class="nav-action-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+        <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="mobile-menu-close" id="mobile-close">✕</button>
+    <a href="../index.html" class="nav-link">Home</a><a href="mens.html" class="nav-link">Men</a><a href="womens.html" class="nav-link">Women</a><a href="shop.html" class="nav-link">Shop All</a>
+  </div>
+  <div class="search-overlay" id="search-overlay">
+    <button class="search-close" id="search-close">✕</button>
+    <div class="search-inner"><p>Search the collection</p>
+      <div class="search-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+        <input type="text" id="search-input" placeholder="Search watches, brands…" autocomplete="off" /></div>
+    </div>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header" style="padding-top:calc(var(--navbar-h) + 3rem);padding-bottom:2rem;background:var(--clr-bg);border-bottom:1px solid var(--clr-border);">
+    <div class="container">
+      <nav class="breadcrumb" style="display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;color:var(--clr-muted);margin-bottom:1rem;">
+        <a href="../index.html" style="color:var(--clr-gold)">Home</a><span>›</span><span>Wishlist</span>
+      </nav>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <h1 class="display-lg">My Wishlist</h1>
+          <p id="wishlist-count-text" style="font-size:0.82rem;color:var(--clr-muted);margin-top:0.4rem;"></p>
+        </div>
+        <div style="display:flex;gap:1rem;">
+          <button class="btn btn-ghost btn-sm" id="add-all-to-cart-btn">Add All to Cart</button>
+          <button class="btn btn-outline btn-sm" id="clear-wishlist-btn">Clear Wishlist</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WISHLIST GRID -->
+  <section class="section-pad">
+    <div class="container">
+      <!-- Empty State -->
+      <div id="wishlist-empty" style="display:none;text-align:center;padding:5rem 2rem;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="width:64px;height:64px;color:var(--clr-border);margin:0 auto 1.5rem;display:block;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <h2 style="font-family:var(--font-display);font-size:1.8rem;color:var(--clr-white-dim);margin-bottom:0.5rem;">Your wishlist is empty</h2>
+        <p style="color:var(--clr-muted);margin-bottom:1.5rem;">Save watches you love by pressing the ♥ on any product card.</p>
+        <a href="shop.html" class="btn btn-primary btn-lg">Explore Collection</a>
+      </div>
+
+      <!-- Products -->
+      <div class="products-grid" id="wishlist-grid"></div>
+    </div>
+  </section>
+
+  <!-- You May Also Like -->
+  <section class="section-pad" style="background:var(--clr-bg-2);border-top:1px solid var(--clr-border);" id="similar-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="label-caps">Discover More</span>
+        <h2 class="display-md">You May Also Like</h2>
+      </div>
+      <div class="products-grid" id="similar-grid"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand"><div class="nav-logo" style="margin-bottom:1rem;"><span class="nav-logo-name">Waqtoro</span><span class="nav-logo-tagline">Fine Timepieces</span></div><p>Premium replica timepieces for the modern man and woman.</p></div>
+        <div class="footer-col"><h4>Shop</h4><ul><li><a href="mens.html">Men's</a></li><li><a href="womens.html">Women's</a></li><li><a href="shop.html">All Watches</a></li></ul></div>
+        <div class="footer-col"><h4>Support</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Returns</a></li></ul></div>
+        <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>© 2026 <strong>Waqtoro</strong></p></div>
+    </div>
+  </footer>
+
+  <button id="back-to-top"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="../js/products-data.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/wishlist-page.js"></script>
+  <script type="module" src="../js/sync.js"></script>
+</body>
+</html>

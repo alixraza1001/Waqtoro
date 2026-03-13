@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed — WAQTORO</title>
+  <meta name="description" content="Thank you for your order! Your Waqtoro replica watch is on its way." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/confirmation.css" />
+</head>
+<body>
+
+  <!-- MINIMAL NAV -->
+  <nav class="checkout-nav" style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(8,8,8,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--clr-border);height:var(--navbar-h);">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:100%;">
+      <a href="../index.html" class="nav-logo"><span class="nav-logo-name">Waqtoro</span><span class="nav-logo-tagline">Fine Timepieces</span></a>
+      <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--clr-green);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:14px;height:14px;"><polyline points="20 6 9 17 4 12"/></svg>
+        Order Placed
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONFETTI CANVAS -->
+  <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;"></canvas>
+
+  <!-- CONFIRMATION PAGE -->
+  <main class="confirmation-page">
+    <div class="container">
+
+      <!-- SUCCESS HEADER -->
+      <div class="confirmation-header" data-animate>
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="label-caps" style="margin-bottom:0.5rem;">Order Confirmed</div>
+        <h1 class="display-lg">Thank You!</h1>
+        <p class="confirmation-sub">Your order has been placed successfully. You'll receive a confirmation email shortly.</p>
+        <div class="order-number-badge">
+          <span>Order #</span>
+          <strong id="conf-order-id">WQT-ABC123</strong>
+          <button onclick="copyOrderId()" class="copy-btn" title="Copy order number">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ORDER DETAILS GRID -->
+      <div class="confirmation-grid">
+
+        <!-- Order Summary Card -->
+        <div class="conf-card">
+          <h3 class="conf-card-title">Order Summary</h3>
+          <div id="conf-items" class="conf-items"></div>
+          <div class="conf-totals">
+            <div class="conf-total-row"><span>Subtotal</span><span id="conf-subtotal"></span></div>
+            <div class="conf-total-row"><span>Shipping</span><span id="conf-shipping" style="color:var(--clr-gold)">Free</span></div>
+            <div class="conf-total-row conf-grand-total"><span>Total</span><span id="conf-total"></span></div>
+          </div>
+        </div>
+
+        <!-- Delivery Info -->
+        <div class="conf-card">
+          <h3 class="conf-card-title">Delivery Details</h3>
+          <div class="conf-detail-block">
+            <span class="conf-detail-label">Ship To</span>
+            <p id="conf-address" class="conf-detail-value"></p>
+          </div>
+          <div class="conf-detail-block">
+            <span class="conf-detail-label">Contact</span>
+            <p id="conf-customer" class="conf-detail-value"></p>
+          </div>
+          <div class="conf-detail-block">
+            <span class="conf-detail-label">Payment</span>
+            <p id="conf-payment" class="conf-detail-value"></p>
+          </div>
+          <div class="conf-detail-block">
+            <span class="conf-detail-label">Order Date</span>
+            <p id="conf-date" class="conf-detail-value"></p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TRACKING TIMELINE -->
+      <div class="tracking-section" data-animate>
+        <h3>What Happens Next?</h3>
+        <div class="tracking-steps">
+          <div class="tracking-step done">
+            <div class="tracking-dot">✓</div>
+            <div class="tracking-info">
+              <strong>Order Placed</strong>
+              <span>Your replica watch order has been confirmed</span>
+            </div>
+          </div>
+          <div class="tracking-line"></div>
+          <div class="tracking-step">
+            <div class="tracking-dot">2</div>
+            <div class="tracking-info">
+              <strong>Processing</strong>
+              <span>Quality check and careful packaging</span>
+            </div>
+          </div>
+          <div class="tracking-line"></div>
+          <div class="tracking-step">
+            <div class="tracking-dot">3</div>
+            <div class="tracking-info">
+              <strong>Dispatched</strong>
+              <span>Your order is on its way to you</span>
+            </div>
+          </div>
+          <div class="tracking-line"></div>
+          <div class="tracking-step">
+            <div class="tracking-dot">4</div>
+            <div class="tracking-info">
+              <strong>Delivered</strong>
+              <span>Your timepiece arrives at your door</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA BUTTONS -->
+      <div class="confirmation-cta" data-animate>
+        <a href="shop.html" class="btn btn-primary btn-lg">Continue Shopping</a>
+        <a href="account.html" class="btn btn-ghost btn-lg">View My Account</a>
+      </div>
+
+      <!-- SUGGESTED -->
+      <div class="conf-suggested">
+        <div class="section-header">
+          <span class="label-caps">You Might Also Love</span>
+          <h2 class="display-md">Complete Your Collection</h2>
+        </div>
+        <div class="products-grid" id="conf-suggested-grid"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="../js/products-data.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/confirmation.js"></script>
+</body>
+</html>

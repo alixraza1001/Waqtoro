@@ -1,0 +1,114 @@
+/* ============================================
+   WAQTORO — Brands Page Styles
+   ============================================ */
+
+.page-header {
+  padding-top: calc(var(--navbar-h) + 3rem);
+  padding-bottom: 2.5rem;
+  background: var(--clr-bg);
+  border-bottom: 1px solid var(--clr-border);
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--clr-muted);
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+.breadcrumb a { color: var(--clr-gold); transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--clr-gold-light); }
+
+/* ---- BRANDS GRID ---- */
+.brands-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+.brand-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+.brand-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.04) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+.brand-card:hover {
+  border-color: var(--clr-gold-dark);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-gold);
+}
+.brand-card:hover::before { opacity: 1; }
+.brand-card-letter {
+  width: 64px; height: 64px;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid var(--clr-border-gold);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--clr-gold);
+  transition: background var(--transition-base);
+}
+.brand-card:hover .brand-card-letter { background: rgba(201,168,76,0.15); }
+.brand-card-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--clr-white);
+  margin-bottom: 0.4rem;
+}
+.brand-card-count {
+  font-size: 0.7rem;
+  color: var(--clr-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+.brand-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--clr-gold);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all var(--transition-base);
+}
+.brand-card:hover .brand-card-btn { opacity: 1; transform: translateY(0); }
+
+/* Brand products section */
+.brand-products-section { background: var(--clr-bg-2); border-top: 1px solid var(--clr-border); }
+.brand-products-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+}
+.brand-products-header h2 { color: var(--clr-white); margin-top: 0.4rem; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .brands-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .brands-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .brand-card { padding: 1.5rem 1rem; }
+}

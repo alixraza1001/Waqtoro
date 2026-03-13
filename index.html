@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WAQTORO — Premium Replica Timepieces for Men & Women</title>
+  <meta name="description" content="Discover premium replica watches for men and women. High-quality timepieces inspired by the world's most iconic luxury brands at affordable prices." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/home.css" />
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="nav-logo-name">Waqtoro</span>
+        <span class="nav-logo-tagline">Fine Timepieces</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="pages/mens.html" class="nav-link">Men</a></li>
+        <li><a href="pages/womens.html" class="nav-link">Women</a></li>
+        <li><a href="pages/shop.html" class="nav-link">Shop</a></li>
+        <li><a href="pages/brands.html" class="nav-link">Brands</a></li>
+        <li><a href="pages/about.html" class="nav-link">About</a></li>
+        <li><a href="pages/contact.html" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="nav-action-btn" id="search-btn" aria-label="Search" title="Search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+        </button>
+        <a href="pages/wishlist.html" class="nav-action-btn" aria-label="Wishlist" title="Wishlist">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </a>
+        <a href="pages/cart.html" class="nav-action-btn" aria-label="Cart" title="Cart" style="position:relative;">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span class="cart-count" id="cart-count">0</span>
+        </a>
+        <a href="pages/account.html" class="nav-action-btn" aria-label="Account" title="My Account">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="mobile-menu-close" id="mobile-close">✕</button>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="pages/mens.html" class="nav-link">Men</a>
+    <a href="pages/womens.html" class="nav-link">Women</a>
+    <a href="pages/shop.html" class="nav-link">Shop All</a>
+    <a href="pages/brands.html" class="nav-link">Brands</a>
+    <a href="pages/about.html" class="nav-link">About</a>
+    <a href="pages/contact.html" class="nav-link">Contact</a>
+  </div>
+
+  <!-- Search Overlay -->
+  <div class="search-overlay" id="search-overlay">
+    <button class="search-close" id="search-close">✕</button>
+    <div class="search-inner">
+      <p>Search the collection</p>
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+        <input type="text" id="search-input" placeholder="Search watches, brands…" autocomplete="off" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="images/hero_banner.png" alt="Luxury watch collection" class="hero-img" />
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-text">
+        <p class="label-caps" data-animate>Premium Replica Timepieces</p>
+        <h1 class="display-xl hero-title" data-animate data-animate-delay="1">
+          Time Is<br /><em>Your Legacy</em>
+        </h1>
+        <p class="hero-sub" data-animate data-animate-delay="2">
+          Discover extraordinary timepieces that define who you are. Premium watches for those who demand perfection in every second.
+        </p>
+        <div class="hero-ctas" data-animate data-animate-delay="3">
+          <a href="pages/mens.html" class="btn btn-primary btn-lg">Shop Men's</a>
+          <a href="pages/womens.html" class="btn btn-outline btn-lg">Shop Women's</a>
+        </div>
+      </div>
+      <div class="hero-stats" data-animate data-animate-delay="4">
+        <div class="hero-stat">
+          <span class="hero-stat-num">500+</span>
+          <span class="hero-stat-label">Timepieces</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">50+</span>
+          <span class="hero-stat-label">Brands</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">15K+</span>
+          <span class="hero-stat-label">Happy Clients</span>
+        </div>
+      </div>
+    </div>
+    <a href="#brands" class="hero-scroll">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 10l5 5 5-5"/></svg>
+      <span>Explore</span>
+    </a>
+  </section>
+
+  <!-- ===================== BRAND STRIP ===================== -->
+  <section class="brands-strip section-pad-sm" id="brands">
+    <div class="container">
+      <div class="brands-track-wrap">
+        <div class="brands-track">
+          <span class="brand-pill">Rolex</span>
+          <span class="brand-pill">Omega</span>
+          <span class="brand-pill">Tissot</span>
+          <span class="brand-pill">TAG Heuer</span>
+          <span class="brand-pill">Seiko</span>
+          <span class="brand-pill">Casio</span>
+          <span class="brand-pill">Longines</span>
+          <span class="brand-pill">Rado</span>
+          <span class="brand-pill">IWC</span>
+          <span class="brand-pill">Breitling</span>
+          <span class="brand-pill">Hublot</span>
+          <span class="brand-pill">Patek Philippe</span>
+          <!-- duplicate for infinite scroll -->
+          <span class="brand-pill">Rolex</span>
+          <span class="brand-pill">Omega</span>
+          <span class="brand-pill">Tissot</span>
+          <span class="brand-pill">TAG Heuer</span>
+          <span class="brand-pill">Seiko</span>
+          <span class="brand-pill">Casio</span>
+          <span class="brand-pill">Longines</span>
+          <span class="brand-pill">Rado</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURED COLLECTIONS ===================== -->
+  <section class="section-pad" id="featured">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <span class="label-caps">Curated Selection</span>
+        <h2 class="display-lg">Featured Collections</h2>
+        <p>Handpicked timepieces celebrated for their craftsmanship, heritage, and timeless design.</p>
+      </div>
+      <div class="collections-grid" data-animate>
+        <a href="pages/shop.html?filter=new" class="collection-card collection-new">
+          <div class="collection-card-bg">
+            <img src="images/hero_banner.png" alt="New Arrivals" />
+          </div>
+          <div class="collection-card-overlay"></div>
+          <div class="collection-card-body">
+            <span class="label-caps">Just In</span>
+            <h3 class="display-md">New Arrivals</h3>
+            <p>Fresh Timepieces</p>
+            <span class="collection-cta">Explore Collection →</span>
+          </div>
+        </a>
+        <a href="pages/shop.html?filter=bestseller" class="collection-card collection-best">
+          <div class="collection-card-bg">
+            <img src="images/mens_watch_1.png" alt="Best Sellers" />
+          </div>
+          <div class="collection-card-overlay"></div>
+          <div class="collection-card-body">
+            <span class="label-caps">Most Loved</span>
+            <h3 class="display-md">Best Sellers</h3>
+            <p>Customer Favourites</p>
+            <span class="collection-cta">Shop Now →</span>
+          </div>
+        </a>
+        <a href="pages/shop.html?filter=limited" class="collection-card collection-limited">
+          <div class="collection-card-bg">
+            <img src="images/womens_watch_1.png" alt="Limited Edition" />
+          </div>
+          <div class="collection-card-overlay"></div>
+          <div class="collection-card-body">
+            <span class="label-caps">Exclusive</span>
+            <h3 class="display-md">Limited Edition</h3>
+            <p>Rare Pieces</p>
+            <span class="collection-cta">View Limited →</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GENDER SPLIT ===================== -->
+  <section class="gender-split section-pad" id="gender">
+    <div class="container">
+      <div class="gender-grid">
+        <a href="pages/mens.html" class="gender-card gender-men" data-animate>
+          <div class="gender-card-bg">
+            <img src="images/mens_watch_1.png" alt="Men's Watches" />
+          </div>
+          <div class="gender-card-overlay"></div>
+          <div class="gender-card-body">
+            <h2 class="display-lg">For Him</h2>
+            <p>Bold, powerful, and precise. Timepieces crafted for the modern man.</p>
+            <span class="btn btn-outline" style="margin-top:1.5rem;">Shop Men's</span>
+          </div>
+        </a>
+        <a href="pages/womens.html" class="gender-card gender-women" data-animate data-animate-delay="2">
+          <div class="gender-card-bg">
+            <img src="images/womens_watch_1.png" alt="Women's Watches" />
+          </div>
+          <div class="gender-card-overlay"></div>
+          <div class="gender-card-body">
+            <h2 class="display-lg">For Her</h2>
+            <p>Elegant, timeless, and exquisite. Watches that celebrate her grace.</p>
+            <span class="btn btn-outline" style="margin-top:1.5rem;">Shop Women's</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== POPULAR WATCHES ===================== -->
+  <section class="section-pad" id="popular">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <span class="label-caps">Top Picks</span>
+        <h2 class="display-lg">Popular Timepieces</h2>
+        <p>The watches our customers love the most — exceptional quality at every price point.</p>
+      </div>
+
+      <!-- Tab Filters -->
+      <div class="product-tabs" data-animate>
+        <button class="product-tab active" data-tab="all">All</button>
+        <button class="product-tab" data-tab="men">Men</button>
+        <button class="product-tab" data-tab="women">Women</button>
+        <button class="product-tab" data-tab="sale">On Sale</button>
+      </div>
+
+      <div class="products-grid" id="home-products-grid">
+        <!-- JS populated -->
+      </div>
+
+      <div class="text-center" style="margin-top:3rem;" data-animate>
+        <a href="pages/shop.html" class="btn btn-ghost btn-lg">View Full Collection</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHY WAQTORO ===================== -->
+  <section class="why-section section-pad">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <span class="label-caps">Our Promise</span>
+        <h2 class="display-lg">Why Choose Waqtoro</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card" data-animate data-animate-delay="1">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Premium Quality</h3>
+          <p>Our replica timepieces are crafted with high-grade materials to closely mirror the look and feel of iconic luxury watches.</p>
+        </div>
+        <div class="why-card" data-animate data-animate-delay="2">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <h3>Free Delivery</h3>
+          <p>Complimentary insured shipping on all orders. Delivered safely to your door in premium packaging.</p>
+        </div>
+        <div class="why-card" data-animate data-animate-delay="3">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </div>
+          <h3>Easy Returns</h3>
+          <p>Not satisfied? Return within 7 days for a full refund, no questions asked.</p>
+        </div>
+        <div class="why-card" data-animate data-animate-delay="4">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.4a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <h3>Expert Support</h3>
+          <p>Our specialist team is available 7 days a week to help you find the perfect replica timepiece at the right price.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS ===================== -->
+  <section class="testimonials-section section-pad">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <span class="label-caps">Client Stories</span>
+        <h2 class="display-lg">What Our Customers Say</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card" data-animate data-animate-delay="1">
+          <div class="stars">★★★★★</div>
+          <p>"I ordered an Omega Seamaster replica and was blown away by the quality. Looks and feels just like the real thing — for a fraction of the price!"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">AK</div>
+            <div>
+              <strong>Ahmad Khan</strong>
+              <span>Omega Seamaster Replica</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card" data-animate data-animate-delay="2">
+          <div class="stars">★★★★★</div>
+          <p>"The rose gold Tissot-inspired replica I bought for my wife was stunning. Nobody could tell the difference. Waqtoro's quality is unmatched!"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SR</div>
+            <div>
+              <strong>Sara Raza</strong>
+              <span>Tissot Rose Gold Replica</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card" data-animate data-animate-delay="3">
+          <div class="stars">★★★★★</div>
+          <p>"Fast shipping, premium build quality, and outstanding customer service. I've bought 3 replica watches from Waqtoro — best value for money!"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MH</div>
+            <div>
+              <strong>Mohamed Hassan</strong>
+              <span>TAG Heuer Aquaracer Replica</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== NEWSLETTER ===================== -->
+  <section class="newsletter-section">
+    <div class="container">
+      <div class="newsletter-inner" data-animate>
+        <span class="label-caps">Stay Connected</span>
+        <h2 class="display-md" style="margin-top:0.5rem;">Join The Inner Circle</h2>
+        <p>Be the first to know about new arrivals, exclusive offers, and watch events. Get 10% off your first order.</p>
+        <form class="newsletter-form" id="newsletter-form">
+          <input type="email" placeholder="Your email address" id="newsletter-email" required />
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="nav-logo" style="margin-bottom:1rem;">
+            <span class="nav-logo-name">Waqtoro</span>
+            <span class="nav-logo-tagline">Fine Timepieces</span>
+          </div>
+          <p>Your trusted destination for premium replica timepieces. Luxury look, unbeatable prices, passion driven.</p>
+          <div class="social-links">
+            <a href="#" class="social-link" aria-label="Instagram">
+              <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="#" class="social-link" aria-label="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+            </a>
+            <a href="#" class="social-link" aria-label="YouTube">
+              <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+            </a>
+            <a href="https://wa.me/923282054801" target="_blank" class="social-link" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="pages/mens.html">Men's Watches</a></li>
+            <li><a href="pages/womens.html">Women's Watches</a></li>
+            <li><a href="pages/shop.html">New Arrivals</a></li>
+            <li><a href="pages/shop.html?filter=sale">Sale</a></li>
+            <li><a href="pages/brands.html">All Brands</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="pages/contact.html">Contact Us</a></li>
+            <li><a href="pages/about.html">About Waqtoro</a></li>
+            <li><a href="#">Shipping Info</a></li>
+            <li><a href="#">Returns Policy</a></li>
+            <li><a href="#">Watch Care Guide</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Quality Guarantee</a></li>
+            <li><a href="#">Sitemap</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 <strong>Waqtoro</strong> — All rights reserved. Crafted with passion.</p>
+        <div class="payment-icons">
+          <span class="payment-icon">VISA</span>
+          <span class="payment-icon">MC</span>
+          <span class="payment-icon">AMEX</span>
+          <span class="payment-icon">PayPal</span>
+          <span class="payment-icon">COD</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button id="back-to-top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/products-data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/home.js"></script>
+  <script type="module" src="js/sync.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brands — WAQTORO</title>
+  <meta name="description" content="Browse our replica watch collection by brand inspiration — Rolex, Omega, TAG Heuer, Tissot, Seiko and more." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/brands.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="nav-logo"><span class="nav-logo-name">Waqtoro</span><span class="nav-logo-tagline">Fine Timepieces</span></a>
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="mens.html" class="nav-link">Men</a></li>
+        <li><a href="womens.html" class="nav-link">Women</a></li>
+        <li><a href="shop.html" class="nav-link">Shop</a></li>
+        <li><a href="brands.html" class="nav-link active">Brands</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="nav-action-btn" id="search-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></button>
+        <a href="wishlist.html" class="nav-action-btn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
+        <a href="cart.html" class="nav-action-btn" style="position:relative;"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-count" id="cart-count">0</span></a>
+        <a href="account.html" class="nav-action-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+        <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="mobile-menu-close" id="mobile-close">✕</button>
+    <a href="../index.html" class="nav-link">Home</a><a href="mens.html" class="nav-link">Men</a><a href="womens.html" class="nav-link">Women</a><a href="shop.html" class="nav-link">Shop All</a>
+  </div>
+  <div class="search-overlay" id="search-overlay">
+    <button class="search-close" id="search-close">✕</button>
+    <div class="search-inner"><p>Search the collection</p>
+      <div class="search-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+        <input type="text" id="search-input" placeholder="Search watches, brands…" autocomplete="off" /></div>
+    </div>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="container">
+      <nav class="breadcrumb"><a href="../index.html">Home</a><span>›</span><span>Brands</span></nav>
+      <h1 class="display-lg" data-animate>Browse by Brand</h1>
+      <p class="text-dimmed" data-animate>Premium replica watches inspired by the world's most iconic luxury brands</p>
+    </div>
+  </div>
+
+  <!-- BRAND GRID -->
+  <section class="section-pad">
+    <div class="container">
+      <div class="brands-grid" id="brands-grid">
+        <!-- JS populated -->
+      </div>
+    </div>
+  </section>
+
+  <!-- BRAND PRODUCTS (shown when a brand is clicked) -->
+  <section class="section-pad brand-products-section" id="brand-products-section" style="display:none;">
+    <div class="container">
+      <div class="brand-products-header">
+        <div>
+          <span class="label-caps">Inspired By</span>
+          <h2 class="display-md" id="brand-products-title"></h2>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="back-to-brands-btn">← All Brands</button>
+      </div>
+      <div class="products-grid" id="brand-products-grid"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand"><div class="nav-logo" style="margin-bottom:1rem;"><span class="nav-logo-name">Waqtoro</span><span class="nav-logo-tagline">Fine Timepieces</span></div><p>Premium replica timepieces for the modern man and woman.</p></div>
+        <div class="footer-col"><h4>Shop</h4><ul><li><a href="mens.html">Men's</a></li><li><a href="womens.html">Women's</a></li><li><a href="shop.html">All Watches</a></li></ul></div>
+        <div class="footer-col"><h4>Support</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Returns</a></li></ul></div>
+        <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>© 2026 <strong>Waqtoro</strong> — All rights reserved.</p></div>
+    </div>
+  </footer>
+
+  <button id="back-to-top"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="../js/products-data.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/brands.js"></script>
+</body>
+</html>

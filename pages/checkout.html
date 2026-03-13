@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — WAQTORO</title>
+  <meta name="description" content="Secure checkout for your Waqtoro replica watch order." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/checkout.css" />
+</head>
+<body>
+
+  <!-- MINIMAL NAVBAR -->
+  <nav class="checkout-nav">
+    <div class="container checkout-nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <span class="nav-logo-name">Waqtoro</span>
+        <span class="nav-logo-tagline">Fine Timepieces</span>
+      </a>
+      <div class="checkout-secure-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Secure Checkout</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CHECKOUT BODY -->
+  <div class="checkout-page container">
+
+    <!-- STEP INDICATOR -->
+    <div class="checkout-steps">
+      <div class="checkout-step active" id="step-ind-1">
+        <div class="step-circle">1</div>
+        <span>Information</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="checkout-step" id="step-ind-2">
+        <div class="step-circle">2</div>
+        <span>Shipping</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="checkout-step" id="step-ind-3">
+        <div class="step-circle">3</div>
+        <span>Payment</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="checkout-step" id="step-ind-4">
+        <div class="step-circle">4</div>
+        <span>Review</span>
+      </div>
+    </div>
+
+    <div class="checkout-layout">
+
+      <!-- FORM COLUMN -->
+      <div class="checkout-form-col">
+
+        <!-- STEP 1: INFORMATION -->
+        <div class="checkout-section" id="step-1">
+          <h2 class="checkout-section-title">Contact Information</h2>
+          <div class="checkout-fields">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>First Name *</label>
+                <input type="text" id="c-fname" placeholder="Ahmad" required />
+              </div>
+              <div class="form-group">
+                <label>Last Name *</label>
+                <input type="text" id="c-lname" placeholder="Khan" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input type="email" id="c-email" placeholder="you@example.com" required />
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" id="c-phone" placeholder="+92 300 0000000" required />
+            </div>
+          </div>
+
+          <h2 class="checkout-section-title" style="margin-top:2rem;">Shipping Address</h2>
+          <div class="checkout-fields">
+            <div class="form-group">
+              <label>Street Address *</label>
+              <input type="text" id="c-address" placeholder="123 Main Street, Apt 4B" required />
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>City *</label>
+                <input type="text" id="c-city" placeholder="City" required />
+              </div>
+              <div class="form-group">
+                <label>Postal Code</label>
+                <input type="text" id="c-postal" placeholder="75600" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Country *</label>
+              <select id="c-country">
+                <option>Pakistan</option>
+                <option>United Arab Emirates</option>
+                <option>Saudi Arabia</option>
+                <option>United Kingdom</option>
+                <option>United States</option>
+                <option>Canada</option>
+                <option>Australia</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Order Notes <span style="font-weight:400;color:var(--clr-muted)">(Optional)</span></label>
+              <textarea id="c-notes" rows="3" placeholder="Any special instructions for your order…"></textarea>
+            </div>
+          </div>
+
+          <button class="btn btn-primary checkout-next-btn" id="go-to-step-2">
+            Continue to Shipping →
+          </button>
+        </div>
+
+        <!-- STEP 2: SHIPPING -->
+        <div class="checkout-section" id="step-2" style="display:none;">
+          <h2 class="checkout-section-title">Shipping Method</h2>
+          <div class="shipping-options">
+            <label class="shipping-option selected" id="ship-standard">
+              <input type="radio" name="shipping" value="standard" checked id="ship-standard-input" />
+              <div class="shipping-option-info">
+                <div class="shipping-option-top">
+                  <span class="shipping-label">Standard Delivery</span>
+                  <span class="shipping-price text-gold">Free</span>
+                </div>
+                <span class="shipping-eta">5–7 business days</span>
+              </div>
+              <div class="shipping-radio-dot"></div>
+            </label>
+          </div>
+
+          <div class="checkout-step-nav">
+            <button class="btn btn-ghost" id="go-to-step-1">← Back</button>
+            <button class="btn btn-primary checkout-next-btn" id="go-to-step-3">Continue to Payment →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: PAYMENT -->
+        <div class="checkout-section" id="step-3" style="display:none;">
+          <h2 class="checkout-section-title">Payment Method</h2>
+
+          <div class="payment-methods">
+            <button class="payment-method-tab active" data-method="card">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Credit / Debit Card
+            </button>
+            <button class="payment-method-tab" data-method="paypal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 11l2-8h7a4 4 0 010 8H9l-1 6H5z"/><path d="M11 17l-1 6"/></svg>
+              PayPal
+            </button>
+            <button class="payment-method-tab" data-method="cod">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+              Cash on Delivery
+            </button>
+          </div>
+
+          <!-- Card Form -->
+          <div class="payment-panel" id="pay-card">
+            <div class="form-group">
+              <label>Name on Card *</label>
+              <input type="text" id="p-name" placeholder="Ahmad Khan" />
+            </div>
+            <div class="form-group">
+              <label>Card Number *</label>
+              <div class="card-input-wrap">
+                <input type="text" id="p-card" placeholder="1234 5678 9012 3456" maxlength="19" />
+                <div class="card-icons">
+                  <span>VISA</span>
+                  <span>MC</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Expiry Date *</label>
+                <input type="text" id="p-expiry" placeholder="MM / YY" maxlength="7" />
+              </div>
+              <div class="form-group">
+                <label>CVV *</label>
+                <input type="text" id="p-cvv" placeholder="•••" maxlength="4" />
+              </div>
+            </div>
+            <div class="secure-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Your payment info is encrypted and secure. We never store your card details.
+            </div>
+          </div>
+
+          <!-- PayPal Panel -->
+          <div class="payment-panel" id="pay-paypal" style="display:none;">
+            <div class="paypal-info">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:48px;height:48px;color:var(--clr-gold);margin:0 auto 1rem;display:block;"><path d="M7 11l2-8h7a4 4 0 010 8H9l-1 6H5z"/><path d="M11 17l-1 6"/></svg>
+              <p>You will be redirected to PayPal to complete your payment securely after reviewing your order.</p>
+            </div>
+          </div>
+
+          <!-- COD Panel -->
+          <div class="payment-panel" id="pay-cod" style="display:none;">
+            <div class="cod-info">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:48px;height:48px;color:var(--clr-gold);margin:0 auto 1rem;display:block;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+              <p>Pay in cash when your order is delivered. Our courier will collect payment at your door.</p>
+              <ul>
+                <li>✓ No card required</li>
+                <li>✓ Pay only when you receive the watch</li>
+                <li>✓ Available across Pakistan, UAE & KSA</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="checkout-step-nav">
+            <button class="btn btn-ghost" id="go-to-step-2-back">← Back</button>
+            <button class="btn btn-primary checkout-next-btn" id="go-to-step-4">Review Order →</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: REVIEW -->
+        <div class="checkout-section" id="step-4" style="display:none;">
+          <h2 class="checkout-section-title">Review Your Order</h2>
+
+          <div class="review-block">
+            <div class="review-block-header">
+              <span>Contact</span>
+              <button class="btn-edit" data-edit-step="1">Edit</button>
+            </div>
+            <p id="review-contact"></p>
+          </div>
+          <div class="review-block">
+            <div class="review-block-header">
+              <span>Ship to</span>
+              <button class="btn-edit" data-edit-step="1">Edit</button>
+            </div>
+            <p id="review-address"></p>
+          </div>
+          <div class="review-block">
+            <div class="review-block-header">
+              <span>Shipping</span>
+              <button class="btn-edit" data-edit-step="2">Edit</button>
+            </div>
+            <p id="review-shipping"></p>
+          </div>
+          <div class="review-block">
+            <div class="review-block-header">
+              <span>Payment</span>
+              <button class="btn-edit" data-edit-step="3">Edit</button>
+            </div>
+            <p id="review-payment"></p>
+          </div>
+
+          <div class="review-items" id="review-items"></div>
+
+          <div class="checkout-step-nav">
+            <button class="btn btn-ghost" id="go-to-step-3-back">← Back</button>
+            <button class="btn btn-primary checkout-next-btn place-order-btn" id="place-order-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><polyline points="20 6 9 17 4 12"/></svg>
+              Place Order
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ORDER SUMMARY SIDEBAR -->
+      <aside class="checkout-sidebar">
+        <div class="checkout-sidebar-inner">
+          <h3 class="sidebar-title">Order Summary</h3>
+          <div class="checkout-cart-items" id="checkout-cart-items">
+            <!-- JS populated -->
+          </div>
+          <div class="checkout-summary-lines">
+            <div class="summary-line">
+              <span>Subtotal</span>
+              <span id="co-subtotal">—</span>
+            </div>
+            <div class="summary-line">
+              <span>Shipping</span>
+              <span id="co-shipping" class="text-gold">Free</span>
+            </div>
+            <div class="summary-line summary-total">
+              <span>Total</span>
+              <span id="co-total">—</span>
+            </div>
+          </div>
+          <div class="checkout-promo">
+            <input type="text" id="co-promo" placeholder="Promo code" />
+            <button id="apply-promo-btn">Apply</button>
+          </div>
+          <p id="co-promo-msg" style="font-size:0.72rem;margin-top:0.4rem;"></p>
+
+          <div class="checkout-trust">
+            <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Premium Build Quality</span></div>
+            <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span>Free Insured Shipping</span></div>
+            <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span>7-Day Returns</span></div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="../js/products-data.js"></script>
+  <script src="../js/main.js"></script>
+  <script type="module" src="../js/checkout.js"></script>
+  <script type="module" src="../js/sync.js"></script>
+</body>
+</html>
