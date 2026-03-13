@@ -253,6 +253,9 @@ input, select, textarea { font-family: inherit; }
   text-transform: uppercase;
   color: var(--clr-white);
 }
+.logo-highlight {
+  color: var(--clr-gold);
+}
 .nav-logo-tagline {
   font-size: 0.55rem;
   font-weight: 400;
