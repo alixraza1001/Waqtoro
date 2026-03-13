@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact Us — WAQTORO</title>
-  <meta name="description" content="Get in touch with Waqtoro. We're here to help with orders, returns, product questions, and anything else." />
+  <meta name="description"
+    content="Get in touch with Waqtoro. We're here to help with orders, returns, product questions, and anything else." />
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/contact.css" />
 </head>
+
 <body>
 
   <!-- NAVBAR -->
   <nav class="navbar" id="navbar">
     <div class="container navbar-inner">
-      <a href="../index.html" class="nav-logo"><span class="nav-logo-name"><span class="logo-highlight">Waqt</span>oro</span><span class="nav-logo-tagline">Fine Timepieces</span></a>
+      <a href="../index.html" class="nav-logo"><span class="nav-logo-name"><span
+            class="logo-highlight">Waqt</span>oro</span><span class="nav-logo-tagline">Fine Timepieces</span></a>
       <ul class="nav-links">
         <li><a href="../index.html" class="nav-link">Home</a></li>
         <li><a href="mens.html" class="nav-link">Men</a></li>
@@ -24,23 +28,42 @@
         <li><a href="contact.html" class="nav-link active">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <button class="nav-action-btn" id="search-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></button>
-        <a href="wishlist.html" class="nav-action-btn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
-        <a href="cart.html" class="nav-action-btn" style="position:relative;"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-count" id="cart-count">0</span></a>
-        <a href="account.html" class="nav-action-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+        <button class="nav-action-btn" id="search-btn"><svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="16.5" y1="16.5" x2="22" y2="22" />
+          </svg></button>
+        <a href="wishlist.html" class="nav-action-btn"><svg viewBox="0 0 24 24">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg></a>
+        <a href="cart.html" class="nav-action-btn" style="position:relative;"><svg viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 01-8 0" />
+          </svg><span class="cart-count" id="cart-count">0</span></a>
+        <a href="account.html" class="nav-action-btn"><svg viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg></a>
         <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
       </div>
     </div>
   </nav>
   <div class="mobile-menu" id="mobile-menu">
     <button class="mobile-menu-close" id="mobile-close">✕</button>
-    <a href="../index.html" class="nav-link">Home</a><a href="mens.html" class="nav-link">Men</a><a href="womens.html" class="nav-link">Women</a><a href="shop.html" class="nav-link">Shop All</a>
+    <a href="../index.html" class="nav-link">Home</a><a href="mens.html" class="nav-link">Men</a><a href="womens.html"
+      class="nav-link">Women</a><a href="shop.html" class="nav-link">Shop All</a>
   </div>
   <div class="search-overlay" id="search-overlay">
     <button class="search-close" id="search-close">✕</button>
-    <div class="search-inner"><p>Search the collection</p>
-      <div class="search-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
-        <input type="text" id="search-input" placeholder="Search watches, brands…" autocomplete="off" /></div>
+    <div class="search-inner">
+      <p>Search the collection</p>
+      <div class="search-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="16.5" y1="16.5" x2="22" y2="22" />
+        </svg>
+        <input type="text" id="search-input" placeholder="Search watches, brands…" autocomplete="off" />
+      </div>
     </div>
   </div>
 
@@ -50,7 +73,8 @@
       <nav class="breadcrumb"><a href="../index.html">Home</a><span>›</span><span>Contact</span></nav>
       <span class="label-caps" data-animate>We're Here to Help</span>
       <h1 class="display-lg" data-animate>Get in Touch</h1>
-      <p class="contact-sub" data-animate>Questions about an order? Need help choosing a watch? We respond to every message within 2 hours.</p>
+      <p class="contact-sub" data-animate>Questions about an order? Need help choosing a watch? We respond to every
+        message within 2 hours.</p>
     </div>
   </div>
 
@@ -96,13 +120,16 @@
             </div>
             <div class="form-group">
               <label>Message *</label>
-              <textarea id="ct-message" rows="5" placeholder="Describe your question or issue in detail…" required></textarea>
+              <textarea id="ct-message" rows="5" placeholder="Describe your question or issue in detail…"
+                required></textarea>
             </div>
-            <div class="form-check" style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.78rem;color:var(--clr-muted);">
+            <div class="form-check"
+              style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.78rem;color:var(--clr-muted);">
               <input type="checkbox" id="ct-consent" required style="margin-top:2px;accent-color:var(--clr-gold);" />
               <label for="ct-consent">I agree to be contacted via email regarding my query.</label>
             </div>
-            <button type="submit" class="btn btn-primary" style="margin-top:1.25rem;width:100%;justify-content:center;" id="contact-submit-btn">
+            <button type="submit" class="btn btn-primary" style="margin-top:1.25rem;width:100%;justify-content:center;"
+              id="contact-submit-btn">
               Send Message →
             </button>
           </form>
@@ -111,7 +138,8 @@
           <div id="contact-success" class="contact-success" style="display:none;">
             <div class="success-icon-sm">✓</div>
             <h3>Message Sent!</h3>
-            <p>Thank you for reaching out. We'll get back to you at <strong id="success-email"></strong> within 2 hours.</p>
+            <p>Thank you for reaching out. We'll get back to you at <strong id="success-email"></strong> within 2 hours.
+            </p>
             <button class="btn btn-ghost" style="margin-top:1.25rem;" onclick="resetContactForm()">Send Another</button>
           </div>
         </div>
@@ -123,25 +151,37 @@
           <div class="contact-cards">
             <a href="mailto:waqtoro@gmail.com" class="contact-card">
               <div class="contact-card-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
               </div>
               <div>
                 <strong>Email Us</strong>
                 <span>waqtoro@gmail.com</span>
                 <small>Replies within 2 hours</small>
               </div>
-              <svg class="contact-card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              <svg class="contact-card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
             </a>
             <a href="https://wa.me/923282054801" target="_blank" class="contact-card">
               <div class="contact-card-icon whatsapp">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.115.554 4.103 1.527 5.825L.057 23.886a.5.5 0 00.605.605l6.063-1.47A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.89 0-3.66-.523-5.17-1.43l-.37-.22-3.836.93.946-3.836-.24-.38A9.957 9.957 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                  <path
+                    d="M12 0C5.373 0 0 5.373 0 12c0 2.115.554 4.103 1.527 5.825L.057 23.886a.5.5 0 00.605.605l6.063-1.47A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.89 0-3.66-.523-5.17-1.43l-.37-.22-3.836.93.946-3.836-.24-.38A9.957 9.957 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+                </svg>
               </div>
               <div>
                 <strong>WhatsApp</strong>
                 <span>03282054801</span>
                 <small>Chat instantly — Mon–Sat 9am–9pm</small>
               </div>
-              <svg class="contact-card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              <svg class="contact-card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
             </a>
 
           </div>
@@ -155,7 +195,8 @@
             <div class="support-hours">
               <div class="hours-row"><span>Monday – Friday</span><span class="text-white">9:00 AM – 9:00 PM</span></div>
               <div class="hours-row"><span>Saturday</span><span class="text-white">10:00 AM – 6:00 PM</span></div>
-              <div class="hours-row"><span>Sunday</span><span style="color:var(--clr-muted)">Closed (email only)</span></div>
+              <div class="hours-row"><span>Sunday</span><span style="color:var(--clr-muted)">Closed (email only)</span>
+              </div>
             </div>
             <p class="response-note">All times PKT (Pakistan Standard Time)</p>
           </div>
@@ -167,46 +208,62 @@
               <div class="faq-item">
                 <button class="faq-q" onclick="toggleFaq(this)">
                   Are your watches genuine brand watches?
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </button>
                 <div class="faq-a">
-                  <p>No — all Waqtoro watches are high-quality replicas inspired by iconic luxury brands. They are not affiliated with, endorsed by, or produced by the original brands. Every product is clearly labelled as a replica.</p>
+                  <p>No — all Waqtoro watches are high-quality replicas inspired by iconic luxury brands. They are not
+                    affiliated with, endorsed by, or produced by the original brands. Every product is clearly labelled
+                    as a replica.</p>
                 </div>
               </div>
               <div class="faq-item">
                 <button class="faq-q" onclick="toggleFaq(this)">
                   How long does delivery take?
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </button>
                 <div class="faq-a">
-                  <p>Standard delivery takes 5–7 business days. Express shipping (2–3 days) and Next Day delivery are also available at checkout.</p>
+                  <p>Standard delivery takes 3–5 business days. Express shipping (2–3 days) and Next Day delivery are
+                    also available at checkout.</p>
                 </div>
               </div>
               <div class="faq-item">
                 <button class="faq-q" onclick="toggleFaq(this)">
                   Can I return a watch if I don't like it?
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </button>
                 <div class="faq-a">
-                  <p>Yes! We offer a 30-day return window. The watch must be unworn and in original packaging. Contact us and we'll arrange collection.</p>
+                  <p>Yes! We offer a 07-day return window. The watch must be unworn and in original packaging. Contact
+                    us and we'll arrange collection.</p>
                 </div>
               </div>
               <div class="faq-item">
                 <button class="faq-q" onclick="toggleFaq(this)">
                   Do you ship internationally?
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </button>
                 <div class="faq-a">
-                  <p>Yes — we ship to 30+ countries including UAE, Saudi Arabia, UK, USA, Canada, and Australia. International orders are shipped with full insurance and discreet packaging.</p>
+                  <p>Yes — we ship to 30+ countries including UAE, Saudi Arabia, UK, USA, Canada, and Australia.
+                    International orders are shipped with full insurance and discreet packaging.</p>
                 </div>
               </div>
               <div class="faq-item">
                 <button class="faq-q" onclick="toggleFaq(this)">
                   What warranty do your watches carry?
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </button>
                 <div class="faq-a">
-                  <p>All our watches come with a 6-month quality guarantee. If your watch develops a defect within 6 months of purchase, we'll repair or replace it free of charge.</p>
+                  <p>All our watches come with a 1-month quality guarantee. If your watch develops a defect within 1
+                    month of purchase, we'll repair or replace it free of charge.</p>
                 </div>
               </div>
             </div>
@@ -220,16 +277,47 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-top">
-        <div class="footer-brand"><div class="nav-logo" style="margin-bottom:1rem;"><span class="nav-logo-name"><span class="logo-highlight">Waqt</span>oro</span><span class="nav-logo-tagline">Fine Timepieces</span></div><p>Premium replica timepieces for the modern man and woman.</p></div>
-        <div class="footer-col"><h4>Shop</h4><ul><li><a href="mens.html">Men's</a></li><li><a href="womens.html">Women's</a></li><li><a href="shop.html">All Watches</a></li></ul></div>
-        <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li><li><a href="#">Returns</a></li></ul></div>
-        <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Quality Guarantee</a></li></ul></div>
+        <div class="footer-brand">
+          <div class="nav-logo" style="margin-bottom:1rem;"><span class="nav-logo-name"><span
+                class="logo-highlight">Waqt</span>oro</span><span class="nav-logo-tagline">Fine Timepieces</span></div>
+          <p>Premium replica timepieces for the modern man and woman.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="mens.html">Men's</a></li>
+            <li><a href="womens.html">Women's</a></li>
+            <li><a href="shop.html">All Watches</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="#">Returns</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Quality Guarantee</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="footer-bottom"><p>© 2026 <strong>Waqtoro</strong> — All rights reserved.</p><div class="payment-icons"><span class="payment-icon">VISA</span><span class="payment-icon">MC</span><span class="payment-icon">PayPal</span><span class="payment-icon">COD</span></div></div>
+      <div class="footer-bottom">
+        <p>© 2026 <strong>Waqtoro</strong> — All rights reserved.</p>
+        <div class="payment-icons"><span class="payment-icon">VISA</span><span class="payment-icon">MC</span><span
+            class="payment-icon">PayPal</span><span class="payment-icon">COD</span></div>
+      </div>
     </div>
   </footer>
 
-  <button id="back-to-top"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+  <button id="back-to-top"><svg viewBox="0 0 24 24">
+      <polyline points="18 15 12 9 6 15" />
+    </svg></button>
   <div class="toast-container" id="toast-container"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -237,4 +325,5 @@
   <script src="../js/main.js"></script>
   <script src="../js/contact.js"></script>
 </body>
+
 </html>
