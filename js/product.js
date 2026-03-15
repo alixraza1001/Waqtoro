@@ -1,6 +1,5 @@
-/**
- * WAQTORO — Product Detail Page JavaScript
- */
+import { auth, db } from './firebase-config.js';
+import { collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
   const id = parseInt(new URLSearchParams(window.location.search).get('id')) || 1;
@@ -22,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProduct(product);
   renderRelated(product);
   initTabs();
+  loadReviews(id);
 });
 
 function renderProduct(p) {
@@ -157,9 +157,9 @@ function renderProduct(p) {
         <div class="tab-panel" id="tab-reviews">
           <div class="reviews-summary">
             <div class="reviews-big-rating">
-              <div class="big-num">${p.rating}.0</div>
-              <div class="stars">★★★★★</div>
-              <span>${p.reviews} reviews</span>
+              <div class="big-num" id="dynamic-rating-num">${p.rating}.0</div>
+              <div class="stars" id="dynamic-stars-top">${renderStars(p.rating)}</div>
+              <span id="dynamic-review-count">${p.reviews} reviews</span>
             </div>
             <div class="review-bars">
               <div class="review-bar-row"><span class="star-label">5★</span><div class="review-bar"><div class="review-bar-fill" style="width:78%"></div></div><span class="pct">78%</span></div>
@@ -169,17 +169,32 @@ function renderProduct(p) {
               <div class="review-bar-row"><span class="star-label">1★</span><div class="review-bar"><div class="review-bar-fill" style="width:0%"></div></div><span class="pct">0%</span></div>
             </div>
           </div>
-          <div class="review-item">
-            <div class="review-header"><span class="review-author">Ahmad K.</span><span class="review-date">March 2026</span></div>
-            <div class="stars" style="font-size:0.85rem;margin-bottom:0.4rem;">★★★★★</div>
-            <p class="review-title">Looks and feels premium!</p>
-            <p class="review-body">Honestly shocked at the build quality for a replica. Heavy, smooth movement, beautiful finishing. You'd have to look very closely to tell the difference.</p>
+
+          <div class="write-review-toggle">
+            <button class="btn btn-outline" onclick="toggleReviewForm()" style="width:100%;margin-bottom:2rem;">Write a Review</button>
           </div>
-          <div class="review-item">
-            <div class="review-header"><span class="review-author">Sara M.</span><span class="review-date">February 2026</span></div>
-            <div class="stars" style="font-size:0.85rem;margin-bottom:0.4rem;">★★★★★</div>
-            <p class="review-title">Amazing value for money</p>
-            <p class="review-body">Bought this as a gift for my husband. He gets compliments on it all the time and nobody knows it's a replica. The packaging was also very impressive!</p>
+
+          <form id="review-form" class="review-form" style="display:none;margin-bottom:3rem;padding:2rem;background:var(--clr-bg-card);border:1px solid var(--clr-border);border-radius:var(--radius-md);">
+            <h3 style="margin-bottom:1.5rem;color:var(--clr-white)">Write a Review</h3>
+            <div class="form-group" style="margin-bottom:1.2rem;">
+              <label style="display:block;margin-bottom:0.5rem;font-size:0.8rem;color:var(--clr-muted)">Rating</label>
+              <div class="star-rating-input" style="display:flex;gap:0.5rem;font-size:1.5rem;color:var(--clr-muted);cursor:pointer;">
+                <span data-val="1">☆</span><span data-val="2">☆</span><span data-val="3">☆</span><span data-val="4">☆</span><span data-val="5">☆</span>
+              </div>
+              <input type="hidden" id="review-rating" value="5" />
+            </div>
+            <div class="form-group" style="margin-bottom:1.2rem;">
+              <input type="text" id="review-title" placeholder="Review Title" required style="width:100%;padding:0.75rem;background:var(--clr-bg);border:1px solid var(--clr-border);color:var(--clr-white);border-radius:var(--radius-sm);" />
+            </div>
+            <div class="form-group" style="margin-bottom:1.2rem;">
+              <textarea id="review-comment" placeholder="Your Experience" required style="width:100%;padding:0.75rem;background:var(--clr-bg);border:1px solid var(--clr-border);color:var(--clr-white);border-radius:var(--radius-sm);min-height:100px;"></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold" style="width:100%">Submit Review</button>
+          </form>
+
+          <div id="reviews-container">
+            <!-- Dynamic Reviews Load Here -->
+            <div class="loading-reviews" style="text-align:center;padding:2rem;color:var(--clr-muted)">Loading community reviews...</div>
           </div>
         </div>
       </div>
@@ -187,6 +202,109 @@ function renderProduct(p) {
   `;
 
   WaqtoroWishlist.updateButtons();
+  setupReviewForm();
+}
+
+async function loadReviews(productId) {
+  const container = document.getElementById('reviews-container');
+  if (!container) return;
+
+  try {
+    const q = query(
+      collection(db, "reviews"),
+      where("productId", "==", productId),
+      orderBy("date", "desc")
+    );
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      container.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--clr-muted)">
+        <p>No reviews yet. Be the first to review this timepiece!</p>
+      </div>`;
+      return;
+    }
+
+    let reviewsHTML = '';
+    querySnapshot.forEach((doc) => {
+      const r = doc.data();
+      const dateStr = r.date ? new Date(r.date.seconds * 1000).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Recently';
+      reviewsHTML += `
+        <div class="review-item">
+          <div class="review-header"><span class="review-author">${r.author || 'Anonymous'}</span><span class="review-date">${dateStr}</span></div>
+          <div class="stars" style="font-size:0.85rem;margin-bottom:0.4rem;color:var(--clr-gold)">${renderStars(r.rating || 5)}</div>
+          <p class="review-title">${r.title || 'Untitled'}</p>
+          <p class="review-body">${r.comment || ''}</p>
+        </div>
+      `;
+    });
+    container.innerHTML = reviewsHTML;
+  } catch (err) {
+    console.error("Error loading reviews:", err);
+    container.innerHTML = `<p style="color:var(--clr-red);text-align:center;">Failed to load reviews.</p>`;
+  }
+}
+
+function setupReviewForm() {
+  const form = document.getElementById('review-form');
+  if (!form) return;
+
+  const stars = form.querySelectorAll('.star-rating-input span');
+  const ratingInput = document.getElementById('review-rating');
+
+  stars.forEach(s => {
+    s.addEventListener('click', () => {
+      const val = parseInt(s.dataset.val);
+      ratingInput.value = val;
+      stars.forEach((star, index) => {
+        star.textContent = index < val ? '★' : '☆';
+        star.style.color = index < val ? 'var(--clr-gold)' : 'var(--clr-muted)';
+      });
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const productId = parseInt(new URLSearchParams(window.location.search).get('id')) || 1;
+    const user = auth.currentUser;
+    
+    if (!user) {
+      showToast('Please sign in to leave a review', 'error');
+      return;
+    }
+
+    const reviewData = {
+      productId,
+      userId: user.uid,
+      author: user.displayName || user.email.split('@')[0],
+      rating: parseInt(ratingInput.value),
+      title: document.getElementById('review-title').value,
+      comment: document.getElementById('review-comment').value,
+      date: serverTimestamp()
+    };
+
+    try {
+      await addDoc(collection(db, "reviews"), reviewData);
+      showToast('Review submitted successfully!', 'success');
+      form.reset();
+      toggleReviewForm();
+      loadReviews(productId);
+    } catch (err) {
+      console.error("Error submitting review:", err);
+      showToast('Failed to submit review', 'error');
+    }
+  });
+}
+
+function toggleReviewForm() {
+  const form = document.getElementById('review-form');
+  const btn = document.querySelector('.write-review-toggle');
+  if (form.style.display === 'none') {
+    form.style.display = 'block';
+    btn.style.display = 'none';
+  } else {
+    form.style.display = 'none';
+    btn.style.display = 'block';
+  }
 }
 
 function changeImg(thumb, src) {
