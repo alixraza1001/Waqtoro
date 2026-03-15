@@ -10,6 +10,9 @@ function initCollection(gender) {
   collectionGender = gender;
   setupCategoryPills();
   setupSort();
+  window.addEventListener('waqtoro:reviews-updated', () => {
+    if (collectionSort === 'rating') renderCollection();
+  });
   renderCollection();
 }
 
@@ -57,7 +60,13 @@ function renderCollection() {
 
   if (collectionSort === 'price-asc')  filtered.sort((a,b) => a.price - b.price);
   if (collectionSort === 'price-desc') filtered.sort((a,b) => b.price - a.price);
-  if (collectionSort === 'rating')     filtered.sort((a,b) => b.rating - a.rating);
+  if (collectionSort === 'rating') {
+    filtered.sort((a, b) => {
+      const aLive = typeof getLiveReviewSortData === 'function' ? getLiveReviewSortData(a) : { rating: 0, count: 0 };
+      const bLive = typeof getLiveReviewSortData === 'function' ? getLiveReviewSortData(b) : { rating: 0, count: 0 };
+      return bLive.rating - aLive.rating || bLive.count - aLive.count || b.id - a.id;
+    });
+  }
 
   if (countEl) countEl.textContent = `${filtered.length} watches`;
 

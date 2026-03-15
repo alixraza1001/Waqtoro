@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WAQTORO — Premium Replica Timepieces for Men & Women</title>
   <meta name="description" content="Discover premium replica watches for men and women. High-quality timepieces inspired by the world's most iconic luxury brands at affordable prices." />
+  <link rel="canonical" href="https://waqtoro.live/" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+  <link rel="preload" as="image" href="images/hero_banner_mobile.jpg" fetchpriority="high" media="(max-width: 768px)" />
+  <link rel="preload" as="image" href="images/hero_banner_lq.jpg" fetchpriority="high" media="(min-width: 769px)" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/home.css" />
 </head>
@@ -74,7 +83,10 @@
   <!-- ===================== HERO ===================== -->
   <section class="hero" id="hero">
     <div class="hero-bg">
-      <img src="images/hero_banner.png" alt="Luxury watch collection" class="hero-img" />
+      <picture>
+        <source media="(max-width: 768px)" srcset="images/hero_banner_mobile.jpg" />
+        <img src="images/hero_banner_lq.jpg" alt="Luxury watch collection" class="hero-img" width="640" height="640" fetchpriority="high" loading="eager" decoding="async" />
+      </picture>
       <div class="hero-overlay"></div>
     </div>
     <div class="container hero-content">
@@ -156,7 +168,7 @@
       <div class="collections-grid" data-animate>
         <a href="pages/shop.html?filter=new" class="collection-card collection-new">
           <div class="collection-card-bg">
-            <img src="images/hero_banner.png" alt="New Arrivals" />
+            <img src="images/hero_banner_lq.jpg" alt="New Arrivals" loading="lazy" decoding="async" fetchpriority="low" />
           </div>
           <div class="collection-card-overlay"></div>
           <div class="collection-card-body">
@@ -168,7 +180,7 @@
         </a>
         <a href="pages/shop.html?filter=bestseller" class="collection-card collection-best">
           <div class="collection-card-bg">
-            <img src="images/mens_watch_1.png" alt="Best Sellers" />
+            <img src="images/mens_watch_1.png" alt="Best Sellers" loading="lazy" decoding="async" fetchpriority="low" />
           </div>
           <div class="collection-card-overlay"></div>
           <div class="collection-card-body">
@@ -180,7 +192,7 @@
         </a>
         <a href="pages/shop.html?filter=limited" class="collection-card collection-limited">
           <div class="collection-card-bg">
-            <img src="images/womens_watch_1.png" alt="Limited Edition" />
+            <img src="images/womens_watch_1.png" alt="Limited Edition" loading="lazy" decoding="async" fetchpriority="low" />
           </div>
           <div class="collection-card-overlay"></div>
           <div class="collection-card-body">
@@ -200,7 +212,7 @@
       <div class="gender-grid">
         <a href="pages/mens.html" class="gender-card gender-men" data-animate>
           <div class="gender-card-bg">
-            <img src="images/mens_watch_1.png" alt="Men's Watches" />
+            <img src="images/mens_watch_1.png" alt="Men's Watches" loading="lazy" decoding="async" fetchpriority="low" />
           </div>
           <div class="gender-card-overlay"></div>
           <div class="gender-card-body">
@@ -211,7 +223,7 @@
         </a>
         <a href="pages/womens.html" class="gender-card gender-women" data-animate data-animate-delay="2">
           <div class="gender-card-bg">
-            <img src="images/womens_watch_1.png" alt="Women's Watches" />
+            <img src="images/womens_watch_1.png" alt="Women's Watches" loading="lazy" decoding="async" fetchpriority="low" />
           </div>
           <div class="gender-card-overlay"></div>
           <div class="gender-card-body">
@@ -291,51 +303,6 @@
     </div>
   </section>
 
-  <!-- ===================== TESTIMONIALS ===================== -->
-  <section class="testimonials-section section-pad">
-    <div class="container">
-      <div class="section-header" data-animate>
-        <span class="label-caps">Client Stories</span>
-        <h2 class="display-lg">What Our Customers Say</h2>
-      </div>
-      <div class="testimonials-grid">
-        <div class="testimonial-card" data-animate data-animate-delay="1">
-          <div class="stars">★★★★★</div>
-          <p>"I ordered an Omega Seamaster replica and was blown away by the quality. Looks and feels just like the real thing — for a fraction of the price!"</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">AK</div>
-            <div>
-              <strong>Ahmad Khan</strong>
-              <span>Omega Seamaster Replica</span>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card" data-animate data-animate-delay="2">
-          <div class="stars">★★★★★</div>
-          <p>"The rose gold Tissot-inspired replica I bought for my wife was stunning. Nobody could tell the difference. Waqtoro's quality is unmatched!"</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">SR</div>
-            <div>
-              <strong>Sara Raza</strong>
-              <span>Tissot Rose Gold Replica</span>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card" data-animate data-animate-delay="3">
-          <div class="stars">★★★★★</div>
-          <p>"Fast shipping, premium build quality, and outstanding customer service. I've bought 3 replica watches from Waqtoro — best value for money!"</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">MH</div>
-            <div>
-              <strong>Mohamed Hassan</strong>
-              <span>TAG Heuer Aquaracer Replica</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ===================== NEWSLETTER ===================== -->
   <section class="newsletter-section">
     <div class="container">
@@ -362,14 +329,11 @@
           </div>
           <p>Your trusted destination for premium replica timepieces. Luxury look, unbeatable prices, passion driven.</p>
           <div class="social-links">
-            <a href="#" class="social-link" aria-label="Instagram">
+            <a href="https://www.instagram.com/waqtoro/" target="_blank" class="social-link" aria-label="Instagram">
               <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
             </a>
-            <a href="#" class="social-link" aria-label="Facebook">
+            <a href="https://www.facebook.com/profile.php?id=61580574092824" target="_blank" class="social-link" aria-label="Facebook">
               <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
-            </a>
-            <a href="#" class="social-link" aria-label="YouTube">
-              <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
             </a>
             <a href="https://wa.me/923282054801" target="_blank" class="social-link" aria-label="WhatsApp">
               <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
@@ -431,6 +395,5 @@
   <script src="js/products-data.js"></script>
   <script src="js/main.js"></script>
   <script src="js/home.js"></script>
-  <script type="module" src="js/sync.js"></script>
 </body>
 </html>

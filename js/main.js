@@ -269,4 +269,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnimations();
   initGlobalProductHandlers();
   initNewsletter();
+
+  const isRoot = !window.location.pathname.includes('/pages/');
+  const reviewsPath = isRoot ? './js/reviews-live.js' : '../js/reviews-live.js';
+  
+  import(reviewsPath).catch((err) => {
+    console.error('Failed to load live reviews module from', reviewsPath, ':', err);
+  });
 });

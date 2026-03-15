@@ -133,6 +133,17 @@
   50% { transform: translateX(-50%) translateY(6px); }
 }
 
+#brands,
+#featured,
+#gender,
+#popular,
+.why-section,
+.newsletter-section,
+.footer {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 900px;
+}
+
 /* ---- BRAND STRIP ---- */
 .brands-strip {
   background: var(--clr-bg-2);

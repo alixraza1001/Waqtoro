@@ -1,5 +1,11 @@
 import { auth, db } from './firebase-config.js';
-import { collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// Export globals early
+window.toggleReviewForm = toggleReviewForm;
+window.switchTab = switchTab;
+window.changeQty = changeQty;
+window.changeImg = changeImg;
 
 document.addEventListener('DOMContentLoaded', () => {
   const id = parseInt(new URLSearchParams(window.location.search).get('id')) || 1;
@@ -19,9 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('breadcrumb-name').textContent = `${product.brand} ${product.name}`;
 
   renderProduct(product);
+  applyCachedReviewSummary(id);
   renderRelated(product);
   initTabs();
   loadReviews(id);
+
+  window.addEventListener('waqtoro:reviews-updated', () => {
+    applyCachedReviewSummary(id);
+    loadReviews(id);
+  });
 });
 
 function renderProduct(p) {
@@ -73,9 +85,9 @@ function renderProduct(p) {
       </div>
       <h1>${p.name}</h1>
       <div class="product-info-rating">
-        <span class="stars">${renderStars(p.rating)}</span>
-        <span class="count">${p.rating}.0 / 5</span>
-        <span class="count">(${p.reviews} reviews)</span>
+        <span class="stars" id="dynamic-stars-inline">${renderStars(0)}</span>
+        <span class="count" id="dynamic-inline-rating">0.0 / 5</span>
+        <span class="count" id="dynamic-inline-review-count">(0 reviews)</span>
         <a class="review-link" onclick="switchTab('reviews')">Read reviews</a>
       </div>
 
@@ -123,7 +135,7 @@ function renderProduct(p) {
         <div class="product-tabs-nav">
           <button class="product-tab-btn active" data-tab="description">Description</button>
           <button class="product-tab-btn" data-tab="specs">Specifications</button>
-          <button class="product-tab-btn" data-tab="reviews" id="reviews-tab-btn">Reviews (${p.reviews})</button>
+          <button class="product-tab-btn" data-tab="reviews" id="reviews-tab-btn">Reviews (0)</button>
         </div>
 
         <div class="tab-panel active" id="tab-description">
@@ -157,21 +169,15 @@ function renderProduct(p) {
         <div class="tab-panel" id="tab-reviews">
           <div class="reviews-summary">
             <div class="reviews-big-rating">
-              <div class="big-num" id="dynamic-rating-num">${p.rating}.0</div>
-              <div class="stars" id="dynamic-stars-top">${renderStars(p.rating)}</div>
-              <span id="dynamic-review-count">${p.reviews} reviews</span>
+              <div class="big-num" id="dynamic-rating-num">0.0</div>
+              <div class="stars" id="dynamic-stars-top">${renderStars(0)}</div>
+              <span id="dynamic-review-count">0 reviews</span>
             </div>
-            <div class="review-bars">
-              <div class="review-bar-row"><span class="star-label">5★</span><div class="review-bar"><div class="review-bar-fill" style="width:78%"></div></div><span class="pct">78%</span></div>
-              <div class="review-bar-row"><span class="star-label">4★</span><div class="review-bar"><div class="review-bar-fill" style="width:15%"></div></div><span class="pct">15%</span></div>
-              <div class="review-bar-row"><span class="star-label">3★</span><div class="review-bar"><div class="review-bar-fill" style="width:5%"></div></div><span class="pct">5%</span></div>
-              <div class="review-bar-row"><span class="star-label">2★</span><div class="review-bar"><div class="review-bar-fill" style="width:2%"></div></div><span class="pct">2%</span></div>
-              <div class="review-bar-row"><span class="star-label">1★</span><div class="review-bar"><div class="review-bar-fill" style="width:0%"></div></div><span class="pct">0%</span></div>
-            </div>
+            <div class="review-bars" id="review-bars"></div>
           </div>
 
           <div class="write-review-toggle">
-            <button class="btn btn-outline" onclick="toggleReviewForm()" style="width:100%;margin-bottom:2rem;">Write a Review</button>
+            <button class="btn btn-outline" id="write-review-btn" style="width:100%;margin-bottom:2rem;">Write a Review</button>
           </div>
 
           <form id="review-form" class="review-form" style="display:none;margin-bottom:3rem;padding:2rem;background:var(--clr-bg-card);border:1px solid var(--clr-border);border-radius:var(--radius-md);">
@@ -203,6 +209,12 @@ function renderProduct(p) {
 
   WaqtoroWishlist.updateButtons();
   setupReviewForm();
+  
+  // Add listener for Write a Review button (more reliable than onclick in module)
+  const writeReviewBtn = document.getElementById('write-review-btn');
+  if (writeReviewBtn) {
+    writeReviewBtn.addEventListener('click', toggleReviewForm);
+  }
 }
 
 async function loadReviews(productId) {
@@ -210,14 +222,30 @@ async function loadReviews(productId) {
   if (!container) return;
 
   try {
-    const q = query(
-      collection(db, "reviews"),
-      where("productId", "==", productId),
-      orderBy("date", "desc")
-    );
-    const querySnapshot = await getDocs(q);
+    const allSnapshot = await getDocs(collection(db, "reviews"));
+    const reviews = [];
+
+    allSnapshot.forEach((doc) => {
+      const data = doc.data();
+      const candidate = data.productId ?? data.productID ?? data.product_id;
+      if (parseInt(candidate) === productId) {
+        reviews.push({ id: doc.id, ...data });
+      }
+    });
+
+    reviews.sort((a, b) => {
+      const aDate = toDate(a.date);
+      const bDate = toDate(b.date);
+      const aTime = aDate ? aDate.getTime() : 0;
+      const bTime = bDate ? bDate.getTime() : 0;
+      return bTime - aTime;
+    });
+
+    persistFetchedReviewAggregate(productId, reviews);
+    const summary = updateReviewSummary(reviews);
+    updateCardTileReviewBlock(productId, summary.avg, summary.total);
     
-    if (querySnapshot.empty) {
+    if (!reviews.length) {
       container.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--clr-muted)">
         <p>No reviews yet. Be the first to review this timepiece!</p>
       </div>`;
@@ -225,22 +253,90 @@ async function loadReviews(productId) {
     }
 
     let reviewsHTML = '';
-    querySnapshot.forEach((doc) => {
-      const r = doc.data();
-      const dateStr = r.date ? new Date(r.date.seconds * 1000).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Recently';
+    reviews.forEach((r) => {
+      const dateStr = formatReviewDate(r.date);
       reviewsHTML += `
         <div class="review-item">
-          <div class="review-header"><span class="review-author">${r.author || 'Anonymous'}</span><span class="review-date">${dateStr}</span></div>
+          <div class="review-header"><span class="review-author">${escapeHTML(r.author || 'Anonymous')}</span><span class="review-date">${dateStr}</span></div>
           <div class="stars" style="font-size:0.85rem;margin-bottom:0.4rem;color:var(--clr-gold)">${renderStars(r.rating || 5)}</div>
-          <p class="review-title">${r.title || 'Untitled'}</p>
-          <p class="review-body">${r.comment || ''}</p>
+          <p class="review-title">${escapeHTML(r.title || 'Untitled')}</p>
+          <p class="review-body">${escapeHTML(r.comment || '')}</p>
         </div>
       `;
     });
     container.innerHTML = reviewsHTML;
   } catch (err) {
-    console.error("Error loading reviews:", err);
-    container.innerHTML = `<p style="color:var(--clr-red);text-align:center;">Failed to load reviews.</p>`;
+    console.error("Error loading reviews for product", productId, ":", err);
+    container.innerHTML = `
+      <div style="text-align:center;padding:2rem;">
+        <p style="color:var(--clr-red);margin-bottom:1rem;">Failed to load reviews.</p>
+        <button class="btn btn-ghost btn-sm" onclick="location.reload()">Retry Loading</button>
+        <p style="font-size:0.7rem;color:var(--clr-muted);margin-top:1rem;">Error: ${err.message}</p>
+      </div>`;
+  }
+}
+
+function applyCachedReviewSummary(productId) {
+  try {
+    const raw = localStorage.getItem('waqtoro_reviews_cache');
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    const snapshot = parsed?.byProduct?.[String(productId)];
+    if (!snapshot) return;
+
+    const total = Number(snapshot.count) || 0;
+    const avg = Number(snapshot.avg) || 0;
+    const avgDisplay = avg.toFixed(1);
+
+    const topRating = document.getElementById('dynamic-rating-num');
+    const topStars = document.getElementById('dynamic-stars-top');
+    const topCount = document.getElementById('dynamic-review-count');
+    const inlineStars = document.getElementById('dynamic-stars-inline');
+    const inlineRating = document.getElementById('dynamic-inline-rating');
+    const inlineCount = document.getElementById('dynamic-inline-review-count');
+    const tabBtn = document.getElementById('reviews-tab-btn');
+
+    if (topRating) topRating.textContent = avgDisplay;
+    if (topStars) topStars.textContent = renderStars(Math.round(avg));
+    if (topCount) topCount.textContent = `${total} ${total === 1 ? 'review' : 'reviews'}`;
+    if (inlineStars) inlineStars.textContent = renderStars(Math.round(avg));
+    if (inlineRating) inlineRating.textContent = `${avgDisplay} / 5`;
+    if (inlineCount) inlineCount.textContent = `(${total} ${total === 1 ? 'review' : 'reviews'})`;
+    if (tabBtn) tabBtn.textContent = `Reviews (${total})`;
+    updateCardTileReviewBlock(productId, avg, total);
+  } catch (err) {
+    console.error('Failed to apply cached review summary:', err);
+  }
+}
+
+function persistFetchedReviewAggregate(productId, reviews) {
+  try {
+    const ratings = reviews
+      .map(r => Math.max(1, Math.min(5, parseInt(r.rating) || 0)))
+      .filter(Boolean);
+
+    const total = ratings.length;
+    const avg = total ? ratings.reduce((sum, value) => sum + value, 0) / total : 0;
+
+    const key = 'waqtoro_reviews_cache';
+    const raw = localStorage.getItem(key);
+    const cache = raw ? JSON.parse(raw) : { byProduct: {} };
+    const byProduct = cache.byProduct || {};
+
+    byProduct[String(productId)] = {
+      avg: Number(avg.toFixed(1)),
+      count: total
+    };
+
+    localStorage.setItem(key, JSON.stringify({ updatedAt: Date.now(), byProduct }));
+
+    const product = PRODUCTS.find(p => p.id === productId);
+    if (product) {
+      product.rating = Number(avg.toFixed(1));
+      product.reviews = total;
+    }
+  } catch (err) {
+    console.error('Failed to persist fetched review aggregate:', err);
   }
 }
 
@@ -272,20 +368,30 @@ function setupReviewForm() {
       return;
     }
 
+    const title = document.getElementById('review-title').value.trim();
+    const comment = document.getElementById('review-comment').value.trim();
+
+    if (!title || !comment) {
+      showToast('Please add both title and comment', 'error');
+      return;
+    }
+
     const reviewData = {
       productId,
       userId: user.uid,
       author: user.displayName || user.email.split('@')[0],
       rating: parseInt(ratingInput.value),
-      title: document.getElementById('review-title').value,
-      comment: document.getElementById('review-comment').value,
+      title,
+      comment,
       date: serverTimestamp()
     };
 
     try {
       await addDoc(collection(db, "reviews"), reviewData);
       showToast('Review submitted successfully!', 'success');
+      updateReviewCacheAfterSubmit(productId, reviewData.rating);
       form.reset();
+      resetReviewFormState();
       toggleReviewForm();
       loadReviews(productId);
     } catch (err) {
@@ -298,6 +404,7 @@ function setupReviewForm() {
 function toggleReviewForm() {
   const form = document.getElementById('review-form');
   const btn = document.querySelector('.write-review-toggle');
+  if (!form || !btn) return;
   if (form.style.display === 'none') {
     form.style.display = 'block';
     btn.style.display = 'none';
@@ -317,6 +424,113 @@ function changeQty(delta) {
   const input = document.getElementById('qty-value');
   const newVal = Math.max(1, Math.min(10, parseInt(input.value) + delta));
   input.value = newVal;
+}
+
+function toDate(value) {
+  if (!value) return null;
+  if (typeof value.toDate === 'function') return value.toDate();
+  if (typeof value.seconds === 'number') return new Date(value.seconds * 1000);
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function formatReviewDate(value) {
+  const date = toDate(value);
+  if (!date) return 'Recently';
+  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+}
+
+function escapeHTML(text) {
+  return String(text)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function updateReviewSummary(reviews) {
+  const total = reviews.length;
+  const ratings = reviews
+    .map(r => Math.max(1, Math.min(5, parseInt(r.rating) || 0)))
+    .filter(Boolean);
+
+  const avg = total ? (ratings.reduce((sum, rating) => sum + rating, 0) / total) : 0;
+  const avgDisplay = avg.toFixed(1);
+
+  const topRating = document.getElementById('dynamic-rating-num');
+  const topStars = document.getElementById('dynamic-stars-top');
+  const topCount = document.getElementById('dynamic-review-count');
+  const inlineStars = document.getElementById('dynamic-stars-inline');
+  const inlineRating = document.getElementById('dynamic-inline-rating');
+  const inlineCount = document.getElementById('dynamic-inline-review-count');
+  const tabBtn = document.getElementById('reviews-tab-btn');
+  const bars = document.getElementById('review-bars');
+
+  if (topRating) topRating.textContent = avgDisplay;
+  if (topStars) topStars.textContent = renderStars(Math.round(avg));
+  if (topCount) topCount.textContent = `${total} ${total === 1 ? 'review' : 'reviews'}`;
+  if (inlineStars) inlineStars.textContent = renderStars(Math.round(avg));
+  if (inlineRating) inlineRating.textContent = `${avgDisplay} / 5`;
+  if (inlineCount) inlineCount.textContent = `(${total} ${total === 1 ? 'review' : 'reviews'})`;
+  if (tabBtn) tabBtn.textContent = `Reviews (${total})`;
+
+  if (!bars) return { avg, total };
+
+  const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  ratings.forEach((rating) => {
+    counts[rating] += 1;
+  });
+
+  bars.innerHTML = [5, 4, 3, 2, 1].map((star) => {
+    const pct = total ? Math.round((counts[star] / total) * 100) : 0;
+    return `<div class="review-bar-row"><span class="star-label">${star}★</span><div class="review-bar"><div class="review-bar-fill" style="width:${pct}%"></div></div><span class="pct">${pct}%</span></div>`;
+  }).join('');
+
+  return { avg, total };
+}
+
+function updateCardTileReviewBlock(productId, avg, total) {
+  const blocks = document.querySelectorAll(`.product-card-rating[data-product-id="${productId}"]`);
+  if (!blocks.length) return;
+
+  blocks.forEach((block) => {
+    const starsEl = block.querySelector('.stars');
+    const countEl = block.querySelector('.count');
+    if (starsEl) starsEl.textContent = renderStars(avg);
+    if (countEl) countEl.textContent = `(${total})`;
+  });
+}
+
+function resetReviewFormState() {
+  const ratingInput = document.getElementById('review-rating');
+  const stars = document.querySelectorAll('.star-rating-input span');
+  if (ratingInput) ratingInput.value = '5';
+  stars.forEach((star, index) => {
+    star.textContent = index < 5 ? '★' : '☆';
+    star.style.color = index < 5 ? 'var(--clr-gold)' : 'var(--clr-muted)';
+  });
+}
+
+function updateReviewCacheAfterSubmit(productId, rating) {
+  try {
+    const key = 'waqtoro_reviews_cache';
+    const raw = localStorage.getItem(key);
+    const cache = raw ? JSON.parse(raw) : { byProduct: {} };
+    const byProduct = cache.byProduct || {};
+    const id = String(productId);
+    const current = byProduct[id] || { avg: 0, count: 0 };
+    const newCount = (Number(current.count) || 0) + 1;
+    const newAvg = ((Number(current.avg) || 0) * (newCount - 1) + Number(rating || 0)) / newCount;
+    byProduct[id] = {
+      avg: Number(newAvg.toFixed(1)),
+      count: newCount
+    };
+    localStorage.setItem(key, JSON.stringify({ updatedAt: Date.now(), byProduct }));
+    window.dispatchEvent(new CustomEvent('waqtoro:reviews-updated'));
+  } catch (err) {
+    console.error('Failed to update local review cache:', err);
+  }
 }
 
 function initTabs() {
@@ -343,3 +557,8 @@ function renderRelated(product) {
   grid.innerHTML = related.map(p => buildProductCard(p, false)).join('');
   WaqtoroWishlist.updateButtons();
 }
+
+window.toggleReviewForm = toggleReviewForm;
+window.switchTab = switchTab;
+window.changeQty = changeQty;
+window.changeImg = changeImg;

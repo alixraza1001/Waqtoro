@@ -24,6 +24,9 @@ function initShop() {
   setupViewToggle();
   setupMobileFilter();
   readURLParams();
+  window.addEventListener('waqtoro:reviews-updated', () => {
+    if (ShopState.sort === 'rating') renderShop();
+  });
   renderShop();
 }
 
@@ -162,7 +165,13 @@ function getFilteredProducts() {
   if (ShopState.sort === 'price-asc')  filtered.sort((a,b) => a.price - b.price);
   if (ShopState.sort === 'price-desc') filtered.sort((a,b) => b.price - a.price);
   if (ShopState.sort === 'newest')     filtered.sort((a,b) => b.id - a.id);
-  if (ShopState.sort === 'rating')     filtered.sort((a,b) => b.rating - a.rating || b.reviews - a.reviews);
+  if (ShopState.sort === 'rating') {
+    filtered.sort((a, b) => {
+      const aLive = typeof getLiveReviewSortData === 'function' ? getLiveReviewSortData(a) : { rating: 0, count: 0 };
+      const bLive = typeof getLiveReviewSortData === 'function' ? getLiveReviewSortData(b) : { rating: 0, count: 0 };
+      return bLive.rating - aLive.rating || bLive.count - aLive.count || b.id - a.id;
+    });
+  }
 
   return filtered;
 }

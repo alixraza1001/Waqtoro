@@ -246,6 +246,33 @@ function renderStars(rating) {
   return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
 }
 
+function getLiveReviewSnapshot(productId) {
+  try {
+    const raw = localStorage.getItem('waqtoro_reviews_cache');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    const entry = parsed?.byProduct?.[String(productId)];
+    if (!entry) return null;
+    const avg = Number(entry.avg);
+    const count = Number(entry.count);
+    if (!Number.isFinite(avg) || !Number.isFinite(count)) return null;
+    return { avg, count };
+  } catch {
+    return null;
+  }
+}
+
+function getLiveReviewSortData(product) {
+  const live = getLiveReviewSnapshot(product.id);
+  if (!live) return { rating: 0, count: 0 };
+  return {
+    rating: Number(live.avg) || 0,
+    count: Number(live.count) || 0
+  };
+}
+
+window.getLiveReviewSortData = getLiveReviewSortData;
+
 // Utility: get stock status info for a product
 function getStockInfo(stock) {
   if (stock === 0) return { label: 'Out of Stock', cls: 'stock-out', dot: 'dot-red' };
@@ -266,6 +293,9 @@ function buildProductCard(product, isHome = false) {
   const stock = typeof product.stock === 'number' ? product.stock : 99;
   const stockInfo = getStockInfo(stock);
   const isOutOfStock = stock === 0;
+  const liveReview = getLiveReviewSnapshot(product.id);
+  const cardRating = liveReview ? liveReview.avg : 0;
+  const cardReviewCount = liveReview ? liveReview.count : 0;
 
   const badgeHTML = product.badge
     ? `<span class="badge badge-${product.badge === 'sale' ? 'sale' : product.badge === 'new' ? 'new' : 'limited'}">${product.badge === 'sale' && discount ? `-${discount}% OFF` :
@@ -299,9 +329,9 @@ function buildProductCard(product, isHome = false) {
       <div class="product-card-body">
         <p class="product-card-brand">${product.brand}</p>
         <a href="${detailHref}"><h3 class="product-card-name">${product.name}</h3></a>
-        <div class="product-card-rating">
-          <span class="stars">${renderStars(product.rating)}</span>
-          <span class="count">(${product.reviews})</span>
+        <div class="product-card-rating" data-product-id="${product.id}">
+          <span class="stars">${renderStars(cardRating)}</span>
+          <span class="count">(${cardReviewCount})</span>
         </div>
         <div class="stock-indicator ${stockInfo.cls}">
           <span class="stock-dot ${stockInfo.dot}"></span>
