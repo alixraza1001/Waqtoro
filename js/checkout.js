@@ -4,7 +4,7 @@
  */
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { collection, addDoc, serverTimestamp, runTransaction, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const PROMO_CODES = { 'WAQTORO10': 0.10, 'LUXURY20': 0.20, 'WELCOME15': 0.15 };
 
@@ -322,45 +322,28 @@ async function placeOrder() {
     btn.innerHTML = '<span class="spinner"></span> Processing…';
   }
 
+  const orderId = 'WQT-' + Date.now().toString(36).toUpperCase();
+  const order = {
+    id: orderId,
+    date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+    items: [...WaqtoroCart.items],
+    subtotal: WaqtoroCart.total(),
+    shippingCost,
+    total: WaqtoroCart.total() - Math.round(WaqtoroCart.total() * promoDiscount) + shippingCost,
+    shipping: shippingMethod,
+    payment: paymentMethod,
+    userId: auth.currentUser ? auth.currentUser.uid : null,
+    createdAt: serverTimestamp(),
+    customer: {
+      name: `${document.getElementById('c-fname').value} ${document.getElementById('c-lname').value}`,
+      email: document.getElementById('c-email').value,
+      address: `${document.getElementById('c-address').value}, ${document.getElementById('c-city').value}`
+    }
+  };
+
   try {
-    // ---- SEQUENTIAL ORDER ID LOGIC (Firestore Transaction) ----
-    const counterRef = doc(db, 'metadata', 'order_counter');
-    
-    const finalOrder = await runTransaction(db, async (transaction) => {
-      const counterDoc = await transaction.get(counterRef);
-      let newCount = 1;
-      
-      if (counterDoc.exists()) {
-        newCount = counterDoc.data().count + 1;
-      }
-      
-      transaction.set(counterRef, { count: newCount });
-
-      const orderId = 'WQT-' + newCount;
-      const orderData = {
-        id: orderId,
-        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
-        items: [...WaqtoroCart.items],
-        subtotal: WaqtoroCart.total(),
-        shippingCost,
-        total: WaqtoroCart.total() - Math.round(WaqtoroCart.total() * promoDiscount) + shippingCost,
-        shipping: shippingMethod,
-        payment: paymentMethod,
-        userId: auth.currentUser ? auth.currentUser.uid : null,
-        createdAt: serverTimestamp(),
-        customer: {
-          name: `${document.getElementById('c-fname').value} ${document.getElementById('c-lname').value}`,
-          email: document.getElementById('c-email').value,
-          address: `${document.getElementById('c-address').value}, ${document.getElementById('c-city').value}`
-        }
-      };
-
-      // Also create the order document within the transaction
-      const orderDocRef = doc(collection(db, 'orders'));
-      transaction.set(orderDocRef, orderData);
-
-      return orderData;
-    });
+    // 1. Save to Cloud Firestore
+    await addDoc(collection(db, 'orders'), order);
 
     // 2. Clear local cart
     WaqtoroCart.items = [];
@@ -368,11 +351,11 @@ async function placeOrder() {
 
     // 3. Email Notification
     if (typeof emailjs !== 'undefined') {
-       await sendEmailNotifications(finalOrder);
+       await sendEmailNotifications(order);
     }
 
     // 4. Redirect to Confirmation
-    localStorage.setItem('waqtoro_last_order', JSON.stringify(finalOrder));
+    localStorage.setItem('waqtoro_last_order', JSON.stringify(order));
     window.location.href = 'order-confirmation.html';
 
   } catch (error) {
