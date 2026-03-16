@@ -148,3 +148,6 @@ function renderSuggested() {
   grid.innerHTML = suggestions.map(p => buildProductCard(p, false)).join('');
   WaqtoroWishlist.updateButtons();
 }
+
+window.updateQty = updateQty;
+window.removeCartItem = removeCartItem;
