@@ -99,6 +99,21 @@ function renderProduct(p) {
         <span style="color:var(--clr-muted)">— Ships within 2–3 business days</span>
       </div>
 
+      ${p.colors ? `
+      <div class="product-colors" id="color-selection">
+        <span class="color-label">Color: <span id="selected-color-name" style="color:var(--clr-white)">${p.colors[0].name}</span></span>
+        <div class="color-options">
+          ${p.colors.map((c, idx) => `
+            <div class="color-swatch ${idx === 0 ? 'active' : ''}" 
+                 style="--swatch-color: ${c.hex}" 
+                 data-name="${c.name}"
+                 onclick="selectColor(this, '${c.name}')">
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ` : ''}
+
       <div class="product-actions">
         <div class="qty-control">
           <button class="qty-btn" onclick="changeQty(-1)">−</button>
@@ -214,6 +229,17 @@ function renderProduct(p) {
   const writeReviewBtn = document.getElementById('write-review-btn');
   if (writeReviewBtn) {
     writeReviewBtn.addEventListener('click', toggleReviewForm);
+  }
+
+  // Handle ATC with color
+  const atcBtn = layout.querySelector('.add-to-cart-btn');
+  if (atcBtn) {
+    atcBtn.addEventListener('click', () => {
+      const id = parseInt(atcBtn.dataset.id);
+      const colorEl = document.getElementById('selected-color-name');
+      const color = colorEl ? colorEl.textContent : null;
+      WaqtoroCart.add(id, color);
+    });
   }
 }
 
@@ -562,3 +588,11 @@ window.toggleReviewForm = toggleReviewForm;
 window.switchTab = switchTab;
 window.changeQty = changeQty;
 window.changeImg = changeImg;
+window.selectColor = selectColor;
+
+function selectColor(el, name) {
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  const nameEl = document.getElementById('selected-color-name');
+  if (nameEl) nameEl.textContent = name;
+}

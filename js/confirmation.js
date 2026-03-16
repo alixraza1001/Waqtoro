@@ -47,7 +47,7 @@ function populateConfirmation(order) {
           </div>
           <div class="conf-item-info">
             <p class="conf-item-name">${p.name} <span style="color:var(--clr-muted);font-weight:400;">× ${item.qty}</span></p>
-            <p class="conf-item-brand">${p.brand} Inspired</p>
+            <p class="conf-item-brand">${p.brand} Inspired${item.color ? ` · <span style="color:var(--clr-gold)">${item.color}</span>` : ''}</p>
           </div>
           <span class="conf-item-price">${formatPrice(p.price * item.qty)}</span>
         </div>

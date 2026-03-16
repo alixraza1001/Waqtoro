@@ -49,22 +49,22 @@ function renderItems() {
     if (!p) return '';
     const lineTotal = p.price * item.qty;
     return `
-      <div class="cart-item" data-id="${p.id}">
+      <div class="cart-item" data-id="${p.id}" data-color="${item.color || ''}">
         <div class="cart-item-img">
           <img src="${IMG_BASE}${Array.isArray(p.img) ? p.img[0] : p.img}" alt="${p.brand} ${p.name}" />
         </div>
         <div class="cart-item-info">
           <span class="cart-item-brand">${p.brand}</span>
           <span class="cart-item-name">${p.name}</span>
-          <span class="cart-item-meta">${p.movement} · ${p.strap} · ${p.dialColor} Dial</span>
-          <button class="cart-remove-btn" onclick="removeCartItem(${p.id})">Remove</button>
+          <span class="cart-item-meta">${p.movement} · ${p.strap}${item.color ? ` · <span style="color:var(--clr-gold);font-weight:600;">${item.color}</span>` : ` · ${p.dialColor} Dial`}</span>
+          <button class="cart-remove-btn" onclick="removeCartItem(${p.id}, '${item.color || ''}')">Remove</button>
         </div>
         <div class="cart-item-controls">
           <span class="cart-item-price">${formatPrice(lineTotal)}</span>
           <div class="cart-item-qty">
-            <button class="cart-qty-btn" onclick="updateQty(${p.id}, -1)">−</button>
+            <button class="cart-qty-btn" onclick="updateQty(${p.id}, -1, '${item.color || ''}')">−</button>
             <span>${item.qty}</span>
-            <button class="cart-qty-btn" onclick="updateQty(${p.id}, 1)">+</button>
+            <button class="cart-qty-btn" onclick="updateQty(${p.id}, 1, '${item.color || ''}')">+</button>
           </div>
         </div>
       </div>
@@ -72,21 +72,23 @@ function renderItems() {
   }).join('');
 }
 
-function updateQty(productId, delta) {
-  const item = WaqtoroCart.items.find(i => i.id === productId);
+function updateQty(productId, delta, color = '') {
+  const actualColor = color === '' ? null : color;
+  const item = WaqtoroCart.items.find(i => i.id === productId && i.color === actualColor);
   if (!item) return;
   const newQty = item.qty + delta;
   if (newQty <= 0) {
-    removeCartItem(productId);
+    removeCartItem(productId, color);
     return;
   }
   if (newQty > 10) return;
-  WaqtoroCart.updateQty(productId, newQty);
+  WaqtoroCart.updateQty(productId, newQty, actualColor);
   renderCartPage();
 }
 
-function removeCartItem(productId) {
-  WaqtoroCart.remove(productId);
+function removeCartItem(productId, color = '') {
+  const actualColor = color === '' ? null : color;
+  WaqtoroCart.remove(productId, actualColor);
   renderCartPage();
   showToast('Item removed from cart', 'cart');
 }

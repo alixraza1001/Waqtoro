@@ -12,29 +12,29 @@ const WaqtoroCart = window.WaqtoroCart = {
     this.updateCount();
   },
 
-  add(productId) {
+  add(productId, color = null) {
     const product = PRODUCTS.find(p => p.id === productId);
     if (!product) return;
-    const existing = this.items.find(i => i.id === productId);
+    const existing = this.items.find(i => i.id === productId && i.color === color);
     if (existing) {
       existing.qty += 1;
     } else {
-      this.items.push({ id: productId, qty: 1 });
+      this.items.push({ id: productId, qty: 1, color: color });
     }
     this.save();
-    showToast(`<strong>${product.brand} ${product.name}</strong> added to cart`, 'cart');
+    showToast(`<strong>${product.brand} ${product.name}</strong> ${color ? `(${color}) ` : ''}added to cart`, 'cart');
   },
 
-  remove(productId) {
-    this.items = this.items.filter(i => i.id !== productId);
+  remove(productId, color = null) {
+    this.items = this.items.filter(i => !(i.id === productId && i.color === color));
     this.save();
   },
 
-  updateQty(productId, qty) {
-    const item = this.items.find(i => i.id === productId);
+  updateQty(productId, qty, color = null) {
+    const item = this.items.find(i => i.id === productId && i.color === color);
     if (item) {
       item.qty = qty;
-      if (qty <= 0) this.remove(productId);
+      if (qty <= 0) this.remove(productId, color);
       else this.save();
     }
   },
@@ -231,7 +231,7 @@ function initGlobalProductHandlers() {
   document.addEventListener('click', (e) => {
     // Add to cart
     const cartBtn = e.target.closest('.add-to-cart-btn');
-    if (cartBtn) {
+    if (cartBtn && !window.location.pathname.includes('product.html')) {
       const id = parseInt(cartBtn.dataset.id);
       WaqtoroCart.add(id);
     }

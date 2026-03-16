@@ -45,6 +45,11 @@ const PRODUCTS = [
     badge: "sale",
     stock: 2,
     img: "mens_watch_1.png",
+    colors: [
+      { name: "Blue", hex: "#0000FF" },
+      { name: "White", hex: "#FFFFFF" },
+      { name: "Black", hex: "#000000" }
+    ],
     tags: ["sale", "bestseller"]
   },
   {
@@ -65,6 +70,11 @@ const PRODUCTS = [
     badge: "new",
     stock: 8,
     img: "womens_watch_1.png",
+    colors: [
+      { name: "Silver", hex: "#C0C0C0" },
+      { name: "Gold", hex: "#D4AF37" },
+      { name: "Rose Gold", hex: "#B76E79" }
+    ],
     tags: ["new"]
   },
   {
@@ -85,6 +95,11 @@ const PRODUCTS = [
     badge: "sale",
     stock: 0,
     img: "mens_watch_1.png",
+    colors: [
+      { name: "Black", hex: "#000000" },
+      { name: "Blue", hex: "#0000FF" },
+      { name: "Silver", hex: "#C0C0C0" }
+    ],
     tags: ["sale"]
   },
   {

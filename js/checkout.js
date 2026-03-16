@@ -301,7 +301,7 @@ function populateReview() {
           <div class="review-item-img"><img src="${IMG_BASE}${p.img}" alt="${p.name}" /></div>
           <div class="review-item-info">
             <p class="review-item-name">${p.name} <span style="color:var(--clr-muted)">× ${item.qty}</span></p>
-            <p class="review-item-brand">${p.brand}</p>
+            <p class="review-item-brand">${p.brand}${item.color ? ` · ${item.color}` : ''}</p>
           </div>
           <span class="review-item-price">${formatPrice(p.price * item.qty)}</span>
         </div>
