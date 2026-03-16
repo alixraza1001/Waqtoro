@@ -25,6 +25,11 @@ const PRODUCTS = [
     badge: "bestseller",
     stock: 15,
     img: "mens_watch_1.png",
+    colors: [
+      { name: "Black", hex: "#000000" },
+      { name: "Blue", hex: "#0000FF" },
+      { name: "Green", hex: "#008000" }
+    ],
     tags: ["new", "bestseller"]
   },
   {
