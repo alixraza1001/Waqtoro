@@ -11,7 +11,7 @@ const PROMO_CODES = { 'WAQTORO10': 0.10, 'LUXURY20': 0.20, 'WELCOME15': 0.15 };
 let currentStep = 1;
 let shippingMethod = 'standard';
 let shippingCost   = 0;
-let paymentMethod  = 'card';
+let paymentMethod  = 'online';
 let promoDiscount  = 0;
 let currentUser    = null;
 
@@ -179,9 +179,76 @@ function selectPaymentTab(btn, method) {
   btn.classList.add('active');
   paymentMethod = method;
 
-  document.getElementById('pay-card').style.display   = method === 'card'    ? 'flex' : 'none';
-  document.getElementById('pay-paypal').style.display = method === 'paypal'  ? 'block' : 'none';
-  document.getElementById('pay-cod').style.display    = method === 'cod'     ? 'block' : 'none';
+  document.getElementById('pay-online').style.display   = method === 'online'   ? 'block' : 'none';
+  document.getElementById('pay-card').style.display     = method === 'card'     ? 'flex' : 'none';
+  document.getElementById('pay-paypal').style.display   = method === 'paypal'   ? 'block' : 'none';
+  document.getElementById('pay-cod').style.display      = method === 'cod'      ? 'block' : 'none';
+}
+
+/** 
+ * ---- JAZZCASH REDIRECTION ---- 
+ * Calculates HMAC-SHA256 hash and submits the hidden form.
+ */
+async function redirectToJazzCash(order) {
+  const form = document.getElementById('jazzcash-checkout-form');
+  if (!form) return;
+
+  // 1. Prepare Data (Sandbox Values for now)
+  const MerchantID = "MC12345"; // Placeholder
+  const Password   = "password";  // Placeholder
+  const Salt       = "salt123";      // Placeholder
+  
+  const txnRefNo   = "T" + Date.now();
+  const amount     = Math.round(order.total * 100); // Amount in Paisas
+  const dateTime   = new Date().toISOString().replace(/[-:T]/g, "").split(".")[0];
+  const expiry     = new Date(Date.now() + 3600000).toISOString().replace(/[-:T]/g, "").split(".")[0]; 
+
+  const params = {
+    pp_Version: "1.1",
+    pp_TxnType: "MWALLET", // Default to Wallet for now
+    pp_Language: "EN",
+    pp_MerchantID: MerchantID,
+    pp_Password: Password,
+    pp_TxnRefNo: txnRefNo,
+    pp_Amount: amount.toString(),
+    pp_TxnCurrency: "PKR",
+    pp_TxnDateTime: dateTime,
+    pp_BillReference: order.id,
+    pp_Description: "Order " + order.id + " from Waqtoro",
+    pp_TxnExpiryDateTime: expiry,
+    pp_ReturnURL: window.location.origin + "/pages/order-confirmation.html",
+    ppmpf_1: "customer_name",
+    ppmpf_2: "customer_email",
+    ppmpf_3: "customer_phone",
+    ppmpf_4: "customer_address",
+    ppmpf_5: "customer_city"
+  };
+
+  // 2. Generate Secure Hash
+  // Sort keys alphabetically and join with '&'
+  const sortedKeys = Object.keys(params).sort();
+  let hashString = Salt;
+  for (const key of sortedKeys) {
+    if (params[key] !== "") hashString += "&" + params[key];
+  }
+
+  const hash = await generateSHA256Hash(hashString);
+  params.pp_SecureHash = hash;
+
+  // 3. Populate Form & Submit
+  for (const key in params) {
+    const input = form.querySelector(`input[name="${key}"]`);
+    if (input) input.value = params[key];
+  }
+
+  form.submit();
+}
+
+async function generateSHA256Hash(message) {
+  const msgUint8 = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("").toUpperCase();
 }
 
 /* ---- CARD FORMATTING ---- */
@@ -244,6 +311,11 @@ function populateReview() {
 }
 
 async function placeOrder() {
+  if (paymentMethod === 'online' || paymentMethod === 'card' || paymentMethod === 'paypal') {
+    showToast("Online payments are temporarily unavailable. Please use Cash on Delivery or contact us.", "info");
+    return;
+  }
+
   const btn = document.getElementById('place-order-btn');
   if (btn) {
     btn.disabled = true;
@@ -282,7 +354,7 @@ async function placeOrder() {
        await sendEmailNotifications(order);
     }
 
-    // 4. Redirect
+    // 4. Redirect to Confirmation
     localStorage.setItem('waqtoro_last_order', JSON.stringify(order));
     window.location.href = 'order-confirmation.html';
 

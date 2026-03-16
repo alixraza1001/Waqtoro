@@ -247,6 +247,63 @@
 .cod-info ul { list-style: none; text-align: left; display: inline-block; margin-top: 1rem; }
 .cod-info ul li { padding: 0.3rem 0; color: var(--clr-green); font-size: 0.82rem; }
 
+/* ---- PAYMENT UNAVAILABLE ---- */
+.payment-unavailable-box {
+  padding: 2.5rem 2rem;
+  background: rgba(201,168,76,0.03);
+  border: 1px dashed var(--clr-gold-dark);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.unavailable-icon {
+  width: 50px; height: 50px;
+  background: rgba(201,168,76,0.1);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+  color: var(--clr-gold);
+}
+.unavailable-icon svg { width: 24px; height: 24px; }
+.payment-unavailable-box h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--clr-white);
+  margin-bottom: 0.75rem;
+}
+.payment-unavailable-box p {
+  font-size: 0.88rem;
+  color: var(--clr-muted);
+  max-width: 400px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+.payment-contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 300px;
+  margin: 0 auto;
+}
+.p-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: transform 0.2s, filter 0.2s;
+}
+.p-social-btn svg { width: 18px; height: 18px; fill: currentColor; }
+.p-social-btn span { color: white; }
+.p-social-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+.p-social-btn.whatsapp { background: #25d366; color: white; }
+.p-social-btn.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; }
+.p-social-btn.facebook { background: #1877f2; color: white; }
+
 /* ---- REVIEW STEP ---- */
 .review-block {
   background: var(--clr-bg-3);
