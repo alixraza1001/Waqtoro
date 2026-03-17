@@ -259,6 +259,11 @@ const PRODUCTS = [
 window.PRODUCTS = PRODUCTS;
 const PRODUCT_CATALOG = PRODUCTS;
 
+PRODUCTS.forEach((product) => {
+  product.rating = 0;
+  product.reviews = 0;
+});
+
 
 // Utility: format price
 function formatPrice(amount) {
@@ -321,8 +326,8 @@ function buildProductCard(product, isHome = false) {
   const stockInfo = getStockInfo(stock);
   const isOutOfStock = stock === 0;
   const liveReview = getLiveReviewSnapshot(product.id);
-  const cardRating = (liveReview && liveReview.count > 0) ? liveReview.avg : (product.rating || 0);
-  const cardReviewCount = (liveReview && liveReview.count > 0) ? liveReview.count : (product.reviews || 0);
+  const cardRating = liveReview ? (Number(liveReview.avg) || 0) : 0;
+  const cardReviewCount = liveReview ? (Number(liveReview.count) || 0) : 0;
 
   const badgeHTML = product.badge
     ? `<span class="badge badge-${product.badge === 'sale' ? 'sale' : product.badge === 'new' ? 'new' : 'limited'}">${product.badge === 'sale' && discount ? `-${discount}% OFF` :

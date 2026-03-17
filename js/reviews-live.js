@@ -1,10 +1,10 @@
 import { db } from './firebase-reviews-config.js';
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const CACHE_KEY = 'waqtoro_reviews_cache';
 document.addEventListener('DOMContentLoaded', () => {
   applyRatingsFromCache();
-  syncRatingsFromCloud();
+  startRealtimeRatingsSync();
   observeCardListChanges();
 });
 
@@ -70,9 +70,8 @@ function extractProductId(data) {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
-async function syncRatingsFromCloud() {
-  try {
-    const snapshot = await getDocs(collection(db, 'reviews'));
+function startRealtimeRatingsSync() {
+  onSnapshot(collection(db, 'reviews'), (snapshot) => {
     const totals = new Map();
 
     snapshot.forEach((doc) => {
@@ -99,8 +98,7 @@ async function syncRatingsFromCloud() {
 
     if (Array.isArray(window.PRODUCTS)) {
       window.PRODUCTS.forEach((product) => {
-        const live = byProduct[String(product.id)];
-        if (!live) return;
+        const live = byProduct[String(product.id)] || { avg: 0, count: 0 };
         product.rating = live.avg;
         product.reviews = live.count;
       });
@@ -108,7 +106,7 @@ async function syncRatingsFromCloud() {
 
     applyRatingsFromCache();
     window.dispatchEvent(new CustomEvent('waqtoro:reviews-updated'));
-  } catch (error) {
-    console.error('Review rating sync failed:', error);
-  }
+  }, (error) => {
+    console.error('Review rating realtime sync failed:', error);
+  });
 }

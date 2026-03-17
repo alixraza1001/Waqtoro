@@ -1,5 +1,7 @@
 import { auth, db } from './firebase-config.js';
-import { collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, addDoc, getDocs, serverTimestamp, onSnapshot, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+let unsubscribeProductReviews = null;
 
 // Export globals early
 window.toggleReviewForm = toggleReviewForm;
@@ -28,12 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   applyCachedReviewSummary(id);
   renderRelated(product);
   initTabs();
-  loadReviews(id);
-
-  window.addEventListener('waqtoro:reviews-updated', () => {
-    applyCachedReviewSummary(id);
-    loadReviews(id);
-  });
+  subscribeToProductReviews(id);
 });
 
 function renderProduct(p) {
@@ -242,12 +239,15 @@ function renderProduct(p) {
   }
 }
 
-async function loadReviews(productId) {
+function subscribeToProductReviews(productId) {
   const container = document.getElementById('reviews-container');
   if (!container) return;
 
-  try {
-    const allSnapshot = await getDocs(collection(db, "reviews"));
+  if (typeof unsubscribeProductReviews === 'function') {
+    unsubscribeProductReviews();
+  }
+
+  unsubscribeProductReviews = onSnapshot(collection(db, "reviews"), (allSnapshot) => {
     const reviews = [];
 
     allSnapshot.forEach((doc) => {
@@ -269,7 +269,7 @@ async function loadReviews(productId) {
     persistFetchedReviewAggregate(productId, reviews);
     const summary = updateReviewSummary(reviews);
     updateCardTileReviewBlock(productId, summary.avg, summary.total);
-    
+
     if (!reviews.length) {
       container.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--clr-muted)">
         <p>No reviews yet. Be the first to review this timepiece!</p>
@@ -290,15 +290,15 @@ async function loadReviews(productId) {
       `;
     });
     container.innerHTML = reviewsHTML;
-  } catch (err) {
-    console.error("Error loading reviews for product", productId, ":", err);
+  }, (err) => {
+    console.error("Error loading realtime reviews for product", productId, ":", err);
     container.innerHTML = `
       <div style="text-align:center;padding:2rem;">
         <p style="color:var(--clr-red);margin-bottom:1rem;">Failed to load reviews.</p>
         <button class="btn btn-ghost btn-sm" onclick="location.reload()">Retry Loading</button>
         <p style="font-size:0.7rem;color:var(--clr-muted);margin-top:1rem;">Error: ${err.message}</p>
       </div>`;
-  }
+  });
 }
 
 function applyCachedReviewSummary(productId) {
@@ -309,8 +309,8 @@ function applyCachedReviewSummary(productId) {
     const snapshot = parsed?.byProduct?.[String(productId)];
 
     const hasLiveReviews = snapshot && Number(snapshot.count) > 0;
-    const total = hasLiveReviews ? Number(snapshot.count) : (product ? product.reviews || 0 : 0);
-    const avg = hasLiveReviews ? Number(snapshot.avg) : (product ? product.rating || 0 : 0);
+    const total = hasLiveReviews ? Number(snapshot.count) : 0;
+    const avg = hasLiveReviews ? Number(snapshot.avg) : 0;
     const avgDisplay = Number(avg).toFixed(1);
 
     const topRating = document.getElementById('dynamic-rating-num');
@@ -360,7 +360,7 @@ function persistFetchedReviewAggregate(productId, reviews) {
     localStorage.setItem(key, JSON.stringify({ updatedAt: Date.now(), byProduct }));
 
     const product = PRODUCTS.find(p => p.id === productId);
-    if (product && total > 0) {
+    if (product) {
       product.rating = Number(avg.toFixed(1));
       product.reviews = total;
     }
@@ -416,13 +416,24 @@ function setupReviewForm() {
     };
 
     try {
-      await addDoc(collection(db, "reviews"), reviewData);
-      showToast('Review submitted successfully!', 'success');
-      updateReviewCacheAfterSubmit(productId, reviewData.rating);
+      const userReviewsSnapshot = await getDocs(query(collection(db, "reviews"), where("userId", "==", user.uid)));
+      const existingDoc = userReviewsSnapshot.docs.find((docSnap) => {
+        const data = docSnap.data();
+        const candidate = data.productId ?? data.productID ?? data.product_id;
+        return parseInt(candidate) === productId;
+      });
+
+      if (existingDoc) {
+        await updateDoc(existingDoc.ref, reviewData);
+        showToast('Your review was updated successfully!', 'success');
+      } else {
+        await addDoc(collection(db, "reviews"), reviewData);
+        showToast('Review submitted successfully!', 'success');
+      }
+
       form.reset();
       resetReviewFormState();
       toggleReviewForm();
-      loadReviews(productId);
     } catch (err) {
       console.error("Error submitting review:", err);
       showToast('Failed to submit review', 'error');
@@ -483,9 +494,8 @@ function updateReviewSummary(reviews) {
     .map(r => Math.max(1, Math.min(5, parseInt(r.rating) || 0)))
     .filter(Boolean);
 
-  const product = PRODUCTS.find(p => p.id === parseInt(new URLSearchParams(window.location.search).get('id')));
-  const total = reviews.length > 0 ? reviews.length : (product ? product.reviews || 0 : 0);
-  const avg = reviews.length > 0 ? (ratings.reduce((sum, rating) => sum + rating, 0) / reviews.length) : (product ? product.rating || 0 : 0);
+  const total = ratings.length;
+  const avg = total ? (ratings.reduce((sum, rating) => sum + rating, 0) / total) : 0;
   const avgDisplay = Number(avg).toFixed(1);
 
   const topRating = document.getElementById('dynamic-rating-num');
@@ -540,27 +550,6 @@ function resetReviewFormState() {
     star.textContent = index < 5 ? '★' : '☆';
     star.style.color = index < 5 ? 'var(--clr-gold)' : 'var(--clr-muted)';
   });
-}
-
-function updateReviewCacheAfterSubmit(productId, rating) {
-  try {
-    const key = 'waqtoro_reviews_cache';
-    const raw = localStorage.getItem(key);
-    const cache = raw ? JSON.parse(raw) : { byProduct: {} };
-    const byProduct = cache.byProduct || {};
-    const id = String(productId);
-    const current = byProduct[id] || { avg: 0, count: 0 };
-    const newCount = (Number(current.count) || 0) + 1;
-    const newAvg = ((Number(current.avg) || 0) * (newCount - 1) + Number(rating || 0)) / newCount;
-    byProduct[id] = {
-      avg: Number(newAvg.toFixed(1)),
-      count: newCount
-    };
-    localStorage.setItem(key, JSON.stringify({ updatedAt: Date.now(), byProduct }));
-    window.dispatchEvent(new CustomEvent('waqtoro:reviews-updated'));
-  } catch (err) {
-    console.error('Failed to update local review cache:', err);
-  }
 }
 
 function initTabs() {
