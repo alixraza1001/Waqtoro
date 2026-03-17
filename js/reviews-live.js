@@ -1,4 +1,4 @@
-import { db } from './firebase-config.js';
+import { db } from './firebase-reviews-config.js';
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const CACHE_KEY = 'waqtoro_reviews_cache';
@@ -54,7 +54,7 @@ function applyRatingsFromCache() {
   document.querySelectorAll('.product-card-rating[data-product-id]').forEach((block) => {
     const productId = block.getAttribute('data-product-id');
     const snapshot = cache.byProduct[productId];
-    if (!snapshot) return;
+    if (!snapshot || (Number(snapshot.count) || 0) <= 0) return;
 
     const starsEl = block.querySelector('.stars');
     const countEl = block.querySelector('.count');

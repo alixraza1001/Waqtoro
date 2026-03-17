@@ -14,7 +14,8 @@ const ALL_BRANDS = [
   { name: 'IWC',            origin: 'Switzerland', founded: 1868, note: 'Engineering meets timeless design.' },
   { name: 'Breitling',      origin: 'Switzerland', founded: 1884, note: 'Professional instruments for professionals.' },
   { name: 'Hublot',         origin: 'Switzerland', founded: 1980, note: 'The art of fusion.' },
-  { name: 'Patek Philippe', origin: 'Switzerland', founded: 1839, note: 'You never actually own a Patek Philippe.' },
+  { name: 'Michael Kors',    origin: 'USA',         founded: 1981, note: 'Jet-set luxury for the modern lifestyle.' },
+  { name: 'Calvin Klein',    origin: 'USA',         founded: 1968, note: 'Minimalist, trendy, and sophisticated.' },
 ];
 
 document.addEventListener('DOMContentLoaded', () => {

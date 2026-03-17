@@ -3,7 +3,7 @@
    Premium Watch E-Commerce
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=optional');
+
 
 /* ---- CSS Custom Properties ---- */
 :root {
@@ -811,6 +811,7 @@ input, select, textarea { font-family: inherit; }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-xl);
+  min-height: 500px;
 }
 .products-grid-4 {
   grid-template-columns: repeat(4, 1fr);

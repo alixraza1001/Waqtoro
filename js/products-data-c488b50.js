@@ -1,5 +1,5 @@
-/**
- * WAQTORO — Product Data
+﻿/**
+ * WAQTORO ΓÇö Product Data
  * Central product database used across all pages
  */
 
@@ -9,30 +9,28 @@ const IMG_BASE = (window.location.href.replace(/\\/g, '/')).includes('/pages/') 
 const PRODUCTS = [
   {
     id: 1,
-    brand: "Calvin Klein",
-    name: "CK Bangle Series",
-    price: 3800,
-    originalPrice: 5800,
-    gender: "women",
+    brand: "Rolex",
+    name: "Submariner Date",
+    price: 12500,
+    originalPrice: null,
+    gender: "men",
     category: "Luxury",
-    movement: "Quartz",
-    strap: "Bracelet",
-    caseMaterial: "Stainless Steel",
+    movement: "Automatic",
+    strap: "Metal Bracelet",
+    caseMaterial: "Oystersteel",
     dialColor: "Black",
-    waterResistance: "NULL",
-    rating: 4.5,
+    waterResistance: "300m",
+    rating: 5,
     reviews: 248,
-    badge: "sale",
+    badge: "bestseller",
     stock: 15,
-    img: ["CK Bangle/ck b1.jpeg", "CK Bangle/ck b2.jpeg", "CK Bangle/ck b3.jpeg", "CK Bangle/ck b7.jpeg", "CK Bangle/ck b8.jpeg"],
+    img: "mens_watch_1.png",
     colors: [
-      { name: "Golden with Black Dial", hex: "#FFD700" },
-      { name: "Golden with White Dial", hex: "#FFD700" },
-      { name: "Silver with Pink Dial", hex: "#C0C0C0 " },
-      { name: "Silver with Black Dial", hex: "#C0C0C0 " },
-      { name: "Silver with White Dial", hex: "#C0C0C0 " },
+      { name: "Black", hex: "#000000" },
+      { name: "Blue", hex: "#0000FF" },
+      { name: "Green", hex: "#008000" }
     ],
-    tags: ["new"]
+    tags: ["new", "bestseller"]
   },
   {
     id: 2,
@@ -270,7 +268,7 @@ function renderStars(rating) {
   const full = Math.floor(rating);
   const half = rating % 1 >= 0.5 ? 1 : 0;
   const empty = 5 - full - half;
-  return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
+  return 'Γÿà'.repeat(full) + (half ? '┬╜' : '') + 'Γÿå'.repeat(empty);
 }
 
 function getLiveReviewSnapshot(productId) {
@@ -321,13 +319,13 @@ function buildProductCard(product, isHome = false) {
   const stockInfo = getStockInfo(stock);
   const isOutOfStock = stock === 0;
   const liveReview = getLiveReviewSnapshot(product.id);
-  const cardRating = (liveReview && liveReview.count > 0) ? liveReview.avg : (product.rating || 0);
-  const cardReviewCount = (liveReview && liveReview.count > 0) ? liveReview.count : (product.reviews || 0);
+  const cardRating = liveReview ? liveReview.avg : 0;
+  const cardReviewCount = liveReview ? liveReview.count : 0;
 
   const badgeHTML = product.badge
     ? `<span class="badge badge-${product.badge === 'sale' ? 'sale' : product.badge === 'new' ? 'new' : 'limited'}">${product.badge === 'sale' && discount ? `-${discount}% OFF` :
       product.badge === 'new' ? 'NEW' :
-        product.badge === 'bestseller' ? '★ Bestseller' : product.badge.toUpperCase()
+        product.badge === 'bestseller' ? 'Γÿà Bestseller' : product.badge.toUpperCase()
     }</span>`
     : '';
 
@@ -340,7 +338,7 @@ function buildProductCard(product, isHome = false) {
     <div class="product-card ${isOutOfStock ? 'out-of-stock' : ''}" data-id="${product.id}" data-gender="${product.gender}" data-brand="${product.brand}" data-tags="${product.tags.join(',')}">
       <div class="product-card-img">
         <a href="${detailHref}">
-          <img src="${imgSrc}" alt="${product.brand} ${product.name}" loading="lazy" width="640" height="640" />
+          <img src="${imgSrc}" alt="${product.brand} ${product.name}" loading="lazy" />
         </a>
         <div class="product-card-badges">${badgeHTML}</div>
         ${isOutOfStock ? '<div class="sold-out-overlay">Sold Out</div>' : ''}

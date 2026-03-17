@@ -93,11 +93,12 @@ function renderProduct(p) {
 
       <div class="product-price-wrap">${priceHTML}</div>
 
-      <div class="product-stock">
-        <span class="stock-dot in-stock"></span>
-        <span style="color:var(--clr-green);font-weight:600;">In Stock</span>
-        <span style="color:var(--clr-muted)">— Ships within 2–3 business days</span>
-      </div>
+      ${(() => {
+        const stock = typeof p.stock === 'number' ? p.stock : 99;
+        if (stock === 0) return `<div class="product-stock"><span class="stock-dot" style="background:var(--clr-red)"></span><span style="color:var(--clr-red);font-weight:600;">Out of Stock</span></div>`;
+        if (stock <= 3) return `<div class="product-stock"><span class="stock-dot" style="background:#f59e0b"></span><span style="color:#f59e0b;font-weight:600;">Only ${stock} left!</span><span style="color:var(--clr-muted)"> — Order soon</span></div>`;
+        return `<div class="product-stock"><span class="stock-dot in-stock"></span><span style="color:var(--clr-green);font-weight:600;">In Stock</span><span style="color:var(--clr-muted)"> — Ships within 2–3 business days</span></div>`;
+      })()}
 
       ${p.colors ? `
       <div class="product-colors" id="color-selection">
@@ -174,8 +175,8 @@ function renderProduct(p) {
             <tr><th>Case Material</th><td>${p.caseMaterial || 'N/A'}</td></tr>
             <tr><th>Dial Color</th><td>${p.dialColor || 'N/A'}</td></tr>
             <tr><th>Strap / Bracelet</th><td>${p.strap || 'N/A'}</td></tr>
-            <tr><th>Water Resistance</th><td>${p.waterResistance}</td></tr>
-            <tr><th>Category</th><td>${p.category}</td></tr>
+            <tr><th>Water Resistance</th><td>${p.waterResistance && p.waterResistance !== 'NULL' ? p.waterResistance : 'N/A'}</td></tr>
+            <tr><th>Category</th><td>${p.category || 'N/A'}</td></tr>
           </table>
         </div>
 
@@ -302,15 +303,15 @@ async function loadReviews(productId) {
 
 function applyCachedReviewSummary(productId) {
   try {
+    const product = PRODUCTS.find(p => p.id === productId);
     const raw = localStorage.getItem('waqtoro_reviews_cache');
-    if (!raw) return;
-    const parsed = JSON.parse(raw);
+    const parsed = raw ? JSON.parse(raw) : null;
     const snapshot = parsed?.byProduct?.[String(productId)];
-    if (!snapshot) return;
 
-    const total = Number(snapshot.count) || 0;
-    const avg = Number(snapshot.avg) || 0;
-    const avgDisplay = avg.toFixed(1);
+    const hasLiveReviews = snapshot && Number(snapshot.count) > 0;
+    const total = hasLiveReviews ? Number(snapshot.count) : (product ? product.reviews || 0 : 0);
+    const avg = hasLiveReviews ? Number(snapshot.avg) : (product ? product.rating || 0 : 0);
+    const avgDisplay = Number(avg).toFixed(1);
 
     const topRating = document.getElementById('dynamic-rating-num');
     const topStars = document.getElementById('dynamic-stars-top');
@@ -347,15 +348,19 @@ function persistFetchedReviewAggregate(productId, reviews) {
     const cache = raw ? JSON.parse(raw) : { byProduct: {} };
     const byProduct = cache.byProduct || {};
 
-    byProduct[String(productId)] = {
-      avg: Number(avg.toFixed(1)),
-      count: total
-    };
+    if (total > 0) {
+      byProduct[String(productId)] = {
+        avg: Number(avg.toFixed(1)),
+        count: total
+      };
+    } else {
+      delete byProduct[String(productId)];
+    }
 
     localStorage.setItem(key, JSON.stringify({ updatedAt: Date.now(), byProduct }));
 
     const product = PRODUCTS.find(p => p.id === productId);
-    if (product) {
+    if (product && total > 0) {
       product.rating = Number(avg.toFixed(1));
       product.reviews = total;
     }
@@ -474,13 +479,14 @@ function escapeHTML(text) {
 }
 
 function updateReviewSummary(reviews) {
-  const total = reviews.length;
   const ratings = reviews
     .map(r => Math.max(1, Math.min(5, parseInt(r.rating) || 0)))
     .filter(Boolean);
 
-  const avg = total ? (ratings.reduce((sum, rating) => sum + rating, 0) / total) : 0;
-  const avgDisplay = avg.toFixed(1);
+  const product = PRODUCTS.find(p => p.id === parseInt(new URLSearchParams(window.location.search).get('id')));
+  const total = reviews.length > 0 ? reviews.length : (product ? product.reviews || 0 : 0);
+  const avg = reviews.length > 0 ? (ratings.reduce((sum, rating) => sum + rating, 0) / reviews.length) : (product ? product.rating || 0 : 0);
+  const avgDisplay = Number(avg).toFixed(1);
 
   const topRating = document.getElementById('dynamic-rating-num');
   const topStars = document.getElementById('dynamic-stars-top');

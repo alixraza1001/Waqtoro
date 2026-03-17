@@ -298,7 +298,7 @@ function populateReview() {
       if (!p) return '';
       return `
         <div class="review-item-row">
-          <div class="review-item-img"><img src="${IMG_BASE}${p.img}" alt="${p.name}" /></div>
+          <div class="review-item-img"><img src="${IMG_BASE}${Array.isArray(p.img) ? p.img[0] : p.img}" alt="${p.name}" /></div>
           <div class="review-item-info">
             <p class="review-item-name">${p.name} <span style="color:var(--clr-muted)">× ${item.qty}</span></p>
             <p class="review-item-brand">${p.brand}${item.color ? ` · ${item.color}` : ''}</p>

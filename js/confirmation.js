@@ -43,7 +43,7 @@ function populateConfirmation(order) {
       return `
         <div class="conf-item">
           <div class="conf-item-img">
-            <img src="${IMG_BASE}${p.img}" alt="${p.name}" />
+            <img src="${IMG_BASE}${Array.isArray(p.img) ? p.img[0] : p.img}" alt="${p.name}" />
           </div>
           <div class="conf-item-info">
             <p class="conf-item-name">${p.name} <span style="color:var(--clr-muted);font-weight:400;">× ${item.qty}</span></p>

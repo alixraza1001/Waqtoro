@@ -270,10 +270,18 @@ document.addEventListener('DOMContentLoaded', () => {
   initGlobalProductHandlers();
   initNewsletter();
 
-  const isRoot = !window.location.pathname.includes('/pages/');
-  const reviewsPath = isRoot ? './js/reviews-live.js' : '../js/reviews-live.js';
-  
-  import(reviewsPath).catch((err) => {
-    console.error('Failed to load live reviews module from', reviewsPath, ':', err);
+  // Load reviews after page is fully loaded and browser is idle
+  // to avoid impacting LCP / TBT metrics
+  window.addEventListener('load', () => {
+    const loadReviews = () => {
+      import('/js/reviews-live.js?v=1.0.1').catch((err) => {
+        console.error('Failed to load live reviews module:', err);
+      });
+    };
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadReviews, { timeout: 4000 });
+    } else {
+      setTimeout(loadReviews, 1500);
+    }
   });
 });

@@ -95,10 +95,12 @@ function hookIntoLocalStorage() {
 
 function mergeItems(local, cloud) {
     const map = new Map();
-    cloud.forEach(item => map.set(item.id, item.qty));
+    const key = item => `${item.id}::${item.color ?? ''}`;
+    cloud.forEach(item => map.set(key(item), { ...item }));
     local.forEach(item => {
-        const existingQty = map.get(item.id) || 0;
-        map.set(item.id, Math.max(existingQty, item.qty));
+        const k = key(item);
+        const existing = map.get(k);
+        map.set(k, { ...item, qty: Math.max(existing ? existing.qty : 0, item.qty) });
     });
-    return Array.from(map, ([id, qty]) => ({ id, qty }));
+    return Array.from(map.values());
 }

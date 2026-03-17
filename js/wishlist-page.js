@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderWishlist();
 
   document.getElementById('clear-wishlist-btn')?.addEventListener('click', () => {
-    if (!WaqtoroWishlist.ids.length) return;
+    if (!WaqtoroWishlist.items.length) return;
     if (confirm('Clear your entire wishlist?')) {
-      WaqtoroWishlist.ids = [];
+      WaqtoroWishlist.items = [];
       WaqtoroWishlist.save();
       renderWishlist();
       showToast('Wishlist cleared.', 'info');
@@ -16,9 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('add-all-to-cart-btn')?.addEventListener('click', () => {
-    const ids = WaqtoroWishlist.ids;
+    const ids = WaqtoroWishlist.items;
     if (!ids.length) { showToast('Your wishlist is empty!', 'info'); return; }
-    ids.forEach(id => WaqtoroCart.add(id, 1));
+    ids.forEach(id => WaqtoroCart.add(id));
     showToast(`${ids.length} item${ids.length > 1 ? 's' : ''} added to cart!`, 'cart');
   });
 });

@@ -10,8 +10,8 @@
   <link rel="apple-touch-icon" href="/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-  <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" /></noscript>
   <link rel="preload" as="image" href="images/hero_banner_mobile.jpg" fetchpriority="high" media="(max-width: 768px)" />
   <link rel="preload" as="image" href="images/hero_banner_lq.jpg" fetchpriority="high" media="(min-width: 769px)" />
   <link rel="stylesheet" href="css/style.css" />
@@ -91,14 +91,14 @@
     </div>
     <div class="container hero-content">
       <div class="hero-text">
-        <p class="label-caps" data-animate>Premium Replica Timepieces</p>
-        <h1 class="display-xl hero-title" data-animate data-animate-delay="1">
+        <p class="label-caps">Premium Replica Timepieces</p>
+        <h1 class="display-xl hero-title">
           Time Is<br /><em>Your Legacy</em>
         </h1>
-        <p class="hero-sub" data-animate data-animate-delay="2">
+        <p class="hero-sub">
           Discover extraordinary timepieces that define who you are. Premium watches for those who demand perfection in every second.
         </p>
-        <div class="hero-ctas" data-animate data-animate-delay="3">
+        <div class="hero-ctas">
           <a href="pages/mens.html" class="btn btn-primary btn-lg">Shop Men's</a>
           <a href="pages/womens.html" class="btn btn-outline btn-lg">Shop Women's</a>
         </div>
@@ -168,7 +168,7 @@
       <div class="collections-grid" data-animate>
         <a href="pages/shop.html?filter=new" class="collection-card collection-new">
           <div class="collection-card-bg">
-            <img src="images/hero_banner_lq.jpg" alt="New Arrivals" loading="lazy" decoding="async" fetchpriority="low" />
+            <img src="images/hero_banner_lq.jpg" alt="New Arrivals" loading="lazy" decoding="async" fetchpriority="low" width="640" height="640" />
           </div>
           <div class="collection-card-overlay"></div>
           <div class="collection-card-body">
@@ -180,7 +180,7 @@
         </a>
         <a href="pages/shop.html?filter=bestseller" class="collection-card collection-best">
           <div class="collection-card-bg">
-            <img src="images/mens_watch_1.png" alt="Best Sellers" loading="lazy" decoding="async" fetchpriority="low" />
+            <img src="images/mens_watch_1.png" alt="Best Sellers" loading="lazy" decoding="async" fetchpriority="low" width="640" height="640" />
           </div>
           <div class="collection-card-overlay"></div>
           <div class="collection-card-body">
@@ -192,7 +192,7 @@
         </a>
         <a href="pages/shop.html?filter=limited" class="collection-card collection-limited">
           <div class="collection-card-bg">
-            <img src="images/womens_watch_1.png" alt="Limited Edition" loading="lazy" decoding="async" fetchpriority="low" />
+            <img src="images/womens_watch_1.png" alt="Limited Edition" loading="lazy" decoding="async" fetchpriority="low" width="640" height="640" />
           </div>
           <div class="collection-card-overlay"></div>
           <div class="collection-card-body">
@@ -212,7 +212,7 @@
       <div class="gender-grid">
         <a href="pages/mens.html" class="gender-card gender-men" data-animate>
           <div class="gender-card-bg">
-            <img src="images/mens_watch_1.png" alt="Men's Watches" loading="lazy" decoding="async" fetchpriority="low" />
+            <img src="images/mens_watch_1.png" alt="Men's Watches" loading="lazy" decoding="async" fetchpriority="low" width="640" height="640" />
           </div>
           <div class="gender-card-overlay"></div>
           <div class="gender-card-body">
@@ -223,7 +223,7 @@
         </a>
         <a href="pages/womens.html" class="gender-card gender-women" data-animate data-animate-delay="2">
           <div class="gender-card-bg">
-            <img src="images/womens_watch_1.png" alt="Women's Watches" loading="lazy" decoding="async" fetchpriority="low" />
+            <img src="images/womens_watch_1.png" alt="Women's Watches" loading="lazy" decoding="async" fetchpriority="low" width="640" height="640" />
           </div>
           <div class="gender-card-overlay"></div>
           <div class="gender-card-body">
@@ -392,8 +392,8 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <script src="js/products-data.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/home.js"></script>
+  <script src="js/products-data.js?v=1.0.1"></script>
+  <script src="js/main.js?v=1.0.1"></script>
+  <script src="js/home.js?v=1.0.1"></script>
 </body>
 </html>
