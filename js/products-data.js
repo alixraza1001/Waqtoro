@@ -24,7 +24,7 @@ const PRODUCTS = [
     reviews: 248,
     badge: "sale",
     stock: 15,
-    img: ["ck b1.jpeg", "ck b2.jpeg", "ck b3.jpeg", "ck b7.jpeg", "ck b8.jpeg"],
+    img: ["CK Bangle/ck b1.jpeg", "CK Bangle/ck b2.jpeg", "CK Bangle/ck b3.jpeg", "CK Bangle/ck b7.jpeg", "CK Bangle/ck b8.jpeg"],
     colors: [
       { name: "Golden with Black Dial", hex: "#FFD700" },
       { name: "Golden with White Dial", hex: "#FFD700" },
