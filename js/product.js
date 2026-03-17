@@ -176,8 +176,6 @@ function renderProduct(p) {
             <tr><th>Strap / Bracelet</th><td>${p.strap || 'N/A'}</td></tr>
             <tr><th>Water Resistance</th><td>${p.waterResistance}</td></tr>
             <tr><th>Category</th><td>${p.category}</td></tr>
-            <tr><th>Type</th><td>Premium Replica / Inspired Design</td></tr>
-            <tr><th>Warranty</th><td>6 Months Quality Guarantee</td></tr>
           </table>
         </div>
 
