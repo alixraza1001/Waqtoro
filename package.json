@@ -1,0 +1,11 @@
+{
+  "name": "waqtoro",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "optimize:images": "node tools/optimize-images.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5"
+  }
+}

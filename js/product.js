@@ -1,7 +1,16 @@
 import { auth, db } from './firebase-config.js';
-import { collection, addDoc, getDocs, serverTimestamp, onSnapshot, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { collection, serverTimestamp, onSnapshot, updateDoc, setDoc, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let unsubscribeProductReviews = null;
+let allRawProductReviews = [];
+let allProductReviews = [];
+let activeProductId = null;
+let visibleReviewCount = 6;
+let isReviewAdmin = false;
+const REVIEW_PAGE_SIZE = 6;
+const REVIEW_RATE_LIMIT_MS = 30000;
+const REVIEW_FORBIDDEN_WORDS = ['fuck', 'shit', 'bitch', 'asshole', 'bastard'];
 
 // Export globals early
 window.toggleReviewForm = toggleReviewForm;
@@ -26,12 +35,134 @@ document.addEventListener('DOMContentLoaded', () => {
   document.title = `${product.brand} ${product.name} — WAQTORO`;
   document.getElementById('breadcrumb-name').textContent = `${product.brand} ${product.name}`;
 
+  activeProductId = id;
   renderProduct(product);
   applyCachedReviewSummary(id);
   renderRelated(product);
   initTabs();
+  initReviewAuthState();
+  initReviewInteractions();
   subscribeToProductReviews(id);
+
+  window.addEventListener('beforeunload', () => {
+    if (typeof unsubscribeProductReviews === 'function') unsubscribeProductReviews();
+  });
 });
+
+function buildReviewDocId(userId, productId) {
+  return `${userId}_${productId}`;
+}
+
+function isApprovedReview(review) {
+  return !review.status || review.status === 'approved';
+}
+
+function hasProfanity(text) {
+  const normalized = String(text || '').toLowerCase();
+  return REVIEW_FORBIDDEN_WORDS.some((word) => {
+    const pattern = new RegExp(`\\b${word}\\b`, 'i');
+    return pattern.test(normalized);
+  });
+}
+
+function getRateLimitKey(userId, productId) {
+  return `waqtoro_review_rl_${userId}_${productId}`;
+}
+
+function isRateLimited(userId, productId) {
+  const raw = localStorage.getItem(getRateLimitKey(userId, productId));
+  const last = raw ? Number(raw) : 0;
+  if (!last) return false;
+  return (Date.now() - last) < REVIEW_RATE_LIMIT_MS;
+}
+
+function markRateLimit(userId, productId) {
+  localStorage.setItem(getRateLimitKey(userId, productId), String(Date.now()));
+}
+
+function getReviewTimestamp(review) {
+  const updated = toDate(review.updatedAt);
+  if (updated) return updated.getTime();
+  const created = toDate(review.createdAt);
+  if (created) return created.getTime();
+  const date = toDate(review.date);
+  if (date) return date.getTime();
+  return 0;
+}
+
+function dedupeReviewsByUser(reviews) {
+  const byKey = new Map();
+  reviews.forEach((review) => {
+    const key = review.userId || `anon_${review.id}`;
+    const existing = byKey.get(key);
+    if (!existing || getReviewTimestamp(review) > getReviewTimestamp(existing)) {
+      byKey.set(key, review);
+    }
+  });
+  return Array.from(byKey.values());
+}
+
+function isVisibleToCurrentViewer(review) {
+  if (isReviewAdmin) return true;
+  if (isApprovedReview(review)) return true;
+  const currentUid = auth.currentUser?.uid;
+  return !!currentUid && review.userId === currentUid;
+}
+
+function initReviewAuthState() {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      isReviewAdmin = false;
+      renderCurrentReviewState();
+      return;
+    }
+
+    try {
+      const adminSnap = await getDoc(doc(db, 'admins', user.uid));
+      isReviewAdmin = adminSnap.exists();
+    } catch (error) {
+      console.error('Failed to check admin review permissions:', error);
+      isReviewAdmin = false;
+    }
+
+    renderCurrentReviewState();
+  });
+}
+
+function initReviewInteractions() {
+  document.addEventListener('click', async (event) => {
+    const loadMoreBtn = event.target.closest('#reviews-load-more-btn');
+    if (loadMoreBtn) {
+      visibleReviewCount += REVIEW_PAGE_SIZE;
+      renderCurrentReviewState();
+      return;
+    }
+
+    const moderateBtn = event.target.closest('.review-moderate-btn');
+    if (!moderateBtn) return;
+    if (!isReviewAdmin) {
+      showToast('Only admins can moderate reviews.', 'info');
+      return;
+    }
+
+    const reviewId = moderateBtn.dataset.reviewId;
+    const nextStatus = moderateBtn.dataset.nextStatus;
+    if (!reviewId || !nextStatus) return;
+
+    try {
+      await updateDoc(doc(db, 'reviews', reviewId), {
+        status: nextStatus,
+        moderatedBy: auth.currentUser?.uid || null,
+        moderatedAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      showToast(`Review marked as ${nextStatus}.`, 'check');
+    } catch (error) {
+      console.error('Failed to moderate review:', error);
+      showToast('Failed to moderate review.', 'info');
+    }
+  });
+}
 
 function renderProduct(p) {
   const layout = document.getElementById('product-layout');
@@ -39,6 +170,7 @@ function renderProduct(p) {
   const wishlisted = WaqtoroWishlist.has(p.id);
   const imgPaths = Array.isArray(p.img) ? p.img : [p.img];
   const mainImgSrc = IMG_BASE + imgPaths[0];
+  const mainImgWebp = IMG_BASE + getOptimizedImagePath(imgPaths[0]);
 
   const badgeHTML = p.badge ? `<span class="badge badge-${p.badge === 'sale' ? 'sale' : p.badge === 'new' ? 'new' : 'limited'}">${
     p.badge === 'sale' ? `-${discount}% OFF` : p.badge === 'new' ? 'NEW' : '★ Bestseller'
@@ -55,9 +187,13 @@ function renderProduct(p) {
     thumbsHTML = '<div class="gallery-thumbs">';
     imgPaths.forEach((path, index) => {
       const src = IMG_BASE + path;
+      const webp = IMG_BASE + getOptimizedImagePath(path);
       thumbsHTML += `
-        <div class="gallery-thumb ${index === 0 ? 'active' : ''}" onclick="changeImg(this, '${src}')">
-          <img src="${src}" alt="View ${index + 1}" />
+        <div class="gallery-thumb ${index === 0 ? 'active' : ''}" onclick="changeImg(this, '${src}', '${webp}')">
+          <picture>
+            <source srcset="${webp}" type="image/webp" />
+            <img src="${src}" alt="View ${index + 1}" />
+          </picture>
         </div>
       `;
     });
@@ -68,7 +204,10 @@ function renderProduct(p) {
     <!-- Gallery -->
     <div class="product-gallery">
       <div class="gallery-main">
-        <img src="${mainImgSrc}" alt="${p.brand} ${p.name}" id="main-product-img" />
+        <picture>
+          <source id="main-product-source" srcset="${mainImgWebp}" type="image/webp" />
+          <img src="${mainImgSrc}" alt="${p.brand} ${p.name}" id="main-product-img" />
+        </picture>
         <div class="gallery-badge-wrap">${badgeHTML}</div>
       </div>
       ${thumbsHTML}
@@ -247,7 +386,9 @@ function subscribeToProductReviews(productId) {
     unsubscribeProductReviews();
   }
 
-  unsubscribeProductReviews = onSnapshot(collection(db, "reviews"), (allSnapshot) => {
+  const reviewsQuery = query(collection(db, "reviews"), where('productId', '==', productId));
+
+  unsubscribeProductReviews = onSnapshot(reviewsQuery, (allSnapshot) => {
     const reviews = [];
 
     allSnapshot.forEach((doc) => {
@@ -258,38 +399,19 @@ function subscribeToProductReviews(productId) {
       }
     });
 
-    reviews.sort((a, b) => {
-      const aDate = toDate(a.date);
-      const bDate = toDate(b.date);
-      const aTime = aDate ? aDate.getTime() : 0;
-      const bTime = bDate ? bDate.getTime() : 0;
-      return bTime - aTime;
-    });
+    allRawProductReviews = reviews;
 
-    persistFetchedReviewAggregate(productId, reviews);
-    const summary = updateReviewSummary(reviews);
+    const dedupedPublicReviews = dedupeReviewsByUser(reviews.filter(isApprovedReview));
+    dedupedPublicReviews.sort((a, b) => getReviewTimestamp(b) - getReviewTimestamp(a));
+
+    allProductReviews = dedupeReviewsByUser(reviews.filter(isVisibleToCurrentViewer));
+    allProductReviews.sort((a, b) => getReviewTimestamp(b) - getReviewTimestamp(a));
+
+    persistFetchedReviewAggregate(productId, dedupedPublicReviews);
+    const summary = updateReviewSummary(dedupedPublicReviews);
     updateCardTileReviewBlock(productId, summary.avg, summary.total);
 
-    if (!reviews.length) {
-      container.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--clr-muted)">
-        <p>No reviews yet. Be the first to review this timepiece!</p>
-      </div>`;
-      return;
-    }
-
-    let reviewsHTML = '';
-    reviews.forEach((r) => {
-      const dateStr = formatReviewDate(r.date);
-      reviewsHTML += `
-        <div class="review-item">
-          <div class="review-header"><span class="review-author">${escapeHTML(r.author || 'Anonymous')}</span><span class="review-date">${dateStr}</span></div>
-          <div class="stars" style="font-size:0.85rem;margin-bottom:0.4rem;color:var(--clr-gold)">${renderStars(r.rating || 5)}</div>
-          <p class="review-title">${escapeHTML(r.title || 'Untitled')}</p>
-          <p class="review-body">${escapeHTML(r.comment || '')}</p>
-        </div>
-      `;
-    });
-    container.innerHTML = reviewsHTML;
+    renderCurrentReviewState();
   }, (err) => {
     console.error("Error loading realtime reviews for product", productId, ":", err);
     container.innerHTML = `
@@ -405,6 +527,16 @@ function setupReviewForm() {
       return;
     }
 
+    if (hasProfanity(title) || hasProfanity(comment)) {
+      showToast('Please remove inappropriate language from your review.', 'info');
+      return;
+    }
+
+    if (isRateLimited(user.uid, productId)) {
+      showToast('Please wait a bit before updating your review again.', 'info');
+      return;
+    }
+
     const reviewData = {
       productId,
       userId: user.uid,
@@ -412,24 +544,22 @@ function setupReviewForm() {
       rating: parseInt(ratingInput.value),
       title,
       comment,
+      status: 'approved',
+      updatedAt: serverTimestamp(),
       date: serverTimestamp()
     };
 
     try {
-      const userReviewsSnapshot = await getDocs(query(collection(db, "reviews"), where("userId", "==", user.uid)));
-      const existingDoc = userReviewsSnapshot.docs.find((docSnap) => {
-        const data = docSnap.data();
-        const candidate = data.productId ?? data.productID ?? data.product_id;
-        return parseInt(candidate) === productId;
-      });
+      const reviewRef = doc(db, 'reviews', buildReviewDocId(user.uid, productId));
+      const reviewSnap = await getDoc(reviewRef);
+      const payload = reviewSnap.exists()
+        ? reviewData
+        : { ...reviewData, createdAt: serverTimestamp() };
 
-      if (existingDoc) {
-        await updateDoc(existingDoc.ref, reviewData);
-        showToast('Your review was updated successfully!', 'success');
-      } else {
-        await addDoc(collection(db, "reviews"), reviewData);
-        showToast('Review submitted successfully!', 'success');
-      }
+      await setDoc(reviewRef, payload, { merge: true });
+
+      markRateLimit(user.uid, productId);
+      showToast('Review saved successfully!', 'success');
 
       form.reset();
       resetReviewFormState();
@@ -454,7 +584,9 @@ function toggleReviewForm() {
   }
 }
 
-function changeImg(thumb, src) {
+function changeImg(thumb, src, webpSrc) {
+  const source = document.getElementById('main-product-source');
+  if (source && webpSrc) source.srcset = webpSrc;
   document.getElementById('main-product-img').src = src;
   document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
   thumb.classList.add('active');
@@ -477,7 +609,93 @@ function toDate(value) {
 function formatReviewDate(value) {
   const date = toDate(value);
   if (!date) return 'Recently';
-  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function renderCurrentReviewState() {
+  allProductReviews = dedupeReviewsByUser(allRawProductReviews.filter(isVisibleToCurrentViewer));
+  allProductReviews.sort((a, b) => getReviewTimestamp(b) - getReviewTimestamp(a));
+  renderReviewsList(allProductReviews);
+  hydrateReviewFormFromExisting();
+}
+
+function hydrateReviewFormFromExisting() {
+  const writeReviewBtn = document.getElementById('write-review-btn');
+  const currentUid = auth.currentUser?.uid;
+  if (!writeReviewBtn) return;
+
+  if (!currentUid) {
+    writeReviewBtn.textContent = 'Write a Review';
+    return;
+  }
+
+  const existing = allProductReviews.find((review) => review.userId === currentUid);
+  if (!existing) {
+    writeReviewBtn.textContent = 'Write a Review';
+    return;
+  }
+
+  writeReviewBtn.textContent = 'Update My Review';
+  const titleEl = document.getElementById('review-title');
+  const commentEl = document.getElementById('review-comment');
+  const ratingInput = document.getElementById('review-rating');
+  if (titleEl && !titleEl.value) titleEl.value = existing.title || '';
+  if (commentEl && !commentEl.value) commentEl.value = existing.comment || '';
+  if (ratingInput) {
+    ratingInput.value = String(Math.max(1, Math.min(5, parseInt(existing.rating) || 5)));
+    const stars = document.querySelectorAll('.star-rating-input span');
+    stars.forEach((star, index) => {
+      const active = index < parseInt(ratingInput.value);
+      star.textContent = active ? '★' : '☆';
+      star.style.color = active ? 'var(--clr-gold)' : 'var(--clr-muted)';
+    });
+  }
+}
+
+function renderReviewsList(reviews) {
+  const container = document.getElementById('reviews-container');
+  if (!container) return;
+
+  if (!reviews.length) {
+    container.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--clr-muted)">
+      <p>No reviews yet. Be the first to review this timepiece!</p>
+    </div>`;
+    return;
+  }
+
+  const visible = reviews.slice(0, visibleReviewCount);
+  let reviewsHTML = '';
+  visible.forEach((review) => {
+    const dateStr = formatReviewDate(review.updatedAt || review.createdAt || review.date);
+    const status = review.status || 'approved';
+    const statusTag = status === 'approved'
+      ? ''
+      : `<span style="font-size:0.68rem;color:var(--clr-gold);margin-left:0.5rem;text-transform:uppercase;">${escapeHTML(status)}</span>`;
+
+    const moderationControls = isReviewAdmin
+      ? `<div style="display:flex;gap:0.6rem;margin-top:0.7rem;">
+          <button class="btn btn-ghost review-moderate-btn" data-review-id="${review.id}" data-next-status="approved" style="font-size:0.68rem;padding:0.3rem 0.6rem;">Approve</button>
+          <button class="btn btn-ghost review-moderate-btn" data-review-id="${review.id}" data-next-status="hidden" style="font-size:0.68rem;padding:0.3rem 0.6rem;">Hide</button>
+        </div>`
+      : '';
+
+    reviewsHTML += `
+      <div class="review-item">
+        <div class="review-header"><span class="review-author">${escapeHTML(review.author || 'Anonymous')}${statusTag}</span><span class="review-date">${dateStr}</span></div>
+        <div class="stars" style="font-size:0.85rem;margin-bottom:0.4rem;color:var(--clr-gold)">${renderStars(review.rating || 5)}</div>
+        <p class="review-title">${escapeHTML(review.title || 'Untitled')}</p>
+        <p class="review-body">${escapeHTML(review.comment || '')}</p>
+        ${moderationControls}
+      </div>
+    `;
+  });
+
+  const hasMore = reviews.length > visible.length;
+  const loadMore = hasMore
+    ? `<div style="text-align:center;margin-top:1rem;"><button id="reviews-load-more-btn" class="btn btn-ghost">Load More Reviews</button></div>`
+    : '';
+
+  container.innerHTML = reviewsHTML + loadMore;
 }
 
 function escapeHTML(text) {

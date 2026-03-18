@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isApproved(data) {
+      return !(data.status is string) || data.status == 'approved';
+    }
+
+    match /admins/{uid} {
+      allow read: if isAdmin() || isOwner(uid);
+      allow write: if isAdmin() || (
+        isOwner(uid)
+        && request.auth.token.email in ['waqtoro@gmail.com']
+      );
+    }
+
+    match /users/{uid} {
+      allow read, create, update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /user_data/{uid} {
+      allow read, create, update: if isOwner(uid) || isAdmin();
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if isAdmin() || isApproved(resource.data) || (signedIn() && resource.data.userId == request.auth.uid);
+
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && reviewId == (request.auth.uid + '_' + string(request.resource.data.productId))
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.title is string
+        && request.resource.data.comment is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.comment.size() > 0
+        && request.resource.data.comment.size() <= 1500
+        && request.resource.data.status in ['approved', 'pending'];
+
+      allow update: if isAdmin() || (
+        signedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.productId == resource.data.productId
+        && request.resource.data.status == resource.data.status
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.title is string
+        && request.resource.data.comment is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.comment.size() > 0
+        && request.resource.data.comment.size() <= 1500
+      );
+
+      allow delete: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+    }
+  }
+}

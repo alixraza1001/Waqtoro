@@ -1,0 +1,40 @@
+name: Quality Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate JavaScript syntax
+        run: |
+          set -e
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            node --check "$file"
+          done < <(find js -type f -name "*.js" -print0)
+
+      - name: Validate HTML references
+        run: |
+          set -e
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            grep -nE "<script[^>]+src=|<link[^>]+href=" "$file" > /dev/null || true
+          done < <(find . -type f -name "*.html" -print0)
+
+      - name: Validate Firebase config JSON
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('firebase.json','utf8')); console.log('firebase.json is valid JSON')"
+          node -e "JSON.parse(require('fs').readFileSync('firestore.indexes.json','utf8')); console.log('firestore.indexes.json is valid JSON')"

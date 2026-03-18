@@ -3,6 +3,61 @@
  * Handles: Navbar, Search, Cart, Wishlist, Toast, Back-to-Top, Animations
  */
 
+/* =================== ERROR MONITORING =================== */
+const WaqtoroErrorMonitor = window.WaqtoroErrorMonitor = {
+  initialized: false,
+  storageKey: 'waqtoro_client_errors',
+  maxItems: 50,
+
+  init() {
+    if (this.initialized) return;
+    this.initialized = true;
+
+    window.addEventListener('error', (event) => {
+      this.capture('error', {
+        message: event.message,
+        source: event.filename,
+        line: event.lineno,
+        column: event.colno,
+        stack: event.error?.stack || null
+      });
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+      const reason = event.reason;
+      this.capture('unhandledrejection', {
+        message: reason?.message || String(reason),
+        stack: reason?.stack || null
+      });
+    });
+  },
+
+  capture(type, payload) {
+    try {
+      const entry = {
+        type,
+        payload,
+        path: window.location.pathname,
+        userAgent: navigator.userAgent,
+        timestamp: Date.now()
+      };
+
+      const existing = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+      existing.push(entry);
+      const trimmed = existing.slice(-this.maxItems);
+      localStorage.setItem(this.storageKey, JSON.stringify(trimmed));
+
+      const endpoint = window.WAQTORO_ERROR_ENDPOINT || localStorage.getItem('waqtoro_error_endpoint');
+      if (endpoint && navigator.sendBeacon) {
+        const blob = new Blob([JSON.stringify(entry)], { type: 'application/json' });
+        navigator.sendBeacon(endpoint, blob);
+      }
+    } catch (error) {
+      console.error('Error monitor capture failed:', error);
+    }
+  }
+};
+
 /* =================== CART STATE =================== */
 const WaqtoroCart = window.WaqtoroCart = {
   items: JSON.parse(localStorage.getItem('waqtoro_cart') || '[]'),
@@ -261,6 +316,7 @@ function initNewsletter() {
 
 /* =================== INIT =================== */
 document.addEventListener('DOMContentLoaded', () => {
+  WaqtoroErrorMonitor.init();
   WaqtoroCart.updateCount();
   WaqtoroWishlist.updateButtons();
   initNavbar();

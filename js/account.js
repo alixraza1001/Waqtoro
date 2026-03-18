@@ -25,6 +25,7 @@ import {
 
 // Global cache for current user data
 let currentUserData = null;
+const ADMIN_SEED_EMAILS = ['waqtoro@gmail.com'];
 
 /* =================== AUTH INITIALIZATION =================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -69,6 +70,14 @@ function initEventListeners() {
 /* =================== PROFILE SYNCING =================== */
 async function syncUserProfile(user) {
   try {
+    if (ADMIN_SEED_EMAILS.includes((user.email || '').toLowerCase())) {
+      await setDoc(doc(db, 'admins', user.uid), {
+        email: user.email,
+        role: 'admin',
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+    }
+
     const userRef = doc(db, 'users', user.uid);
     const userSnap = await getDoc(userRef);
 

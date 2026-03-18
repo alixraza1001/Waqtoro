@@ -278,6 +278,12 @@ function renderStars(rating) {
   return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
 }
 
+function getOptimizedImagePath(path) {
+  return String(path || '').replace(/\.(png|jpe?g)$/i, '.webp');
+}
+
+window.getOptimizedImagePath = getOptimizedImagePath;
+
 function getLiveReviewSnapshot(productId) {
   try {
     const raw = localStorage.getItem('waqtoro_reviews_cache');
@@ -316,6 +322,7 @@ function getStockInfo(stock) {
 function buildProductCard(product, isHome = false) {
   const imgPath = Array.isArray(product.img) ? product.img[0] : product.img;
   const imgSrc = IMG_BASE + imgPath;
+  const optimizedImgSrc = IMG_BASE + getOptimizedImagePath(imgPath);
   const inPages = window.location.pathname.includes('/pages/');
   const detailHref = inPages ? `product.html?id=${product.id}` : `pages/product.html?id=${product.id}`;
   const discount = product.originalPrice
@@ -345,7 +352,10 @@ function buildProductCard(product, isHome = false) {
     <div class="product-card ${isOutOfStock ? 'out-of-stock' : ''}" data-id="${product.id}" data-gender="${product.gender}" data-brand="${product.brand}" data-tags="${product.tags.join(',')}">
       <div class="product-card-img">
         <a href="${detailHref}">
-          <img src="${imgSrc}" alt="${product.brand} ${product.name}" loading="lazy" width="640" height="640" />
+          <picture>
+            <source srcset="${optimizedImgSrc}" type="image/webp" />
+            <img src="${imgSrc}" alt="${product.brand} ${product.name}" loading="lazy" width="640" height="640" />
+          </picture>
         </a>
         <div class="product-card-badges">${badgeHTML}</div>
         ${isOutOfStock ? '<div class="sold-out-overlay">Sold Out</div>' : ''}
