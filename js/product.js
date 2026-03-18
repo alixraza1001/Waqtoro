@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { collection, serverTimestamp, onSnapshot, updateDoc, setDoc, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, serverTimestamp, onSnapshot, updateDoc, setDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let unsubscribeProductReviews = null;
 let allRawProductReviews = [];
@@ -113,6 +113,7 @@ function initReviewAuthState() {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       isReviewAdmin = false;
+      if (activeProductId) subscribeToProductReviews(activeProductId);
       renderCurrentReviewState();
       return;
     }
@@ -125,6 +126,7 @@ function initReviewAuthState() {
       isReviewAdmin = false;
     }
 
+    if (activeProductId) subscribeToProductReviews(activeProductId);
     renderCurrentReviewState();
   });
 }
@@ -386,7 +388,9 @@ function subscribeToProductReviews(productId) {
     unsubscribeProductReviews();
   }
 
-  const reviewsQuery = query(collection(db, "reviews"), where('productId', '==', productId));
+  const reviewsQuery = isReviewAdmin
+    ? query(collection(db, "reviews"), where('productId', '==', productId))
+    : query(collection(db, "reviews"), where('productId', '==', productId), where('status', '==', 'approved'));
 
   unsubscribeProductReviews = onSnapshot(reviewsQuery, (allSnapshot) => {
     const reviews = [];
@@ -551,12 +555,10 @@ function setupReviewForm() {
 
     try {
       const reviewRef = doc(db, 'reviews', buildReviewDocId(user.uid, productId));
-      const reviewSnap = await getDoc(reviewRef);
-      const payload = reviewSnap.exists()
-        ? reviewData
-        : { ...reviewData, createdAt: serverTimestamp() };
-
-      await setDoc(reviewRef, payload, { merge: true });
+      await setDoc(reviewRef, {
+        ...reviewData,
+        createdAt: serverTimestamp()
+      }, { merge: true });
 
       markRateLimit(user.uid, productId);
       showToast('Review saved successfully!', 'success');
@@ -566,7 +568,8 @@ function setupReviewForm() {
       toggleReviewForm();
     } catch (err) {
       console.error("Error submitting review:", err);
-      showToast('Failed to submit review', 'error');
+      const reason = err?.code ? ` (${err.code})` : '';
+      showToast(`Failed to submit review${reason}`, 'error');
     }
   });
 }
@@ -667,10 +670,14 @@ function renderReviewsList(reviews) {
   let reviewsHTML = '';
   visible.forEach((review) => {
     const dateStr = formatReviewDate(review.updatedAt || review.createdAt || review.date);
+    const isMine = !!auth.currentUser?.uid && review.userId === auth.currentUser.uid;
     const status = review.status || 'approved';
     const statusTag = status === 'approved'
       ? ''
       : `<span style="font-size:0.68rem;color:var(--clr-gold);margin-left:0.5rem;text-transform:uppercase;">${escapeHTML(status)}</span>`;
+    const mineTag = isMine
+      ? `<span style="font-size:0.68rem;color:var(--clr-black);background:var(--clr-gold);margin-left:0.5rem;padding:0.12rem 0.45rem;border-radius:999px;text-transform:uppercase;font-weight:700;letter-spacing:0.04em;">Reviewed by you</span>`
+      : '';
 
     const moderationControls = isReviewAdmin
       ? `<div style="display:flex;gap:0.6rem;margin-top:0.7rem;">
@@ -681,7 +688,7 @@ function renderReviewsList(reviews) {
 
     reviewsHTML += `
       <div class="review-item">
-        <div class="review-header"><span class="review-author">${escapeHTML(review.author || 'Anonymous')}${statusTag}</span><span class="review-date">${dateStr}</span></div>
+        <div class="review-header"><span class="review-author">${escapeHTML(review.author || 'Anonymous')}${mineTag}${statusTag}</span><span class="review-date">${dateStr}</span></div>
         <div class="stars" style="font-size:0.85rem;margin-bottom:0.4rem;color:var(--clr-gold)">${renderStars(review.rating || 5)}</div>
         <p class="review-title">${escapeHTML(review.title || 'Untitled')}</p>
         <p class="review-body">${escapeHTML(review.comment || '')}</p>

@@ -1,5 +1,5 @@
 import { db } from './firebase-reviews-config.js';
-import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const CACHE_KEY = 'waqtoro_reviews_cache';
 document.addEventListener('DOMContentLoaded', () => {
@@ -88,7 +88,9 @@ function getReviewTimestamp(data) {
 }
 
 function startRealtimeRatingsSync() {
-  onSnapshot(collection(db, 'reviews'), (snapshot) => {
+  const approvedReviewsQuery = query(collection(db, 'reviews'), where('status', '==', 'approved'));
+
+  onSnapshot(approvedReviewsQuery, (snapshot) => {
     const latestByUserAndProduct = new Map();
 
     snapshot.forEach((doc) => {

@@ -3,9 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "optimize:images": "node tools/optimize-images.mjs"
+    "optimize:images": "node tools/optimize-images.mjs",
+    "migrate:reviews": "node tools/migrate-reviews-schema.mjs"
   },
   "devDependencies": {
+    "firebase-admin": "^12.7.0",
     "sharp": "^0.33.5"
   }
 }
