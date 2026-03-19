@@ -26,11 +26,11 @@ const PRODUCTS = [
     stock: 15,
     img: ["CK Bangle/ck b1.jpeg", "CK Bangle/ck b2.jpeg", "CK Bangle/ck b3.jpeg", "CK Bangle/ck b7.jpeg", "CK Bangle/ck b8.jpeg"],
     colors: [
-      { name: "Golden with Black Dial", hex: "#FFD700" },
-      { name: "Golden with White Dial", hex: "#FFD700" },
-      { name: "Silver with Pink Dial", hex: "#C0C0C0 " },
-      { name: "Silver with Black Dial", hex: "#C0C0C0 " },
-      { name: "Silver with White Dial", hex: "#C0C0C0 " },
+      { name: "Golden / Black Dial", strapHex: "#FFD700", dialHex: "#1a1a1a" },
+      { name: "Golden / White Dial", strapHex: "#FFD700", dialHex: "#f5f5f0" },
+      { name: "Silver / Pink Dial", strapHex: "#C0C0C0", dialHex: "#e8a4b8" },
+      { name: "Silver / Black Dial", strapHex: "#C0C0C0", dialHex: "#1a1a1a" },
+      { name: "Silver / White Dial", strapHex: "#C0C0C0", dialHex: "#f5f5f0" },
     ],
     tags: ["new"]
   },
@@ -53,9 +53,9 @@ const PRODUCTS = [
     stock: 2,
     img: "mens_watch_1.png",
     colors: [
-      { name: "Blue", hex: "#0000FF" },
-      { name: "White", hex: "#FFFFFF" },
-      { name: "Black", hex: "#000000" }
+      { name: "Steel / Blue Dial", strapHex: "#9ba4af", dialHex: "#1a3a8a" },
+      { name: "Steel / White Dial", strapHex: "#9ba4af", dialHex: "#f5f5f0" },
+      { name: "Steel / Black Dial", strapHex: "#9ba4af", dialHex: "#1a1a1a" }
     ],
     tags: ["sale", "bestseller"]
   },
@@ -78,9 +78,9 @@ const PRODUCTS = [
     stock: 8,
     img: "womens_watch_1.png",
     colors: [
-      { name: "Silver", hex: "#C0C0C0" },
-      { name: "Gold", hex: "#D4AF37" },
-      { name: "Rose Gold", hex: "#B76E79" }
+      { name: "Silver / White Pearl", strapHex: "#C0C0C0", dialHex: "#faf7f0" },
+      { name: "Gold / Ivory Dial", strapHex: "#D4AF37", dialHex: "#fdf8ec" },
+      { name: "Rose Gold / Blush Dial", strapHex: "#B76E79", dialHex: "#f8e8e8" }
     ],
     tags: ["new"]
   },
@@ -103,9 +103,9 @@ const PRODUCTS = [
     stock: 0,
     img: "mens_watch_1.png",
     colors: [
-      { name: "Black", hex: "#000000" },
-      { name: "Blue", hex: "#0000FF" },
-      { name: "Silver", hex: "#C0C0C0" }
+      { name: "Black Rubber / Black Dial", strapHex: "#1a1a1a", dialHex: "#0d0d0d" },
+      { name: "Black Rubber / Blue Dial", strapHex: "#1a1a1a", dialHex: "#1a3a8a" },
+      { name: "Steel / Silver Dial", strapHex: "#9ba4af", dialHex: "#d0d0d0" }
     ],
     tags: ["sale"]
   },
@@ -208,9 +208,9 @@ const PRODUCTS = [
     stock: 1,
     img: "mens_watch_2.png",
     colors: [
-      { name: "Black", hex: "#000000" },
-      { name: "Blue", hex: "#0000FF" },
-      { name: "Silver", hex: "#C0C0C0" }
+      { name: "Brown Leather / Black Dial", strapHex: "#6b3a2a", dialHex: "#1a1a1a" },
+      { name: "Black Leather / Blue Dial", strapHex: "#1a1a1a", dialHex: "#1a3a8a" },
+      { name: "Black Leather / Silver Dial", strapHex: "#1a1a1a", dialHex: "#d0d0d0" }
     ],
     tags: ["sale"]
   },

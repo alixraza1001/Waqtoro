@@ -238,20 +238,43 @@ function renderProduct(p) {
         return `<div class="product-stock"><span class="stock-dot in-stock"></span><span style="color:var(--clr-green);font-weight:600;">In Stock</span><span style="color:var(--clr-muted)"> — Ships within 2–3 business days</span></div>`;
       })()}
 
-      ${p.colors ? `
-      <div class="product-colors" id="color-selection">
-        <span class="color-label">Color: <span id="selected-color-name" style="color:var(--clr-white)">${p.colors[0].name}</span></span>
-        <div class="color-options">
-          ${p.colors.map((c, idx) => `
-            <div class="color-swatch ${idx === 0 ? 'active' : ''}" 
-                 style="--swatch-color: ${c.hex}" 
+      ${p.colors ? (() => {
+        const hasCombo = p.colors.some(c => c.strapHex && c.dialHex);
+        const legendRow = hasCombo
+          ? `<div class="color-combo-legend">
+              <div class="legend-pill"><span class="legend-dot" id="color-legend-dot" style="background:linear-gradient(90deg, ${p.colors[0].strapHex || '#888'} 50%, ${p.colors[0].dialHex || '#444'} 50%)"></span></div>
+              <span class="legend-half legend-strap">Strap</span>
+              <span class="legend-divider">·</span>
+              <span class="legend-half legend-dial">Dial</span>
+            </div>`
+          : '';
+        const swatches = p.colors.map((c, idx) => {
+          if (c.strapHex && c.dialHex) {
+            return `<button class="color-swatch color-swatch--split ${idx === 0 ? 'active' : ''}"
+                 style="--strap-color:${c.strapHex};--dial-color:${c.dialHex}"
                  data-name="${c.name}"
-                 onclick="selectColor(this, '${c.name}')">
-            </div>
-          `).join('')}
-        </div>
-      </div>
-      ` : ''}
+                 data-strap="${c.strapHex}"
+                 data-dial="${c.dialHex}"
+                  title="${c.name}"
+                  onclick="selectColor(this, '${c.name}', '${c.strapHex}', '${c.dialHex}')"></button>`;
+          }
+          const hex = c.hex || '#888';
+          return `<button class="color-swatch ${idx === 0 ? 'active' : ''}"
+               style="--swatch-color:${hex}"
+               data-name="${c.name}"
+               title="${c.name}"
+               onclick="selectColor(this, '${c.name}')"></button>`;
+        }).join('');
+        return `
+        <div class="product-colors" id="color-selection">
+          <div class="color-label-row">
+            <span class="color-label-text">Colour</span>
+            <span class="color-selected-name" id="selected-color-name">${p.colors[0].name}</span>
+          </div>
+          ${legendRow}
+          <div class="color-options">${swatches}</div>
+        </div>`;
+      })() : ''}
 
       <div class="product-actions">
         <div class="qty-control">
@@ -808,9 +831,29 @@ window.changeQty = changeQty;
 window.changeImg = changeImg;
 window.selectColor = selectColor;
 
-function selectColor(el, name) {
+function selectColor(el, name, strap = null, dial = null) {
   document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
   el.classList.add('active');
   const nameEl = document.getElementById('selected-color-name');
-  if (nameEl) nameEl.textContent = name;
+  if (nameEl) {
+    nameEl.style.opacity = '0';
+    nameEl.style.transform = 'translateY(2px)';
+    setTimeout(() => {
+      nameEl.textContent = name;
+      nameEl.style.opacity = '1';
+      nameEl.style.transform = 'translateY(0)';
+    }, 80);
+  }
+
+  // Update legend dot if applicable
+  const legendDot = document.getElementById('color-legend-dot');
+  if (legendDot) {
+    if (strap && dial) {
+      legendDot.style.background = `linear-gradient(90deg, ${strap} 50%, ${dial} 50%)`;
+    } else {
+      // Fallback or single color representation in legend
+      const hex = el.style.getPropertyValue('--swatch-color') || '#888';
+      legendDot.style.background = hex;
+    }
+  }
 }

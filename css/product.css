@@ -131,59 +131,137 @@
 /* Color Selection */
 .product-colors {
   margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--clr-border);
+  padding: 1.25rem;
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
 }
-.color-label {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--clr-muted);
+
+/* Label row: "Colour" left, selected name right */
+.color-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 1rem;
 }
+.color-label-text {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--clr-muted);
+}
+.color-selected-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--clr-gold);
+  background: rgba(201,168,76,0.08);
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(201,168,76,0.2);
+  transition: all 0.25s ease;
+  max-width: 60%;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Strap · Dial legend */
+.color-combo-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--clr-muted);
+}
+.legend-half { color: var(--clr-muted); }
+.legend-divider { color: var(--clr-border); }
+.legend-pill {
+  width: 18px; height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+  flex-shrink: 0;
+}
+.legend-dot {
+  display: block;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, #888 50%, #bbb 50%);
+}
+
+/* Swatch rows */
 .color-options {
   display: flex;
-  gap: 1.25rem;
+  gap: 0.9rem;
   flex-wrap: wrap;
 }
+
+/* Base swatch */
 .color-swatch {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 2px solid var(--clr-border);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  background-color: var(--swatch-color);
+  background-color: var(--swatch-color, #888);
+  flex-shrink: 0;
+  padding: 0;
 }
 .color-swatch:hover {
   border-color: var(--clr-gold-dark);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
 }
 .color-swatch.active {
   border-color: var(--clr-gold);
-  box-shadow: 0 0 0 2px var(--clr-bg), 0 0 0 4px var(--clr-gold);
-  transform: scale(1.1);
+  box-shadow: 0 0 0 2px var(--clr-bg-card), 0 0 0 4px var(--clr-gold);
+  transform: scale(1.12);
 }
+
+/* Split swatch — left half = strap, right half = dial */
+.color-swatch--split {
+  background: linear-gradient(
+    90deg,
+    var(--strap-color, #888) 50%,
+    var(--dial-color, #444) 50%
+  );
+}
+
+/* Tooltip label on hover */
 .color-swatch::after {
-  content: attr(data-name);
+  content: attr(title);
   position: absolute;
-  bottom: -22px;
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.65rem;
-  color: var(--clr-muted);
+  font-size: 0.62rem;
+  color: var(--clr-white);
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--clr-border);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.2s;
   pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 10;
   font-weight: 500;
 }
-.color-swatch:hover::after, .color-swatch.active::after {
+.color-swatch:hover::after {
   opacity: 1;
 }
+.color-swatch.active::after {
+  opacity: 0;
+}
+
 
 /* Qty & Actions */
 .product-actions { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: center; }
