@@ -5,6 +5,8 @@
   },
   "hosting": {
     "public": ".",
+    "cleanUrls": true,
+    "trailingSlash": false,
     "headers": [
       {
         "source": "/sitemap.xml",

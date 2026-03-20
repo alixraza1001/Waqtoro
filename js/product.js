@@ -26,14 +26,62 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('product-layout').innerHTML = `
       <div class="product-placeholder">
         <h2 style="color:var(--clr-white-dim)">Product not found.</h2>
-        <a href="shop.html" class="btn btn-ghost" style="margin-top:1.5rem;">Back to Shop</a>
+        <a href="shop" class="btn btn-ghost" style="margin-top:1.5rem;">Back to Shop</a>
       </div>`;
     return;
   }
 
-  // Breadcrumb
+  // Breadcrumb and SEO Metadata
   document.title = `${product.brand} ${product.name} — WAQTORO`;
   document.getElementById('breadcrumb-name').textContent = `${product.brand} ${product.name}`;
+
+  // Canonical Tag
+  const canonicalUrl = `https://waqtoro.live/pages/product?id=${product.id}`;
+  let canonicalLink = document.querySelector("link[rel='canonical']");
+  if (!canonicalLink) {
+    canonicalLink = document.createElement('link');
+    canonicalLink.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonicalLink);
+  }
+  canonicalLink.setAttribute('href', canonicalUrl);
+
+  // JSON-LD Structured Data
+  const jsonLd = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": `${product.brand} ${product.name}`,
+    "image": product.images ? product.images.map(img => `https://waqtoro.live/${img}`) : [],
+    "description": product.desc || `${product.brand} ${product.name} premium replica timepiece.`,
+    "sku": `WAQ-${product.id}`,
+    "brand": {
+      "@type": "Brand",
+      "name": product.brand
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": canonicalUrl,
+      "priceCurrency": "PKR",
+      "price": product.price ? product.price.toString() : "0",
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": product.stockStatus === 'In Stock' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": 0,
+          "currency": "PKR"
+        }
+      }
+    }
+  };
+
+  let scriptLd = document.querySelector("script[type='application/ld+json']");
+  if (!scriptLd) {
+    scriptLd = document.createElement('script');
+    scriptLd.setAttribute('type', 'application/ld+json');
+    document.head.appendChild(scriptLd);
+  }
+  scriptLd.textContent = JSON.stringify(jsonLd);
 
   activeProductId = id;
   renderProduct(product);
