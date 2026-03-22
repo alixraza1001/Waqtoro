@@ -37,15 +37,15 @@ async function checkAdminAccess(user) {
 }
 
 function renderDenied() {
-  document.getElementById('admin-loading').style.display = 'none';
-  document.getElementById('admin-panel').style.display = 'none';
-  document.getElementById('admin-denied').style.display = 'block';
+  document.getElementById('admin-loading')?.classList.add('admin-hidden');
+  document.getElementById('admin-panel')?.classList.add('admin-hidden');
+  document.getElementById('admin-denied')?.classList.remove('admin-hidden');
 }
 
 function renderPanel() {
-  document.getElementById('admin-loading').style.display = 'none';
-  document.getElementById('admin-denied').style.display = 'none';
-  document.getElementById('admin-panel').style.display = 'block';
+  document.getElementById('admin-loading')?.classList.add('admin-hidden');
+  document.getElementById('admin-denied')?.classList.add('admin-hidden');
+  document.getElementById('admin-panel')?.classList.remove('admin-hidden');
 }
 
 async function loadOrders() {
@@ -150,7 +150,7 @@ function renderOrders(searchTerm) {
 function buildOrderCard(order) {
   const normalizedStatus = normalizeStatus(order.status);
   const label = statusLabel(normalizedStatus);
-  const badge = badgeColors(normalizedStatus);
+  const badgeClass = `status-${normalizedStatus}`;
   const itemCount = Array.isArray(order.items) ? order.items.length : 0;
   const timelinePreview = buildTimelinePreview(order.statusTimeline || []);
 
@@ -158,7 +158,7 @@ function buildOrderCard(order) {
     <article class="admin-order-card">
       <div class="admin-order-top">
         <div class="admin-order-id">${order.id}</div>
-        <span class="admin-badge" style="background:${badge.bg};color:${badge.color};">${label}</span>
+        <span class="admin-badge ${badgeClass}">${label}</span>
       </div>
       <p class="admin-order-meta">${order.customer?.name || 'Customer'} · ${order.customer?.email || 'No email'} · ${itemCount} item${itemCount === 1 ? '' : 's'} · Rs. ${(order.total || 0).toLocaleString('en-PK')}</p>
       ${timelinePreview}
@@ -170,7 +170,7 @@ function buildOrderCard(order) {
           <option value="delivered" ${normalizedStatus === 'delivered' ? 'selected' : ''}>Delivered</option>
         </select>
         <button class="btn btn-ghost admin-status-save" data-order-doc-id="${order.orderDocId}" data-order-id="${order.id}">Update Status</button>
-        <a href="track-order?id=${encodeURIComponent(order.id)}" class="btn btn-primary" style="font-size:0.74rem;padding:0.48rem 0.85rem;text-decoration:none;">Track View</a>
+        <a href="track-order?id=${encodeURIComponent(order.id)}" class="btn btn-primary admin-track-btn">Track View</a>
       </div>
     </article>
   `;

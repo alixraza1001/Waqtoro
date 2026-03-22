@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="../css/admin-orders.css" />
 </head>
 <body>
-  <nav class="checkout-nav" style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(8,8,8,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--clr-border);height:var(--navbar-h);">
-    <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:100%;">
+  <nav class="checkout-nav admin-top-nav">
+    <div class="container admin-top-nav-inner">
       <a href="../index" class="nav-logo"><span class="nav-logo-name"><span class="logo-highlight">Waqt</span>oro</span><span class="nav-logo-tagline">Fine Timepieces</span></a>
       <a href="account" class="btn btn-ghost btn-sm">Back to Account</a>
     </div>
@@ -25,7 +25,7 @@
         <p>Checking access permissions.</p>
       </section>
 
-      <section id="admin-denied" class="admin-state-card" style="display:none;">
+      <section id="admin-denied" class="admin-state-card admin-hidden">
         <h2>Access Denied</h2>
         <p>This route is restricted to admin accounts only.</p>
         <div class="admin-state-actions">
@@ -33,7 +33,7 @@
         </div>
       </section>
 
-      <section id="admin-panel" style="display:none;">
+      <section id="admin-panel" class="admin-hidden">
         <header class="admin-header">
           <div>
             <p class="label-caps">Private</p>
@@ -55,7 +55,7 @@
           <div id="admin-active-orders"></div>
         </section>
 
-        <section class="admin-section" style="margin-top:1.75rem;">
+        <section class="admin-section admin-section-completed">
           <h3>Completed Orders (<span id="admin-completed-heading-count">0</span>)</h3>
           <div id="admin-completed-orders"></div>
         </section>

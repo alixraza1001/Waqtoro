@@ -103,10 +103,28 @@
   padding: 0.2rem 0.55rem;
   font-weight: 700;
 }
+.admin-hidden {
+  display: none !important;
+}
+.admin-top-nav {
+  background: #000;
+  border-bottom: 1px solid #111;
+}
+.admin-top-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+}
 .admin-order-meta {
   color: var(--clr-white-dim);
   font-size: 0.84rem;
   margin-bottom: 0.75rem;
+}
+.admin-section-completed {
+  margin-top: 0.6rem;
 }
 .admin-order-timeline {
   margin-bottom: 0.75rem;
@@ -114,6 +132,31 @@
   background: var(--clr-bg-3);
   border: 1px solid var(--clr-border);
   border-radius: var(--radius-sm);
+}
+.admin-badge.status-pending {
+  background: #fff5eb;
+  color: #9a3412;
+}
+.admin-badge.status-processing {
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+.admin-badge.status-shipped {
+  background: #ecfeff;
+  color: #155e75;
+}
+.admin-badge.status-delivered {
+  background: #ecfdf3;
+  color: #166534;
+}
+.admin-badge.status-cancelled {
+  background: #fef2f2;
+  color: #991b1b;
+}
+.admin-track-btn {
+  font-size: 0.74rem;
+  padding: 0.48rem 0.85rem;
+  text-decoration: none;
 }
 .admin-order-timeline p {
   color: var(--clr-muted);
