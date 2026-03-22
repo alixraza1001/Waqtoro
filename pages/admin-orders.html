@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Orders — WAQTORO</title>
+  <meta name="description" content="Admin-only order management panel for WAQTORO." />
+  <link rel="icon" type="image/png" sizes="192x192" href="../favicon.png" />
+  <link rel="apple-touch-icon" href="../favicon.png" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/admin-orders.css" />
+</head>
+<body>
+  <nav class="checkout-nav" style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(8,8,8,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--clr-border);height:var(--navbar-h);">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:100%;">
+      <a href="../index" class="nav-logo"><span class="nav-logo-name"><span class="logo-highlight">Waqt</span>oro</span><span class="nav-logo-tagline">Fine Timepieces</span></a>
+      <a href="account" class="btn btn-ghost btn-sm">Back to Account</a>
+    </div>
+  </nav>
+
+  <main class="admin-orders-page">
+    <div class="container admin-orders-wrap">
+      <section id="admin-loading" class="admin-state-card">
+        <h2>Loading Admin Panel...</h2>
+        <p>Checking access permissions.</p>
+      </section>
+
+      <section id="admin-denied" class="admin-state-card" style="display:none;">
+        <h2>Access Denied</h2>
+        <p>This route is restricted to admin accounts only.</p>
+        <div class="admin-state-actions">
+          <a href="account" class="btn btn-primary">Go to Account</a>
+        </div>
+      </section>
+
+      <section id="admin-panel" style="display:none;">
+        <header class="admin-header">
+          <div>
+            <p class="label-caps">Private</p>
+            <h1 class="display-md">Admin Orders</h1>
+            <p class="admin-sub">Manage statuses and keep customer tracking up to date.</p>
+          </div>
+          <div class="admin-stats">
+            <div class="admin-stat"><span>Active</span><strong id="admin-active-count">0</strong></div>
+            <div class="admin-stat"><span>Completed</span><strong id="admin-completed-count">0</strong></div>
+          </div>
+        </header>
+
+        <section class="admin-toolbar">
+          <input type="text" id="admin-order-search" placeholder="Search by Order ID, customer name, or email" />
+        </section>
+
+        <section class="admin-section">
+          <h3>Active Orders (<span id="admin-active-heading-count">0</span>)</h3>
+          <div id="admin-active-orders"></div>
+        </section>
+
+        <section class="admin-section" style="margin-top:1.75rem;">
+          <h3>Completed Orders (<span id="admin-completed-heading-count">0</span>)</h3>
+          <div id="admin-completed-orders"></div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="../js/main.js"></script>
+  <script type="module" src="../js/admin-orders.js"></script>
+</body>
+</html>

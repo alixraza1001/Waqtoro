@@ -343,7 +343,9 @@ function renderOrders(orders, isAdmin = false) {
     ? completedOrders.map(buildOrderCard).join('')
     : `<p style="margin-top:1rem;color:var(--clr-muted);font-size:0.85rem;">No completed orders yet.</p>`;
 
-  const adminHint = isAdmin ? `<p style="margin-top:0.4rem;color:var(--clr-muted);font-size:0.78rem;">Admin mode: updates here are reflected in customer order tracking.</p>` : '';
+  const adminHint = isAdmin
+    ? `<div style="margin-top:0.4rem;display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;"><p style="color:var(--clr-muted);font-size:0.78rem;">Admin mode: updates here are reflected in customer order tracking.</p><a href="admin-orders" class="btn btn-ghost" style="font-size:0.72rem;padding:0.4rem 0.7rem;">Open Dedicated Admin Panel</a></div>`
+    : '';
   container.innerHTML = `
     <h2 class="dash-title">${sectionTitle}</h2>
     ${adminHint}
