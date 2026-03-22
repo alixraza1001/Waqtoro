@@ -329,38 +329,36 @@ function renderOrders(orders, isAdmin = false) {
   const buildOrderCard = (order) => {
     const normalizedStatus = normalizeOrderStatus(order.status);
     const status = statusLabel(normalizedStatus);
-    const statusColor = normalizedStatus === 'delivered'
-      ? 'var(--clr-green)'
-      : (normalizedStatus === 'dispatched' ? '#3498db' : 'var(--clr-gold)');
-    const textColor = normalizedStatus === 'delivered' || normalizedStatus === 'dispatched' ? '#fff' : 'var(--clr-black)';
+    const statusClass = `status-${normalizedStatus}`;
+    const itemCount = Array.isArray(order.items) ? order.items.length : 0;
 
     return `
-    <div class="order-card" style="background: var(--clr-bg-3); padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; border: 1px solid var(--clr-border);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+    <div class="account-order-card">
+      <div class="account-order-top">
         <div>
-          <p style="font-size: 0.7rem; color: var(--clr-muted); text-transform:uppercase; letter-spacing:0.05em;">Order ID</p>
-          <strong style="color: var(--clr-white); font-size:0.9rem;">${order.id}</strong>
+          <p class="account-order-label">Order ID</p>
+          <strong class="account-order-id">${order.id}</strong>
         </div>
         <div>
-          <span class="badge" style="background: ${statusColor}; color: ${textColor}; font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 4px;">${status}</span>
+          <span class="account-order-badge ${statusClass}">${status}</span>
         </div>
       </div>
-      <div style="padding: 1rem 0; border-top: 1px solid var(--clr-border); border-bottom: 1px solid var(--clr-border); margin-bottom: 1rem;">
-         <p style="color: var(--clr-white-dim); font-size: 0.85rem;">${order.items.length} Item${order.items.length > 1 ? 's' : ''} · Total: Rs. ${(order.total || 0).toLocaleString('en-PK')}</p>
+      <div class="account-order-summary">
+         <p>${itemCount} Item${itemCount > 1 ? 's' : ''} · Total: Rs. ${(order.total || 0).toLocaleString('en-PK')}</p>
       </div>
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size: 0.75rem; color: var(--clr-muted);">${order.date || 'Today'}</span>
-        <a href="track-order?id=${encodeURIComponent(order.id)}" class="btn btn-primary" style="font-size:0.7rem; padding: 0.4rem 0.8rem; text-decoration:none;">Track Order</a>
+      <div class="account-order-bottom">
+        <span class="account-order-date">${order.date || 'Today'}</span>
+        <a href="track-order?id=${encodeURIComponent(order.id)}" class="btn btn-primary account-order-track-btn">Track Order</a>
       </div>
       ${isAdmin ? `
-        <div style="margin-top:1rem;display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
-          <select class="admin-order-status" data-order-doc-id="${order.orderDocId}" data-order-id="${order.id}" style="min-width:170px;padding:0.45rem 0.6rem;background:var(--clr-bg);border:1px solid var(--clr-border);border-radius:8px;color:var(--clr-white);">
+        <div class="account-order-admin-controls">
+          <select class="admin-order-status" data-order-doc-id="${order.orderDocId}" data-order-id="${order.id}">
             <option value="placed" ${normalizedStatus === 'placed' ? 'selected' : ''}>Order Placed</option>
             <option value="processing" ${normalizedStatus === 'processing' ? 'selected' : ''}>Processing</option>
             <option value="dispatched" ${normalizedStatus === 'dispatched' ? 'selected' : ''}>Dispatched</option>
             <option value="delivered" ${normalizedStatus === 'delivered' ? 'selected' : ''}>Delivered</option>
           </select>
-          <button class="btn btn-ghost admin-status-save" data-order-doc-id="${order.orderDocId}" data-order-id="${order.id}" style="font-size:0.7rem;padding:0.45rem 0.8rem;">Update Status</button>
+          <button class="btn btn-ghost admin-status-save account-order-admin-btn" data-order-doc-id="${order.orderDocId}" data-order-id="${order.id}">Update Status</button>
         </div>
       ` : ''}
     </div>
@@ -369,22 +367,22 @@ function renderOrders(orders, isAdmin = false) {
 
   const activeOrdersHTML = activeOrders.length
     ? activeOrders.map(buildOrderCard).join('')
-    : `<div class="empty-dash" style="margin-top:1.5rem;"><p>No active orders right now.</p></div>`;
+    : `<div class="account-orders-empty"><p>No active orders right now.</p></div>`;
 
   const completedOrdersHTML = completedOrders.length
     ? completedOrders.map(buildOrderCard).join('')
-    : `<p style="margin-top:1rem;color:var(--clr-muted);font-size:0.85rem;">No completed orders yet.</p>`;
+    : `<p class="account-orders-empty-text">No completed orders yet.</p>`;
 
   const adminHint = isAdmin
-    ? `<div style="margin-top:0.4rem;display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;"><p style="color:var(--clr-muted);font-size:0.78rem;">Admin mode: updates here are reflected in customer order tracking.</p><a href="admin-orders" class="btn btn-ghost" style="font-size:0.72rem;padding:0.4rem 0.7rem;">Open Dedicated Admin Panel</a></div>`
+    ? `<div class="account-admin-hint"><p>Admin mode: updates here are reflected in customer order tracking.</p><a href="admin-orders" class="btn btn-ghost account-admin-link">Open Dedicated Admin Panel</a></div>`
     : '';
   container.innerHTML = `
     <h2 class="dash-title">${sectionTitle}</h2>
     ${adminHint}
-    <h3 style="margin-top:1rem;font-size:1rem;color:var(--clr-white-dim);">Active Orders (${activeOrders.length})</h3>
-    ${activeOrdersHTML}
-    <h3 style="margin-top:2rem;font-size:1rem;color:var(--clr-white-dim);">Completed Orders (${completedOrders.length})</h3>
-    ${completedOrdersHTML}
+    <h3 class="account-orders-section-title">Active Orders (${activeOrders.length})</h3>
+    <div class="account-orders-list">${activeOrdersHTML}</div>
+    <h3 class="account-orders-section-title completed">Completed Orders (${completedOrders.length})</h3>
+    <div class="account-orders-list">${completedOrdersHTML}</div>
   `;
 
   if (isAdmin) {

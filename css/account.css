@@ -189,6 +189,130 @@
 .empty-dash svg { width: 48px; height: 48px; margin: 0 auto 1rem; color: var(--clr-border); }
 .settings-form { display: flex; flex-direction: column; gap: 1.25rem; }
 
+.account-admin-hint {
+  margin-top: 0.35rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.account-admin-hint p {
+  color: var(--clr-muted);
+  font-size: 0.78rem;
+}
+.account-admin-link {
+  font-size: 0.72rem;
+  padding: 0.4rem 0.7rem;
+}
+
+.account-orders-section-title {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: var(--clr-white-dim);
+}
+.account-orders-section-title.completed {
+  margin-top: 2rem;
+}
+.account-orders-list {
+  margin-top: 0.75rem;
+}
+
+.account-order-card {
+  background: var(--clr-bg-3);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1rem;
+  margin-top: 0.75rem;
+}
+.account-order-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+.account-order-label {
+  font-size: 0.7rem;
+  color: var(--clr-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.account-order-id {
+  color: var(--clr-white);
+  font-size: 0.9rem;
+}
+.account-order-badge {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.account-order-badge.status-delivered { background: var(--clr-green); color: #fff; }
+.account-order-badge.status-dispatched { background: #3498db; color: #fff; }
+.account-order-badge.status-processing,
+.account-order-badge.status-placed { background: var(--clr-gold); color: var(--clr-black); }
+
+.account-order-summary {
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--clr-border);
+  border-bottom: 1px solid var(--clr-border);
+  margin-bottom: 0.85rem;
+}
+.account-order-summary p {
+  color: var(--clr-white-dim);
+  font-size: 0.85rem;
+}
+
+.account-order-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+.account-order-date {
+  font-size: 0.75rem;
+  color: var(--clr-muted);
+}
+.account-order-track-btn {
+  font-size: 0.72rem;
+  padding: 0.42rem 0.82rem;
+  text-decoration: none;
+}
+
+.account-order-admin-controls {
+  margin-top: 0.9rem;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.account-order-admin-controls .admin-order-status {
+  min-width: 170px;
+  padding: 0.45rem 0.6rem;
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  color: var(--clr-white);
+}
+.account-order-admin-btn {
+  font-size: 0.7rem;
+  padding: 0.45rem 0.8rem;
+}
+
+.account-orders-empty {
+  margin-top: 0.75rem;
+  background: var(--clr-bg-3);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 1.05rem;
+  color: var(--clr-muted);
+}
+.account-orders-empty-text {
+  margin-top: 0.75rem;
+  color: var(--clr-muted);
+  font-size: 0.85rem;
+}
+
 @keyframes fadeInAccount {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
