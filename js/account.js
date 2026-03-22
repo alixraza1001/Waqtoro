@@ -17,15 +17,16 @@ import {
   getDoc, 
   setDoc, 
   updateDoc, 
+  arrayUnion,
   collection, 
   query, 
   where, 
-  getDocs, 
-  orderBy 
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Global cache for current user data
 let currentUserData = null;
+let currentUserIsAdmin = false;
 const ADMIN_SEED_EMAILS = ['waqtoro@gmail.com'];
 
 /* =================== AUTH INITIALIZATION =================== */
@@ -82,6 +83,8 @@ async function syncUserProfile(user) {
 
     const userRef = doc(db, 'users', user.uid);
     const userSnap = await getDoc(userRef);
+    const adminSnap = await getDoc(doc(db, 'admins', user.uid));
+    currentUserIsAdmin = adminSnap.exists();
 
     if (userSnap.exists()) {
       currentUserData = userSnap.data();
@@ -98,8 +101,7 @@ async function syncUserProfile(user) {
       await setDoc(userRef, currentUserData);
     }
 
-    // Load orders from subcollection or main collection filtered by UID
-    await loadOrderHistory(user.uid);
+    await loadOrderHistory(user.uid, currentUserIsAdmin);
     showDashboard(currentUserData);
   } catch (error) {
     console.error("Profile Sync Error:", error);
@@ -107,16 +109,20 @@ async function syncUserProfile(user) {
   }
 }
 
-async function loadOrderHistory(uid) {
+async function loadOrderHistory(uid, isAdmin = false) {
   try {
     const ordersRef = collection(db, 'orders');
-    // REMOVED orderBy to avoid manual index requirement
-    const q = query(ordersRef, where("userId", "==", uid));
+    const q = isAdmin ? query(ordersRef) : query(ordersRef, where("userId", "==", uid));
     const querySnapshot = await getDocs(q);
     
     let orders = [];
-    querySnapshot.forEach((doc) => {
-      orders.push({ id: doc.id, ...doc.data() });
+    querySnapshot.forEach((orderDoc) => {
+      const data = orderDoc.data();
+      orders.push({
+        ...data,
+        id: data.id || orderDoc.id,
+        orderDocId: orderDoc.id
+      });
     });
 
     // Sort in JS instead (descending by createdAt/date)
@@ -264,17 +270,19 @@ function showDashboard(user) {
     statNums[2].textContent = `Rs. ${totalSpent.toLocaleString('en-PK')}`;
   }
 
-  renderOrders(userOrders);
+  renderOrders(userOrders, currentUserIsAdmin);
   renderDashWishlist();
 }
 
-function renderOrders(orders) {
+function renderOrders(orders, isAdmin = false) {
   const container = document.getElementById('tab-orders');
   if (!container) return;
 
+  const sectionTitle = isAdmin ? 'Order Management' : 'My Orders';
+
   if (orders.length === 0) {
     container.innerHTML = `
-      <h2 class="dash-title">My Orders</h2>
+      <h2 class="dash-title">${sectionTitle}</h2>
       <div class="empty-dash">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         <p>No orders yet.</p>
@@ -285,9 +293,12 @@ function renderOrders(orders) {
   }
 
   const ordersHTML = orders.map(order => {
-    const status = order.status || 'Processing';
-    const statusColor = status === 'Delivered' ? 'var(--clr-green)' : (status === 'Shipped' ? '#3498db' : 'var(--clr-gold)');
-    const textColor = status === 'Delivered' || status === 'Shipped' ? '#fff' : 'var(--clr-black)';
+    const normalizedStatus = normalizeOrderStatus(order.status);
+    const status = statusLabel(normalizedStatus);
+    const statusColor = normalizedStatus === 'delivered'
+      ? 'var(--clr-green)'
+      : (normalizedStatus === 'dispatched' ? '#3498db' : 'var(--clr-gold)');
+    const textColor = normalizedStatus === 'delivered' || normalizedStatus === 'dispatched' ? '#fff' : 'var(--clr-black)';
 
     return `
     <div class="order-card" style="background: var(--clr-bg-3); padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; border: 1px solid var(--clr-border);">
@@ -305,15 +316,90 @@ function renderOrders(orders) {
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <span style="font-size: 0.75rem; color: var(--clr-muted);">${order.date || 'Today'}</span>
-        ${order.trackingLink 
-          ? `<a href="${order.trackingLink}" target="_blank" class="btn btn-primary" style="font-size:0.7rem; padding: 0.4rem 0.8rem; text-decoration:none;">Track Order</a>`
-          : `<button class="btn btn-ghost" style="font-size:0.7rem; padding: 0.4rem 0.8rem;" onclick="showToast('Tracking will be available once shipped.', 'info')">Details</button>`
-        }
+        <a href="track-order?id=${encodeURIComponent(order.id)}" class="btn btn-primary" style="font-size:0.7rem; padding: 0.4rem 0.8rem; text-decoration:none;">Track Order</a>
       </div>
+      ${isAdmin ? `
+        <div style="margin-top:1rem;display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
+          <select class="admin-order-status" data-order-doc-id="${order.orderDocId}" data-order-id="${order.id}" style="min-width:170px;padding:0.45rem 0.6rem;background:var(--clr-bg);border:1px solid var(--clr-border);border-radius:8px;color:var(--clr-white);">
+            <option value="placed" ${normalizedStatus === 'placed' ? 'selected' : ''}>Order Placed</option>
+            <option value="processing" ${normalizedStatus === 'processing' ? 'selected' : ''}>Processing</option>
+            <option value="dispatched" ${normalizedStatus === 'dispatched' ? 'selected' : ''}>Dispatched</option>
+            <option value="delivered" ${normalizedStatus === 'delivered' ? 'selected' : ''}>Delivered</option>
+          </select>
+          <button class="btn btn-ghost admin-status-save" data-order-doc-id="${order.orderDocId}" data-order-id="${order.id}" style="font-size:0.7rem;padding:0.45rem 0.8rem;">Update Status</button>
+        </div>
+      ` : ''}
     </div>
   `}).join('');
 
-  container.innerHTML = `<h2 class="dash-title">My Orders</h2>` + ordersHTML;
+  const adminHint = isAdmin ? `<p style="margin-top:0.4rem;color:var(--clr-muted);font-size:0.78rem;">Admin mode: updates here are reflected in customer order tracking.</p>` : '';
+  container.innerHTML = `<h2 class="dash-title">${sectionTitle}</h2>${adminHint}` + ordersHTML;
+
+  if (isAdmin) {
+    container.querySelectorAll('.admin-status-save').forEach((btn) => {
+      btn.addEventListener('click', () => handleAdminStatusUpdate(btn));
+    });
+  }
+}
+
+function normalizeOrderStatus(rawStatus) {
+  const normalized = String(rawStatus || 'placed').toLowerCase();
+  if (normalized === 'shipped') return 'dispatched';
+  if (!['placed', 'processing', 'dispatched', 'delivered'].includes(normalized)) return 'placed';
+  return normalized;
+}
+
+function statusLabel(status) {
+  const labels = {
+    placed: 'Order Placed',
+    processing: 'Processing',
+    dispatched: 'Dispatched',
+    delivered: 'Delivered'
+  };
+  return labels[status] || 'Order Placed';
+}
+
+async function handleAdminStatusUpdate(buttonEl) {
+  const orderDocId = buttonEl.dataset.orderDocId;
+  const orderId = buttonEl.dataset.orderId;
+  if (!orderDocId || !orderId) return;
+
+  const selectEl = document.querySelector(`.admin-order-status[data-order-doc-id="${orderDocId}"]`);
+  const nextStatus = normalizeOrderStatus(selectEl?.value);
+  if (!nextStatus) return;
+
+  buttonEl.disabled = true;
+  buttonEl.textContent = 'Saving...';
+
+  try {
+    await updateDoc(doc(db, 'orders', orderDocId), {
+      status: nextStatus,
+      statusTimeline: arrayUnion({
+        status: nextStatus,
+        label: statusLabel(nextStatus),
+        at: new Date().toISOString(),
+        by: auth.currentUser?.uid || null
+      }),
+      updatedAt: new Date().toISOString()
+    });
+
+    if (currentUserData?.orders?.length) {
+      const orderIndex = currentUserData.orders.findIndex(o => o.orderDocId === orderDocId);
+      if (orderIndex >= 0) {
+        currentUserData.orders[orderIndex].status = nextStatus;
+      }
+    }
+
+    showToast(`Order ${orderId} set to ${statusLabel(nextStatus)}.`, 'check');
+    await loadOrderHistory(auth.currentUser.uid, currentUserIsAdmin);
+    renderOrders(currentUserData.orders || [], currentUserIsAdmin);
+  } catch (error) {
+    console.error('Admin status update error:', error);
+    showToast('Could not update order status.', 'info');
+  } finally {
+    buttonEl.disabled = false;
+    buttonEl.textContent = 'Update Status';
+  }
 }
 
 function renderDashWishlist() {

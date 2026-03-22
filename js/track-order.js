@@ -97,7 +97,7 @@ async function findFirestoreOrder(orderId, uid, email) {
 }
 
 function renderOrder(order) {
-  const status = String(order.status || 'placed').toLowerCase();
+  const status = normalizeStatus(order.status);
   const resultEl = document.getElementById('track-result');
   const listEl = document.getElementById('track-status-list');
   const emptyEl = document.getElementById('track-empty-msg');
@@ -123,6 +123,13 @@ function renderOrder(order) {
 
   if (emptyEl) emptyEl.textContent = '';
   resultEl?.classList.add('visible');
+}
+
+function normalizeStatus(rawStatus) {
+  const normalized = String(rawStatus || 'placed').toLowerCase();
+  if (normalized === 'shipped') return 'dispatched';
+  if (!STATUS_STEPS.includes(normalized)) return 'placed';
+  return normalized;
 }
 
 function renderNotFound(message) {
