@@ -55,6 +55,7 @@
         <span>Review</span>
       </div>
     </div>
+    <p class="checkout-step-helper" id="checkout-step-helper">Step 1 of 4 — Add your contact and shipping details.</p>
 
     <div class="checkout-layout">
 
@@ -153,31 +154,31 @@
           <h2 class="checkout-section-title">Payment Method</h2>
 
           <div class="payment-methods">
-            <button class="payment-method-tab active" data-method="online">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <rect x="2" y="5" width="20" height="14" rx="2" />
-                <path d="M7 15h10" />
-              </svg>
-              Online Payment
-            </button>
-            <button class="payment-method-tab" data-method="card">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                <line x1="1" y1="10" x2="23" y2="10" />
-              </svg>
-              Credit / Debit Card
-            </button>
-            <button class="payment-method-tab" data-method="cod">
+            <button class="payment-method-tab active" data-method="cod">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <rect x="2" y="7" width="20" height="14" rx="2" />
                 <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
               </svg>
               Cash on Delivery
             </button>
+            <button class="payment-method-tab unavailable" data-method="card" data-unavailable="true" title="Coming soon" aria-disabled="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                <line x1="1" y1="10" x2="23" y2="10" />
+              </svg>
+              Credit / Debit Card
+            </button>
+            <button class="payment-method-tab unavailable" data-method="online" data-unavailable="true" title="Coming soon" aria-disabled="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="2" y="5" width="20" height="14" rx="2" />
+                <path d="M7 15h10" />
+              </svg>
+              Online Payment
+            </button>
           </div>
 
           <!-- Online Payment Panel (Unavailable) -->
-          <div class="payment-panel" id="pay-online">
+          <div class="payment-panel" id="pay-online" style="display:none;">
             <div class="payment-unavailable-box">
               <div class="unavailable-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -267,7 +268,7 @@
           </div>
 
           <!-- COD Panel -->
-          <div class="payment-panel" id="pay-cod" style="display:none;">
+          <div class="payment-panel" id="pay-cod">
             <div class="cod-info">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
                 style="width:48px;height:48px;color:var(--clr-gold);margin:0 auto 1rem;display:block;">
@@ -334,6 +335,7 @@
               Place Order
             </button>
           </div>
+          <p class="checkout-final-note">By placing this order, you confirm your details and agree to receive order updates from Waqtoro support.</p>
         </div>
 
       </div>
@@ -349,6 +351,10 @@
             <div class="summary-line">
               <span>Subtotal</span>
               <span id="co-subtotal">—</span>
+            </div>
+            <div class="summary-line" id="co-discount-row" style="display:none;">
+              <span id="co-discount-label">Discount</span>
+              <span id="co-discount">-</span>
             </div>
             <div class="summary-line">
               <span>Shipping</span>
@@ -380,6 +386,7 @@
                 <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
               </svg><span>7-Day Returns</span></div>
           </div>
+          <p class="checkout-reassure">Need help before placing your order? <a href="contact?topic=order">Contact support</a> or <a href="https://wa.me/923282054801" target="_blank">chat on WhatsApp</a>.</p>
         </div>
       </aside>
 

@@ -20,6 +20,10 @@ function populateConfirmation(order) {
   document.getElementById('conf-address').textContent  = order.customer.address;
   document.getElementById('conf-customer').textContent = `${order.customer.name} · ${order.customer.email}`;
   document.getElementById('conf-date').textContent     = order.date;
+  const etaEl = document.getElementById('conf-eta');
+  if (etaEl) {
+    etaEl.textContent = order.shipping === 'standard' ? '3–5 business days' : 'Estimated soon';
+  }
 
   const paymentLabels = { card: 'Credit / Debit Card', paypal: 'PayPal', cod: 'Cash on Delivery' };
   document.getElementById('conf-payment').textContent = paymentLabels[order.payment] || order.payment;
@@ -59,6 +63,9 @@ function populateConfirmation(order) {
 function renderSuggested(orderedItems) {
   const grid = document.getElementById('conf-suggested-grid');
   if (!grid) return;
+  if (typeof renderProductSkeletons === 'function') {
+    renderProductSkeletons('conf-suggested-grid', 4);
+  }
   const orderedIds  = orderedItems.map(i => i.id);
   const suggestions = PRODUCTS.filter(p => !orderedIds.includes(p.id)).slice(0, 4);
   grid.innerHTML = suggestions.map(p => buildProductCard(p)).join('');

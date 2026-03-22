@@ -63,6 +63,11 @@
       <h2>Your cart is empty</h2>
       <p>Looks like you haven't added any timepieces yet.</p>
       <a href="shop" class="btn btn-primary btn-lg" style="margin-top:1.5rem;">Explore Collection</a>
+      <div class="empty-links-row">
+        <a href="mens">Shop Men's</a>
+        <a href="womens">Shop Women's</a>
+        <a href="shop?filter=bestseller">Best Sellers</a>
+      </div>
     </div>
 
     <!-- Cart Content -->
@@ -115,6 +120,7 @@
         <a href="checkout" class="btn btn-primary" style="width:100%;justify-content:center;" id="checkout-btn">
           Proceed to Checkout →
         </a>
+        <p class="cart-checkout-hint" id="cart-checkout-hint">Your order is reserved for checkout.</p>
         <a href="shop" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.75rem;">
           Continue Shopping
         </a>
@@ -123,7 +129,7 @@
         <div class="cart-trust">
           <div class="cart-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Premium Build Quality</span></div>
           <div class="cart-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span>Free Insured Shipping</span></div>
-          <div class="cart-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span>30-Day Returns</span></div>
+          <div class="cart-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span>7-Day Returns</span></div>
         </div>
       </aside>
     </div>
@@ -145,8 +151,8 @@
       <div class="footer-top">
         <div class="footer-brand"><div class="nav-logo" style="margin-bottom:1rem;"><span class="nav-logo-name"><span class="logo-highlight">Waqt</span>oro</span><span class="nav-logo-tagline">Fine Timepieces</span></div><p>Your trusted destination for premium replica timepieces. Luxury look, unbeatable prices.</p></div>
         <div class="footer-col"><h4>Shop</h4><ul><li><a href="mens">Men's</a></li><li><a href="womens">Women's</a></li><li><a href="shop">All Watches</a></li></ul></div>
-        <div class="footer-col"><h4>Support</h4><ul><li><a href="contact">Contact</a></li><li><a href="#">Returns</a></li></ul></div>
-        <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
+        <div class="footer-col"><h4>Support</h4><ul><li><a href="contact">Contact</a></li><li><a href="contact?topic=returns">Returns</a></li></ul></div>
+        <div class="footer-col"><h4>Legal</h4><ul><li><a href="contact?topic=general">Privacy</a></li><li><a href="contact?topic=general">Terms</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p>© 2026 <strong>Waqtoro</strong></p><div class="payment-icons"><span class="payment-icon">VISA</span><span class="payment-icon">MC</span><span class="payment-icon">PayPal</span><span class="payment-icon">COD</span></div></div>
     </div>

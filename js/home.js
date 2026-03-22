@@ -4,6 +4,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof renderProductSkeletons === 'function') {
+    renderProductSkeletons('home-products-grid', 8);
+  }
   initProductTabs();
 });
 
@@ -23,7 +26,12 @@ function initProductTabs() {
     const show = filtered.slice(0, 8);
 
     if (!show.length) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--clr-muted);">No watches found in this category.</div>`;
+      grid.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--clr-muted);">
+          <p style="margin-bottom:0.75rem;">No watches found in this category right now.</p>
+          <a href="pages/shop?filter=bestseller" class="btn btn-ghost btn-sm">View Best Sellers</a>
+        </div>
+      `;
       return;
     }
 

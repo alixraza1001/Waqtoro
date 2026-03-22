@@ -12,12 +12,16 @@ const ShopState = {
   movement: [],
   strap: [],
   deals: [],
+  searchQuery: '',
   priceMax: 15000,
   sort: 'default',
   view: 'grid'
 };
 
 function initShop() {
+  if (typeof renderProductSkeletons === 'function') {
+    renderProductSkeletons('shop-products-grid', 8);
+  }
   populateBrandFilter();
   setupFilters();
   setupSort();
@@ -72,6 +76,7 @@ function applyFilters() {
   ShopState.deals    = getChecked('deals');
   renderShop();
   updateActiveTags();
+  updateMobileFilterButton();
 }
 
 function getChecked(name) {
@@ -89,6 +94,7 @@ function clearAllFilters() {
   ShopState.priceMax = 15000;
   renderShop();
   updateActiveTags();
+  updateMobileFilterButton();
 }
 
 function setupSort() {
@@ -125,20 +131,67 @@ function setupMobileFilter() {
   const sidebar = document.getElementById('shop-sidebar');
   if (!btn || !sidebar) return;
 
+  let overlay = document.querySelector('.mobile-filter-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'mobile-filter-overlay';
+    document.body.appendChild(overlay);
+  }
+
+  const sidebarHeader = sidebar.querySelector('.sidebar-header');
+  if (sidebarHeader && !document.getElementById('mobile-filter-close')) {
+    const closeBtn = document.createElement('button');
+    closeBtn.id = 'mobile-filter-close';
+    closeBtn.className = 'mobile-filter-close';
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', 'Close filters');
+    closeBtn.textContent = '✕';
+    sidebarHeader.appendChild(closeBtn);
+    closeBtn.addEventListener('click', closeSidebar);
+  }
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
   btn.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
+    if (sidebar.classList.contains('open')) closeSidebar();
+    else openSidebar();
   });
+
+  overlay.addEventListener('click', closeSidebar);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSidebar();
+  });
+
   // Close on outside click
   document.addEventListener('click', (e) => {
     if (!sidebar.contains(e.target) && !btn.contains(e.target)) {
-      sidebar.classList.remove('open');
+      closeSidebar();
     }
   });
+
+  updateMobileFilterButton();
 }
 
 function readURLParams() {
   const params = new URLSearchParams(window.location.search);
   const filter = params.get('filter');
+  const query = params.get('q');
+
+  if (query) {
+    ShopState.searchQuery = query.trim().toLowerCase();
+  }
+
   if (filter === 'sale') {
     const cb = document.querySelector('input[name="deals"][value="sale"]');
     if (cb) { cb.checked = true; ShopState.deals = ['sale']; }
@@ -147,10 +200,31 @@ function readURLParams() {
     const cb = document.querySelector('input[name="deals"][value="new"]');
     if (cb) { cb.checked = true; ShopState.deals = ['new']; }
   }
+
+  updateMobileFilterButton();
 }
 
 function getFilteredProducts() {
   let filtered = [...PRODUCTS];
+
+  if (ShopState.searchQuery) {
+    filtered = filtered.filter(p => {
+      const searchable = [
+        p.name,
+        p.brand,
+        p.description,
+        p.gender,
+        p.movement,
+        p.strap,
+        ...(Array.isArray(p.tags) ? p.tags : [])
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+      return searchable.includes(ShopState.searchQuery);
+    });
+  }
 
   if (ShopState.gender.length)   filtered = filtered.filter(p => ShopState.gender.includes(p.gender));
   if (ShopState.brand.length)    filtered = filtered.filter(p => ShopState.brand.includes(p.brand));
@@ -201,6 +275,8 @@ function updateActiveTags() {
   if (!container) return;
   const tags = [];
 
+  if (ShopState.searchQuery) tags.push({ label: `Search: ${ShopState.searchQuery}`, key: 'search', val: '' });
+
   const addTags = (arr, label) => arr.forEach(v => tags.push({ label: `${label}: ${v}`, key: label.toLowerCase(), val: v }));
   addTags(ShopState.gender,   'Gender');
   addTags(ShopState.brand,    'Brand');
@@ -215,6 +291,12 @@ function updateActiveTags() {
 }
 
 function removeTag(key, val) {
+  if (key === 'search') {
+    ShopState.searchQuery = '';
+    const url = new URL(window.location.href);
+    url.searchParams.delete('q');
+    history.replaceState({}, '', `${url.pathname}${url.search}`);
+  }
   if (key === 'gender')   { document.querySelector(`input[name="gender"][value="${val}"]`).checked = false; }
   if (key === 'brand')    { document.querySelector(`input[name="brand"][value="${val}"]`).checked = false; }
   if (key === 'movement') { document.querySelector(`input[name="movement"][value="${val}"]`).checked = false; }
@@ -226,4 +308,27 @@ function removeTag(key, val) {
     ShopState.priceMax = 15000;
   }
   applyFilters();
+}
+
+function getSelectedFilterCount() {
+  let count =
+    ShopState.gender.length +
+    ShopState.brand.length +
+    ShopState.movement.length +
+    ShopState.strap.length +
+    ShopState.deals.length;
+
+  if (ShopState.priceMax < 15000) count += 1;
+  if (ShopState.searchQuery) count += 1;
+  return count;
+}
+
+function updateMobileFilterButton() {
+  const btn = document.getElementById('mobile-filter-btn');
+  if (!btn) return;
+  const count = getSelectedFilterCount();
+  btn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+    Filters${count ? ` (${count})` : ''}
+  `;
 }

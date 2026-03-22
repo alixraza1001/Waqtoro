@@ -9,7 +9,8 @@ import {
   signInWithPopup, 
   onAuthStateChanged, 
   signOut,
-  updateProfile
+  updateProfile,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
   doc, 
@@ -57,6 +58,7 @@ function initEventListeners() {
   document.getElementById('google-login-btn')?.addEventListener('click', handleGoogleLogin);
   document.getElementById('google-reg-btn')?.addEventListener('click', handleGoogleLogin);
   document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+  document.getElementById('forgot-password-link')?.addEventListener('click', handleForgotPassword);
 
   // Dashboard Nav
   document.querySelectorAll('.dash-nav-btn[data-tab]').forEach(btn => {
@@ -203,6 +205,24 @@ async function handleLogout() {
   }
 }
 
+async function handleForgotPassword(e) {
+  e.preventDefault();
+  const email = document.getElementById('login-email')?.value.trim();
+  if (!email) {
+    showToast('Enter your email above first, then click Forgot password.', 'info');
+    document.getElementById('login-email')?.focus();
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showToast('Password reset link sent to your email.', 'check');
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    showToast('Could not send reset email. Check the email and try again.', 'info');
+  }
+}
+
 /* =================== DASHBOARD UI =================== */
 function showAuth() {
   document.getElementById('auth-panel').style.display = 'block';
@@ -258,7 +278,7 @@ function renderOrders(orders) {
       <div class="empty-dash">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         <p>No orders yet.</p>
-        <a href="shop.html" class="btn btn-primary" style="margin-top:1rem;">Start Shopping</a>
+        <a href="shop" class="btn btn-primary" style="margin-top:1rem;">Start Shopping</a>
       </div>
     `;
     return;
@@ -303,7 +323,7 @@ function renderDashWishlist() {
   if (!ids.length) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--clr-muted);">
       <p>Your wishlist is empty.</p>
-      <a href="shop.html" class="btn btn-ghost" style="margin-top:1rem;">Add some watches ♥</a>
+      <a href="shop" class="btn btn-ghost" style="margin-top:1rem;">Add some watches ♥</a>
     </div>`;
     return;
   }

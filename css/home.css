@@ -76,6 +76,23 @@
   gap: 1rem;
   flex-wrap: wrap;
 }
+.hero-quick-links {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--clr-white-dim);
+}
+.hero-quick-links a {
+  color: var(--clr-gold-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.hero-quick-links span {
+  color: var(--clr-border-gold);
+}
 .hero-stats {
   position: absolute;
   bottom: 3rem;

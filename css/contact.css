@@ -90,6 +90,26 @@
 }
 .form-group input:focus, .form-group textarea:focus { border-color: var(--clr-gold-dark); }
 .form-group textarea { resize: vertical; min-height: 120px; }
+.form-group.has-error input,
+.form-group.has-error textarea {
+  border-color: var(--clr-red);
+  box-shadow: 0 0 0 2px rgba(192,57,43,0.14);
+}
+.form-check.has-error {
+  border: 1px solid rgba(192,57,43,0.4);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.65rem;
+}
+.field-error {
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  color: var(--clr-red);
+  min-height: 1em;
+}
+#contact-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
 
 /* Success state */
 .contact-success {

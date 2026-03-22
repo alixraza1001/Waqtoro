@@ -318,6 +318,31 @@ function getStockInfo(stock) {
   return { label: 'In Stock', cls: 'stock-in', dot: 'dot-green' };
 }
 
+function buildProductCardSkeleton() {
+  return `
+    <div class="product-card skeleton-card" aria-hidden="true">
+      <div class="product-card-img skeleton-block"></div>
+      <div class="product-card-body">
+        <div class="skeleton-line skeleton-sm"></div>
+        <div class="skeleton-line skeleton-md"></div>
+        <div class="skeleton-line skeleton-xs"></div>
+        <div class="product-card-footer" style="margin-top:0.6rem;">
+          <div class="skeleton-line skeleton-price"></div>
+          <div class="skeleton-line skeleton-btn"></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderProductSkeletons(containerId, count = 4) {
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
+  grid.innerHTML = Array.from({ length: count }).map(() => buildProductCardSkeleton()).join('');
+}
+
+window.renderProductSkeletons = renderProductSkeletons;
+
 // Utility: build product card HTML
 function buildProductCard(product, isHome = false) {
   const imgPath = Array.isArray(product.img) ? product.img[0] : product.img;
@@ -385,6 +410,10 @@ function buildProductCard(product, isHome = false) {
             <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
             ${isOutOfStock ? 'Sold Out' : 'Add'}
           </button>
+        </div>
+        <div class="card-trust-strip">
+          <span>Free Insured Shipping</span>
+          <span>7-Day Returns</span>
         </div>
       </div>
     </div>

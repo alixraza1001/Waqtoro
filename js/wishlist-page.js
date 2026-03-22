@@ -50,6 +50,9 @@ function renderWishlist() {
 function renderSimilar(excludeIds) {
   const grid = document.getElementById('similar-grid');
   if (!grid) return;
+  if (typeof renderProductSkeletons === 'function') {
+    renderProductSkeletons('similar-grid', 4);
+  }
   const suggestions = PRODUCTS.filter(p => !excludeIds.includes(p.id)).slice(0, 4);
   grid.innerHTML = suggestions.map(p => buildProductCard(p)).join('');
   WaqtoroWishlist.updateButtons();

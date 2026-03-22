@@ -7,13 +7,29 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/fi
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const PROMO_CODES = { 'WAQTORO10': 0.10, 'LUXURY20': 0.20, 'WELCOME15': 0.15 };
+const CHECKOUT_STEP_HELPER_COPY = {
+  1: 'Step 1 of 4 — Add your contact and shipping details.',
+  2: 'Step 2 of 4 — Confirm your shipping method.',
+  3: 'Step 3 of 4 — Choose how you want to pay.',
+  4: 'Step 4 of 4 — Review everything before placing your order.'
+};
 
 let currentStep = 1;
 let shippingMethod = 'standard';
 let shippingCost   = 0;
-let paymentMethod  = 'online';
+let paymentMethod  = 'cod';
 let promoDiscount  = 0;
+let appliedPromoCode = '';
 let currentUser    = null;
+
+const STEP1_FIELD_RULES = [
+  { id: 'c-fname', message: 'First name is required.' },
+  { id: 'c-lname', message: 'Last name is required.' },
+  { id: 'c-email', message: 'Email address is required.' },
+  { id: 'c-phone', message: 'Phone number is required.' },
+  { id: 'c-address', message: 'Street address is required.' },
+  { id: 'c-city', message: 'City is required.' }
+];
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initial Checks
@@ -33,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Attach Listeners
   initListeners();
+  updateStepHelper(currentStep);
 });
 
 function initListeners() {
@@ -65,6 +82,19 @@ function initListeners() {
 
   // Place Order
   document.getElementById('place-order-btn')?.addEventListener('click', placeOrder);
+
+  STEP1_FIELD_RULES.forEach(({ id }) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => clearFieldError(el));
+    el.addEventListener('change', () => clearFieldError(el));
+  });
+
+  ['p-card', 'p-expiry', 'p-cvv'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => clearFieldError(el));
+  });
 }
 
 function prefillUserInfo(user) {
@@ -86,9 +116,16 @@ function goToStep(step) {
   document.getElementById(`step-${currentStep}`).style.display = 'none';
   document.getElementById(`step-${step}`).style.display = 'block';
   updateStepIndicators(step);
+  updateStepHelper(step);
   currentStep = step;
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (step === 4) populateReview();
+}
+
+function updateStepHelper(step) {
+  const helper = document.getElementById('checkout-step-helper');
+  if (!helper) return;
+  helper.textContent = CHECKOUT_STEP_HELPER_COPY[step] || '';
 }
 
 function updateStepIndicators(step) {
@@ -110,19 +147,45 @@ function updateStepIndicators(step) {
 
 function validateStep(step) {
   if (step === 1) {
-    const required = ['c-fname', 'c-lname', 'c-email', 'c-phone', 'c-address', 'c-city'];
-    for (const id of required) {
+    let firstInvalid = null;
+
+    STEP1_FIELD_RULES.forEach(({ id, message }) => {
       const el = document.getElementById(id);
-      if (!el || !el.value.trim()) {
-        el?.focus();
-        showToast('Please fill in all required fields.', 'info');
-        return false;
+      if (!el) return;
+      if (!el.value.trim()) {
+        setFieldError(el, message);
+        if (!firstInvalid) firstInvalid = el;
+      } else {
+        clearFieldError(el);
       }
+    });
+
+    const emailEl = document.getElementById('c-email');
+    if (emailEl && emailEl.value.trim() && !isValidEmail(emailEl.value.trim())) {
+      setFieldError(emailEl, 'Enter a valid email address.');
+      if (!firstInvalid) firstInvalid = emailEl;
+    }
+
+    const phoneEl = document.getElementById('c-phone');
+    if (phoneEl && phoneEl.value.trim() && !isValidPhone(phoneEl.value.trim())) {
+      setFieldError(phoneEl, 'Enter a valid phone number.');
+      if (!firstInvalid) firstInvalid = phoneEl;
+    }
+
+    if (firstInvalid) {
+      firstInvalid.focus();
+      showToast('Please correct the highlighted fields.', 'info');
+      return false;
     }
   }
   if (step === 3 && paymentMethod === 'card') {
-    const card = document.getElementById('p-card')?.value.replace(/\s/g, '');
+    const cardEl = document.getElementById('p-card');
+    const card = cardEl?.value.replace(/\s/g, '');
     if (!card || card.length < 13) {
+      if (cardEl) {
+        setFieldError(cardEl, 'Please enter a valid card number.');
+        cardEl.focus();
+      }
       showToast('Please enter a valid card number.', 'info');
       return false;
     }
@@ -130,10 +193,49 @@ function validateStep(step) {
   return true;
 }
 
+function getFieldErrorNode(inputEl) {
+  const formGroup = inputEl.closest('.form-group');
+  if (!formGroup) return null;
+  let errorNode = formGroup.querySelector('.field-error');
+  if (!errorNode) {
+    errorNode = document.createElement('p');
+    errorNode.className = 'field-error';
+    formGroup.appendChild(errorNode);
+  }
+  return errorNode;
+}
+
+function setFieldError(inputEl, message) {
+  const formGroup = inputEl.closest('.form-group');
+  if (!formGroup) return;
+  formGroup.classList.add('has-error');
+  const errorNode = getFieldErrorNode(inputEl);
+  if (errorNode) errorNode.textContent = message;
+}
+
+function clearFieldError(inputEl) {
+  const formGroup = inputEl.closest('.form-group');
+  if (!formGroup) return;
+  formGroup.classList.remove('has-error');
+  const errorNode = formGroup.querySelector('.field-error');
+  if (errorNode) errorNode.textContent = '';
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function isValidPhone(value) {
+  return /^[+\d\s()-]{7,20}$/.test(value);
+}
+
 /* ---- SIDEBAR ---- */
 function renderSidebar() {
   const itemsEl = document.getElementById('checkout-cart-items');
   const subtotalEl = document.getElementById('co-subtotal');
+  const discountRowEl = document.getElementById('co-discount-row');
+  const discountLabelEl = document.getElementById('co-discount-label');
+  const discountEl = document.getElementById('co-discount');
   const totalEl = document.getElementById('co-total');
   const shippingEl = document.getElementById('co-shipping');
 
@@ -160,6 +262,17 @@ function renderSidebar() {
   const total    = subtotal - discount + shippingCost;
 
   if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
+  if (discountRowEl && discountLabelEl && discountEl) {
+    if (discount > 0) {
+      discountRowEl.style.display = 'flex';
+      discountLabelEl.textContent = appliedPromoCode ? `Discount (${appliedPromoCode})` : 'Discount';
+      discountEl.textContent = `-${formatPrice(discount)}`;
+    } else {
+      discountRowEl.style.display = 'none';
+      discountLabelEl.textContent = 'Discount';
+      discountEl.textContent = '-';
+    }
+  }
   if (totalEl)    totalEl.textContent    = formatPrice(total);
   if (shippingEl) shippingEl.textContent = shippingCost > 0 ? formatPrice(shippingCost) : 'Free';
 }
@@ -175,6 +288,11 @@ function selectShipping(radio) {
 
 /* ---- PAYMENT ---- */
 function selectPaymentTab(btn, method) {
+  if (btn.dataset.unavailable === 'true') {
+    showToast('This payment method is coming soon. Please use Cash on Delivery for now.', 'info');
+    return;
+  }
+
   document.querySelectorAll('.payment-method-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   paymentMethod = method;
@@ -269,6 +387,7 @@ function applyPromo() {
   const msg  = document.getElementById('co-promo-msg');
   if (PROMO_CODES[code]) {
     promoDiscount = PROMO_CODES[code];
+    appliedPromoCode = code;
     if (msg) { msg.textContent = `✓ ${Math.round(promoDiscount * 100)}% discount applied!`; msg.style.color = 'var(--clr-green)'; }
     if (codeInput) codeInput.disabled = true;
     renderSidebar();
@@ -288,7 +407,7 @@ function populateReview() {
 
   document.getElementById('review-contact').textContent = `${fname} ${lname} · ${email} · ${phone}`;
   document.getElementById('review-address').textContent = `${address}, ${city}`;
-  document.getElementById('review-shipping').textContent = shippingMethod === 'standard' ? 'Standard Delivery — Free' : shippingMethod;
+  document.getElementById('review-shipping').textContent = shippingMethod === 'standard' ? 'Standard Delivery — Free (3–5 business days)' : shippingMethod;
   document.getElementById('review-payment').textContent = paymentMethod === 'card' ? 'Credit/Debit Card' : paymentMethod.toUpperCase();
 
   const reviewItems = document.getElementById('review-items');

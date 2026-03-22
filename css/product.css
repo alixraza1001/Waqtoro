@@ -327,6 +327,51 @@
 .product-wishlist-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .product-wishlist-btn.wishlisted svg { fill: #e74c3c; }
 
+.mobile-sticky-atc {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1200;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  background: rgba(10,10,10,0.96);
+  border-top: 1px solid var(--clr-border-gold);
+  backdrop-filter: blur(14px);
+  display: none;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+.mobile-sticky-atc-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.mobile-sticky-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--clr-white-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mobile-sticky-price {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--clr-gold);
+}
+.mobile-sticky-atc-btn {
+  background: var(--clr-gold);
+  color: #0a0a0a;
+  border-color: var(--clr-gold);
+  font-size: 0.7rem;
+  padding: 0.65rem 0.95rem;
+}
+.mobile-sticky-atc-btn:hover {
+  background: var(--clr-gold-light);
+  color: #0a0a0a;
+}
+
 /* Trust badges */
 .product-trust {
   display: grid;
@@ -428,6 +473,8 @@
   .product-layout { grid-template-columns: 1fr; }
   .product-gallery { position: static; }
   .product-trust { grid-template-columns: repeat(3, 1fr); }
+  .mobile-sticky-atc.visible { display: grid; }
+  .product-page-wrap { padding-bottom: 6rem; }
 }
 @media (max-width: 480px) {
   .product-actions { flex-wrap: wrap; }

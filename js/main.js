@@ -194,16 +194,26 @@ function initNavbar() {
   if (hamburger && mobileMenu) {
     hamburger.addEventListener('click', () => {
       mobileMenu.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
     });
     mobileClose?.addEventListener('click', closeMobileMenu);
     mobileMenu.addEventListener('click', (e) => {
       if (e.target === mobileMenu) closeMobileMenu();
     });
+    mobileMenu.querySelectorAll('.nav-link').forEach((link) => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        closeMobileMenu();
+      }
+    });
   }
 
   function closeMobileMenu() {
     mobileMenu?.classList.remove('open');
+    hamburger?.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   }
 }
@@ -240,7 +250,7 @@ function initSearch() {
   searchInput?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && searchInput.value.trim()) {
       const isRootPage = !window.location.pathname.includes('/pages/');
-      const searchPage = isRootPage ? `pages/search.html?q=${encodeURIComponent(searchInput.value.trim())}` : `search.html?q=${encodeURIComponent(searchInput.value.trim())}`;
+      const searchPage = isRootPage ? `pages/shop?q=${encodeURIComponent(searchInput.value.trim())}` : `shop?q=${encodeURIComponent(searchInput.value.trim())}`;
       window.location.href = searchPage;
     }
   });
@@ -284,9 +294,12 @@ function initAnimations() {
 /* =================== EVENT DELEGATION: CART & WISHLIST =================== */
 function initGlobalProductHandlers() {
   document.addEventListener('click', (e) => {
+    const path = window.location.pathname.toLowerCase();
+    const isProductDetailPage = /(^|\/)product(\.html)?$/.test(path);
+
     // Add to cart
     const cartBtn = e.target.closest('.add-to-cart-btn');
-    if (cartBtn && !window.location.pathname.includes('product.html')) {
+    if (cartBtn && !isProductDetailPage) {
       const id = parseInt(cartBtn.dataset.id);
       WaqtoroCart.add(id);
     }

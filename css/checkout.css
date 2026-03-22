@@ -45,6 +45,12 @@
   gap: 0;
   margin-bottom: 3rem;
 }
+.checkout-step-helper {
+  text-align: center;
+  margin: -1.75rem 0 2rem;
+  font-size: 0.82rem;
+  color: var(--clr-white-dim);
+}
 .checkout-step {
   display: flex;
   flex-direction: column;
@@ -140,6 +146,18 @@
 .form-group select:focus,
 .form-group textarea:focus { border-color: var(--clr-gold-dark); }
 .form-group textarea { resize: vertical; min-height: 80px; }
+.form-group.has-error input,
+.form-group.has-error select,
+.form-group.has-error textarea {
+  border-color: var(--clr-red);
+  box-shadow: 0 0 0 2px rgba(192,57,43,0.14);
+}
+.field-error {
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  color: var(--clr-red);
+  min-height: 1em;
+}
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
 .checkout-next-btn { margin-top: 2rem; }
@@ -217,6 +235,15 @@
 .payment-method-tab svg { width: 22px; height: 22px; }
 .payment-method-tab:hover { border-color: var(--clr-border-gold); color: var(--clr-white-dim); }
 .payment-method-tab.active { border-color: var(--clr-gold); color: var(--clr-gold); background: rgba(201,168,76,0.06); }
+.payment-method-tab.unavailable {
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+.payment-method-tab.unavailable:hover {
+  border-color: var(--clr-border);
+  color: var(--clr-muted);
+}
 .payment-panel { display: flex; flex-direction: column; gap: 1.25rem; }
 .card-input-wrap { position: relative; }
 .card-input-wrap input { padding-right: 80px; }
@@ -343,6 +370,12 @@
 .review-item-price { font-family: var(--font-display); font-size: 1rem; color: var(--clr-gold); white-space: nowrap; }
 
 .place-order-btn { gap: 0.5rem; }
+.checkout-final-note {
+  margin-top: 0.85rem;
+  font-size: 0.74rem;
+  color: var(--clr-muted);
+  text-align: right;
+}
 
 /* ---- SIDEBAR ---- */
 .checkout-sidebar { position: sticky; top: calc(var(--navbar-h) + 2rem); }
@@ -383,6 +416,17 @@
 .checkout-trust { display: flex; flex-direction: column; gap: 0.6rem; }
 .checkout-trust > div { display: flex; align-items: center; gap: 0.6rem; font-size: 0.72rem; color: var(--clr-muted); }
 .checkout-trust svg { width: 13px; height: 13px; color: var(--clr-gold); flex-shrink: 0; }
+.checkout-reassure {
+  margin-top: 1rem;
+  font-size: 0.74rem;
+  color: var(--clr-white-dim);
+  line-height: 1.6;
+}
+.checkout-reassure a {
+  color: var(--clr-gold-light);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 1024px) { .checkout-layout { grid-template-columns: 1fr 320px; } }

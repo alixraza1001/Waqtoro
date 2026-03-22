@@ -97,11 +97,13 @@ function updateSummary() {
   const subtotal   = WaqtoroCart.total();
   const discount   = Math.round(subtotal * appliedDiscount);
   const total      = subtotal - discount;
+  const itemCount  = WaqtoroCart.count();
 
   const subtotalEl  = document.getElementById('summary-subtotal');
   const totalEl     = document.getElementById('summary-total');
   const discountLine = document.getElementById('discount-line');
   const discountEl  = document.getElementById('discount-amount');
+  const hintEl      = document.getElementById('cart-checkout-hint');
 
   if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
   if (totalEl)    totalEl.textContent    = formatPrice(total);
@@ -111,6 +113,10 @@ function updateSummary() {
     if (discountEl)   discountEl.textContent = `-${formatPrice(discount)}`;
   } else {
     if (discountLine) discountLine.style.display = 'none';
+  }
+
+  if (hintEl) {
+    hintEl.textContent = `${itemCount} item${itemCount !== 1 ? 's' : ''} ready • Cash on Delivery available • 3–5 business days`;
   }
 }
 
@@ -143,6 +149,9 @@ function setupPromo() {
 function renderSuggested() {
   const grid = document.getElementById('suggested-grid');
   if (!grid) return;
+  if (typeof renderProductSkeletons === 'function') {
+    renderProductSkeletons('suggested-grid', 4);
+  }
   const cartIds = WaqtoroCart.items.map(i => i.id);
   const suggestions = PRODUCTS.filter(p => !cartIds.includes(p.id)).slice(0, 4);
   grid.innerHTML = suggestions.map(p => buildProductCard(p, false)).join('');
