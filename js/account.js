@@ -347,9 +347,9 @@ function renderOrders(orders, isAdmin = false) {
   container.innerHTML = `
     <h2 class="dash-title">${sectionTitle}</h2>
     ${adminHint}
-    <h3 style="margin-top:1rem;font-size:1rem;color:var(--clr-white-dim);">Active Orders</h3>
+    <h3 style="margin-top:1rem;font-size:1rem;color:var(--clr-white-dim);">Active Orders (${activeOrders.length})</h3>
     ${activeOrdersHTML}
-    <h3 style="margin-top:2rem;font-size:1rem;color:var(--clr-white-dim);">Completed Orders</h3>
+    <h3 style="margin-top:2rem;font-size:1rem;color:var(--clr-white-dim);">Completed Orders (${completedOrders.length})</h3>
     ${completedOrdersHTML}
   `;
 
