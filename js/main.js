@@ -257,6 +257,108 @@ function initNavbar() {
   }
 }
 
+/* =================== ADMIN NAV LINK =================== */
+function adminPanelPath() {
+  const inPagesDir = window.location.pathname.toLowerCase().includes('/pages/');
+  return inPagesDir ? 'admin-orders' : 'pages/admin-orders';
+}
+
+function removeAdminNavLinks() {
+  document.querySelectorAll('[data-admin-nav-link]').forEach((el) => {
+    const wrapper = el.closest('li[data-admin-nav-item]');
+    if (wrapper) {
+      wrapper.remove();
+      return;
+    }
+    el.remove();
+  });
+}
+
+function ensureAdminNavLinks() {
+  const href = adminPanelPath();
+
+  const desktopList = document.querySelector('.nav-links');
+  if (desktopList && !desktopList.querySelector('[data-admin-nav-link]')) {
+    const item = document.createElement('li');
+    item.setAttribute('data-admin-nav-item', 'true');
+    item.innerHTML = `<a href="${href}" class="nav-link" data-admin-nav-link="true">Admin Panel</a>`;
+    desktopList.appendChild(item);
+  }
+
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (mobileMenu && !mobileMenu.querySelector('[data-admin-nav-link]')) {
+    const link = document.createElement('a');
+    link.href = href;
+    link.className = 'nav-link';
+    link.setAttribute('data-admin-nav-link', 'true');
+    link.textContent = 'Admin Panel';
+    mobileMenu.appendChild(link);
+  }
+}
+
+function cacheAdminState(uid, isAdmin) {
+  try {
+    sessionStorage.setItem('waqtoro_admin_uid', uid || '');
+    sessionStorage.setItem('waqtoro_admin_access', isAdmin ? '1' : '0');
+  } catch {}
+}
+
+function readCachedAdminState(uid) {
+  try {
+    const cachedUid = sessionStorage.getItem('waqtoro_admin_uid');
+    const cachedAccess = sessionStorage.getItem('waqtoro_admin_access');
+    if (cachedUid && cachedUid === uid && cachedAccess) {
+      return cachedAccess === '1';
+    }
+  } catch {}
+  return null;
+}
+
+async function initAdminNavbarLink() {
+  if (!document.querySelector('.nav-links') && !document.getElementById('mobile-menu')) return;
+
+  try {
+    const [{ auth, db }, authModule, firestoreModule] = await Promise.all([
+      import('./firebase-config.js'),
+      import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js')
+    ]);
+
+    const { onAuthStateChanged } = authModule;
+    const { doc, getDoc } = firestoreModule;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        cacheAdminState('', false);
+        removeAdminNavLinks();
+        return;
+      }
+
+      const cached = readCachedAdminState(user.uid);
+      if (cached === true) {
+        ensureAdminNavLinks();
+        return;
+      }
+      if (cached === false) {
+        removeAdminNavLinks();
+        return;
+      }
+
+      try {
+        const adminSnap = await getDoc(doc(db, 'admins', user.uid));
+        const isAdmin = adminSnap.exists();
+        cacheAdminState(user.uid, isAdmin);
+        if (isAdmin) ensureAdminNavLinks();
+        else removeAdminNavLinks();
+      } catch {
+        removeAdminNavLinks();
+      }
+    });
+  } catch (error) {
+    console.warn('Admin navbar link init skipped:', error);
+  }
+}
+
 /* =================== SEARCH =================== */
 function initSearch() {
   const searchBtn = document.getElementById('search-btn');
@@ -378,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
   WaqtoroCart.updateCount();
   WaqtoroWishlist.updateButtons();
   initNavbar();
+  initAdminNavbarLink();
   initSearch();
   initBackToTop();
   initAnimations();
