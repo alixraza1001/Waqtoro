@@ -279,6 +279,8 @@ function renderOrders(orders, isAdmin = false) {
   if (!container) return;
 
   const sectionTitle = isAdmin ? 'Order Management' : 'My Orders';
+  const activeOrders = orders.filter((order) => normalizeOrderStatus(order.status) !== 'delivered');
+  const completedOrders = orders.filter((order) => normalizeOrderStatus(order.status) === 'delivered');
 
   if (orders.length === 0) {
     container.innerHTML = `
@@ -292,7 +294,7 @@ function renderOrders(orders, isAdmin = false) {
     return;
   }
 
-  const ordersHTML = orders.map(order => {
+  const buildOrderCard = (order) => {
     const normalizedStatus = normalizeOrderStatus(order.status);
     const status = statusLabel(normalizedStatus);
     const statusColor = normalizedStatus === 'delivered'
@@ -330,10 +332,26 @@ function renderOrders(orders, isAdmin = false) {
         </div>
       ` : ''}
     </div>
-  `}).join('');
+  `;
+  };
+
+  const activeOrdersHTML = activeOrders.length
+    ? activeOrders.map(buildOrderCard).join('')
+    : `<div class="empty-dash" style="margin-top:1.5rem;"><p>No active orders right now.</p></div>`;
+
+  const completedOrdersHTML = completedOrders.length
+    ? completedOrders.map(buildOrderCard).join('')
+    : `<p style="margin-top:1rem;color:var(--clr-muted);font-size:0.85rem;">No completed orders yet.</p>`;
 
   const adminHint = isAdmin ? `<p style="margin-top:0.4rem;color:var(--clr-muted);font-size:0.78rem;">Admin mode: updates here are reflected in customer order tracking.</p>` : '';
-  container.innerHTML = `<h2 class="dash-title">${sectionTitle}</h2>${adminHint}` + ordersHTML;
+  container.innerHTML = `
+    <h2 class="dash-title">${sectionTitle}</h2>
+    ${adminHint}
+    <h3 style="margin-top:1rem;font-size:1rem;color:var(--clr-white-dim);">Active Orders</h3>
+    ${activeOrdersHTML}
+    <h3 style="margin-top:2rem;font-size:1rem;color:var(--clr-white-dim);">Completed Orders</h3>
+    ${completedOrdersHTML}
+  `;
 
   if (isAdmin) {
     container.querySelectorAll('.admin-status-save').forEach((btn) => {
