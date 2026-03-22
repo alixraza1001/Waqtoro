@@ -48,8 +48,15 @@
   <div class="account-page">
     <div class="container">
 
+      <div class="account-loading" id="account-loading">
+        <div class="account-loading-card">
+          <div class="account-loading-logo">Waqtoro</div>
+          <p>Loading your account...</p>
+        </div>
+      </div>
+
       <!-- AUTH PANEL (Login / Register) -->
-      <div class="auth-panel" id="auth-panel">
+      <div class="auth-panel" id="auth-panel" style="display:none;">
         <div class="auth-logo">
           <span class="nav-logo-name" style="font-size:1.8rem;">Waqtoro</span>
           <span class="nav-logo-tagline">Fine Timepieces</span>
@@ -213,9 +220,7 @@
 
   <div class="toast-container" id="toast-container"></div>
 
-  <script src="../js/products-data.js"></script>
   <script src="../js/main.js"></script>
   <script type="module" src="../js/account.js"></script>
-  <script type="module" src="../js/sync.js"></script>
 </body>
 </html>

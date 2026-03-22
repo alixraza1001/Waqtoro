@@ -6,7 +6,29 @@
   padding-top: calc(var(--navbar-h) + 4rem);
   padding-bottom: 4rem;
   min-height: 100vh;
-  background: var(--clr-bg);
+  background: radial-gradient(75% 55% at 50% 0%, rgba(201,168,76,0.08), transparent), var(--clr-bg);
+}
+
+.account-loading {
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+}
+.account-loading-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+}
+.account-loading-logo {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--clr-gold);
+  margin-bottom: 0.5rem;
+}
+.account-loading-card p {
+  color: var(--clr-white-dim);
+  font-size: 0.9rem;
 }
 
 /* ---- AUTH PANEL ---- */
@@ -17,6 +39,7 @@
   border: 1px solid var(--clr-border);
   border-radius: var(--radius-lg);
   padding: 2.5rem;
+  box-shadow: var(--shadow-md);
 }
 .auth-logo {
   text-align: center;
@@ -46,7 +69,7 @@
   border: none;
   transition: all 0.2s;
 }
-.auth-tab.active { background: var(--clr-bg-card); color: var(--clr-white); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.auth-tab.active { background: var(--clr-bg-card); color: var(--clr-white); box-shadow: var(--shadow-sm); }
 .auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
 .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
 .form-group label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--clr-muted); }
@@ -90,6 +113,7 @@
   grid-template-columns: 260px 1fr;
   gap: 2rem;
   align-items: start;
+  animation: fadeInAccount 0.28s ease;
 }
 .dashboard-sidebar {
   background: var(--clr-bg-card);
@@ -140,6 +164,7 @@
   border: 1px solid var(--clr-border);
   border-radius: var(--radius-md);
   padding: 2rem;
+  box-shadow: var(--shadow-sm);
 }
 .dash-tab { display: none; }
 .dash-tab.active { display: block; }
@@ -163,6 +188,11 @@
 .empty-dash { text-align: center; padding: 4rem 2rem; color: var(--clr-muted); }
 .empty-dash svg { width: 48px; height: 48px; margin: 0 auto 1rem; color: var(--clr-border); }
 .settings-form { display: flex; flex-direction: column; gap: 1.25rem; }
+
+@keyframes fadeInAccount {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 900px) {

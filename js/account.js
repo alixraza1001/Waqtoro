@@ -27,9 +27,12 @@ import {
 // Global cache for current user data
 let currentUserData = null;
 let currentUserIsAdmin = false;
+let productsScriptPromise = null;
 
 /* =================== AUTH INITIALIZATION =================== */
 document.addEventListener('DOMContentLoaded', () => {
+  showLoading();
+
   // 1. Listen for Auth State
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -37,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       currentUserData = null;
       showAuth();
+      hideLoading();
     }
   });
 
@@ -92,7 +96,7 @@ async function syncUserProfile(user) {
       await setDoc(userRef, currentUserData);
     }
 
-    await loadOrderHistory(user.uid, currentUserIsAdmin);
+    await loadOrderHistory(user.uid, false);
     showDashboard(currentUserData);
   } catch (error) {
     console.error("Profile Sync Error:", error);
@@ -132,31 +136,49 @@ async function loadOrderHistory(uid, isAdmin = false) {
 
 /* =================== AUTH HANDLERS =================== */
 async function handleGoogleLogin() {
+  const loginBtn = document.getElementById('google-login-btn');
+  const regBtn = document.getElementById('google-reg-btn');
   try {
+    if (loginBtn) loginBtn.disabled = true;
+    if (regBtn) regBtn.disabled = true;
     await signInWithPopup(auth, googleProvider);
     showToast("Signed in with Google! 🚀", "check");
   } catch (error) {
     console.error("Google Login Error:", error);
     showToast("Google sign-in failed.", "info");
+  } finally {
+    if (loginBtn) loginBtn.disabled = false;
+    if (regBtn) regBtn.disabled = false;
   }
 }
 
 async function handleLogin(e) {
   e.preventDefault();
+  const submitBtn = e.currentTarget?.querySelector('button[type="submit"]');
   const email = document.getElementById('login-email').value.trim();
   const pass  = document.getElementById('login-password').value;
 
   try {
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing In...';
+    }
     await signInWithEmailAndPassword(auth, email, pass);
     showToast("Welcome back! Signed in.", "check");
   } catch (error) {
     console.error("Login Error:", error);
     showToast("Invalid email or password.", "info");
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Sign In →';
+    }
   }
 }
 
 async function handleRegister(e) {
   e.preventDefault();
+  const submitBtn = e.currentTarget?.querySelector('button[type="submit"]');
   const fName = document.getElementById('reg-firstname').value.trim();
   const lName = document.getElementById('reg-lastname').value.trim();
   const email = document.getElementById('reg-email').value.trim();
@@ -169,6 +191,10 @@ async function handleRegister(e) {
   }
 
   try {
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating Account...';
+    }
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
 
@@ -190,6 +216,11 @@ async function handleRegister(e) {
     } else {
       showToast("Registration failed.", "info");
     }
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Create Account →';
+    }
   }
 }
 
@@ -204,6 +235,7 @@ async function handleLogout() {
 
 async function handleForgotPassword(e) {
   e.preventDefault();
+  const forgotLink = document.getElementById('forgot-password-link');
   const email = document.getElementById('login-email')?.value.trim();
   if (!email) {
     showToast('Enter your email above first, then click Forgot password.', 'info');
@@ -212,11 +244,20 @@ async function handleForgotPassword(e) {
   }
 
   try {
+    if (forgotLink) {
+      forgotLink.style.pointerEvents = 'none';
+      forgotLink.textContent = 'Sending...';
+    }
     await sendPasswordResetEmail(auth, email);
     showToast('Password reset link sent to your email.', 'check');
   } catch (error) {
     console.error('Forgot password error:', error);
     showToast('Could not send reset email. Check the email and try again.', 'info');
+  } finally {
+    if (forgotLink) {
+      forgotLink.style.pointerEvents = '';
+      forgotLink.textContent = 'Forgot password?';
+    }
   }
 }
 
@@ -229,6 +270,7 @@ function showAuth() {
 function showDashboard(user) {
   document.getElementById('auth-panel').style.display = 'none';
   document.getElementById('dashboard-panel').style.display = 'grid';
+  hideLoading();
 
   const nameEl = document.getElementById('user-name');
   const emailEl = document.getElementById('user-email');
@@ -262,7 +304,6 @@ function showDashboard(user) {
   }
 
   renderOrders(userOrders, currentUserIsAdmin);
-  renderDashWishlist();
 }
 
 function renderOrders(orders, isAdmin = false) {
@@ -402,7 +443,7 @@ async function handleAdminStatusUpdate(buttonEl) {
     }
 
     showToast(`Order ${orderId} set to ${statusLabel(nextStatus)}.`, 'check');
-    await loadOrderHistory(auth.currentUser.uid, currentUserIsAdmin);
+    await loadOrderHistory(auth.currentUser.uid, false);
     renderOrders(currentUserData.orders || [], currentUserIsAdmin);
   } catch (error) {
     console.error('Admin status update error:', error);
@@ -413,7 +454,9 @@ async function handleAdminStatusUpdate(buttonEl) {
   }
 }
 
-function renderDashWishlist() {
+async function renderDashWishlist() {
+  await ensureProductsCatalogLoaded();
+
   const grid = document.getElementById('dash-wishlist-grid');
   if (!grid) return;
   const ids = (typeof WaqtoroWishlist !== 'undefined' && WaqtoroWishlist.items) || [];
@@ -431,15 +474,51 @@ function renderDashWishlist() {
   }
 }
 
+async function ensureProductsCatalogLoaded() {
+  if (typeof PRODUCTS !== 'undefined' && typeof buildProductCard === 'function') return;
+  if (productsScriptPromise) return productsScriptPromise;
+
+  productsScriptPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = '../js/products-data.js';
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load product catalog script.'));
+    document.head.appendChild(script);
+  });
+
+  try {
+    await productsScriptPromise;
+  } catch (error) {
+    console.error(error);
+    showToast('Could not load wishlist products.', 'info');
+  }
+}
+
+function showLoading() {
+  const loadingEl = document.getElementById('account-loading');
+  if (loadingEl) loadingEl.style.display = 'block';
+}
+
+function hideLoading() {
+  const loadingEl = document.getElementById('account-loading');
+  if (loadingEl) loadingEl.style.display = 'none';
+}
+
 async function saveSettings(e) {
   e.preventDefault();
   if (!currentUserData) return;
+  const submitBtn = e.currentTarget?.querySelector('button[type="submit"]');
   
   const fn = document.getElementById('s-fname').value.trim();
   const ln = document.getElementById('s-lname').value.trim();
   const phone = document.getElementById('s-phone').value.trim();
 
   try {
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+    }
     const userRef = doc(db, 'users', auth.currentUser.uid);
     await updateDoc(userRef, {
       firstName: fn,
@@ -456,6 +535,11 @@ async function saveSettings(e) {
   } catch (error) {
     console.error("Save Settings Error:", error);
     showToast("Failed to save settings.", "info");
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Save Changes';
+    }
   }
 }
 
