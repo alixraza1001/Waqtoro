@@ -97,12 +97,6 @@ function statusLabel(status) {
   return 'Order Placed';
 }
 
-function badgeColors(status) {
-  if (status === 'delivered') return { bg: 'var(--clr-green)', color: '#fff' };
-  if (status === 'dispatched') return { bg: '#3498db', color: '#fff' };
-  return { bg: 'var(--clr-gold)', color: 'var(--clr-black)' };
-}
-
 function setupSearch() {
   const input = document.getElementById('admin-order-search');
   if (!input) return;

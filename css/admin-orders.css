@@ -79,29 +79,29 @@
   margin-bottom: 0.55rem;
 }
 .admin-order-card {
-  background: var(--clr-bg-card);
+  background: var(--clr-bg-3);
   border: 1px solid var(--clr-border);
   border-radius: var(--radius-md);
-  padding: 1rem;
-  margin-bottom: 0.75rem;
+  padding: 1.1rem 1rem;
+  margin-top: 0.75rem;
 }
 .admin-order-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.8rem;
 }
 .admin-order-id {
   font-size: 0.9rem;
   color: var(--clr-white);
-  font-weight: 700;
+  font-weight: 600;
 }
 .admin-badge {
-  font-size: 0.66rem;
-  border-radius: 999px;
-  padding: 0.2rem 0.55rem;
-  font-weight: 700;
+  font-size: 0.65rem;
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+  font-weight: 600;
 }
 .admin-hidden {
   display: none !important;
@@ -120,8 +120,11 @@
 }
 .admin-order-meta {
   color: var(--clr-white-dim);
-  font-size: 0.84rem;
-  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--clr-border);
+  border-bottom: 1px solid var(--clr-border);
+  margin-bottom: 0.85rem;
 }
 .admin-section-completed {
   margin-top: 0.6rem;
@@ -154,8 +157,8 @@
   color: #991b1b;
 }
 .admin-track-btn {
-  font-size: 0.74rem;
-  padding: 0.48rem 0.85rem;
+  font-size: 0.72rem;
+  padding: 0.42rem 0.82rem;
   text-decoration: none;
 }
 .admin-order-timeline p {
