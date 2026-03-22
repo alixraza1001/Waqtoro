@@ -2,8 +2,10 @@ import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { arrayUnion, collection, doc, getDoc, getDocs, query, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-const ADMIN_SEED_EMAILS = ['waqtoro@gmail.com'];
 const STATUS_ORDER = ['placed', 'processing', 'dispatched', 'delivered'];
+const EMAILJS_SERVICE_ID = 'service_amn9ohp';
+const EMAILJS_TEMPLATE_ID = 'template_sfia319';
+const EMAILJS_PUBLIC_KEY = 'V4AbfNxoQW2_Zwp-R';
 
 let allOrders = [];
 let isAdminUser = false;
@@ -26,7 +28,6 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 async function checkAdminAccess(user) {
-  if (ADMIN_SEED_EMAILS.includes((user.email || '').toLowerCase())) return true;
   try {
     const adminDoc = await getDoc(doc(db, 'admins', user.uid));
     return adminDoc.exists();
@@ -151,6 +152,7 @@ function buildOrderCard(order) {
   const label = statusLabel(normalizedStatus);
   const badge = badgeColors(normalizedStatus);
   const itemCount = Array.isArray(order.items) ? order.items.length : 0;
+  const timelinePreview = buildTimelinePreview(order.statusTimeline || []);
 
   return `
     <article class="admin-order-card">
@@ -159,6 +161,7 @@ function buildOrderCard(order) {
         <span class="admin-badge" style="background:${badge.bg};color:${badge.color};">${label}</span>
       </div>
       <p class="admin-order-meta">${order.customer?.name || 'Customer'} · ${order.customer?.email || 'No email'} · ${itemCount} item${itemCount === 1 ? '' : 's'} · Rs. ${(order.total || 0).toLocaleString('en-PK')}</p>
+      ${timelinePreview}
       <div class="admin-order-actions">
         <select class="admin-order-status" data-order-doc-id="${order.orderDocId}" data-order-id="${order.id}">
           <option value="placed" ${normalizedStatus === 'placed' ? 'selected' : ''}>Order Placed</option>
@@ -173,6 +176,42 @@ function buildOrderCard(order) {
   `;
 }
 
+function buildTimelinePreview(timeline) {
+  if (!Array.isArray(timeline) || !timeline.length) {
+    return '<div class="admin-order-timeline"><p class="admin-timeline-empty">No status timeline yet.</p></div>';
+  }
+
+  const parsed = [...timeline]
+    .map((entry) => ({
+      status: normalizeStatus(entry?.status),
+      label: entry?.label || statusLabel(normalizeStatus(entry?.status)),
+      at: entry?.at || null,
+      by: entry?.by || null
+    }))
+    .sort((a, b) => Date.parse(b.at || '') - Date.parse(a.at || ''))
+    .slice(0, 3);
+
+  return `
+    <div class="admin-order-timeline">
+      ${parsed.map((entry) => `
+        <p><strong>${entry.label}</strong> · ${formatTimelineDate(entry.at)}${entry.by ? ` · by ${entry.by}` : ''}</p>
+      `).join('')}
+    </div>
+  `;
+}
+
+function formatTimelineDate(value) {
+  if (!value) return 'time unavailable';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'time unavailable';
+  return date.toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
 async function saveStatus(buttonEl) {
   const orderDocId = buttonEl.dataset.orderDocId;
   const orderId = buttonEl.dataset.orderId;
@@ -185,19 +224,28 @@ async function saveStatus(buttonEl) {
   buttonEl.textContent = 'Saving...';
 
   try {
+    const timelineEntry = {
+      status: nextStatus,
+      label: statusLabel(nextStatus),
+      at: new Date().toISOString(),
+      by: auth.currentUser?.uid || null
+    };
+
     await updateDoc(doc(db, 'orders', orderDocId), {
       status: nextStatus,
-      statusTimeline: arrayUnion({
-        status: nextStatus,
-        label: statusLabel(nextStatus),
-        at: new Date().toISOString(),
-        by: auth.currentUser?.uid || null
-      }),
+      statusTimeline: arrayUnion(timelineEntry),
       updatedAt: new Date().toISOString()
     });
 
     const index = allOrders.findIndex((o) => o.orderDocId === orderDocId);
-    if (index >= 0) allOrders[index].status = nextStatus;
+    if (index >= 0) {
+      allOrders[index].status = nextStatus;
+      allOrders[index].statusTimeline = Array.isArray(allOrders[index].statusTimeline)
+        ? [...allOrders[index].statusTimeline, timelineEntry]
+        : [timelineEntry];
+    }
+
+    await sendStatusUpdateNotification(allOrders[index]);
 
     window.showToast?.(`Order ${orderId} set to ${statusLabel(nextStatus)}.`, 'check');
     const searchTerm = (document.getElementById('admin-order-search')?.value || '').trim().toLowerCase();
@@ -208,5 +256,24 @@ async function saveStatus(buttonEl) {
   } finally {
     buttonEl.disabled = false;
     buttonEl.textContent = 'Update Status';
+  }
+}
+
+async function sendStatusUpdateNotification(order) {
+  if (!order?.customer?.email || typeof emailjs === 'undefined') return;
+
+  try {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+    const readableStatus = statusLabel(normalizeStatus(order.status));
+    const message = `Your order ${order.id} status is now: ${readableStatus}. You can track it anytime at https://waqtoro.live/pages/track-order?id=${encodeURIComponent(order.id)}`;
+
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: order.customer.email,
+      order_id: order.id,
+      message,
+      from_name: 'Waqtoro Order Updates'
+    });
+  } catch (error) {
+    console.error('Status notification email failed:', error);
   }
 }

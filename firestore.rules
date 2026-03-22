@@ -17,6 +17,10 @@ service cloud.firestore {
       return !(data.status is string) || data.status == 'approved';
     }
 
+    function validOrderStatus(status) {
+      return status in ['placed', 'processing', 'dispatched', 'delivered', 'shipped'];
+    }
+
     match /admins/{uid} {
       allow read: if isAdmin() || isOwner(uid);
       allow write: if isAdmin() || (
@@ -38,7 +42,11 @@ service cloud.firestore {
     match /orders/{orderId} {
       allow create: if true;
       allow read: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
-      allow update, delete: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'statusTimeline', 'updatedAt'])
+        && request.resource.data.status is string
+        && validOrderStatus(request.resource.data.status);
+      allow delete: if isAdmin();
     }
 
     match /reviews/{reviewId} {

@@ -108,6 +108,26 @@
   font-size: 0.84rem;
   margin-bottom: 0.75rem;
 }
+.admin-order-timeline {
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--clr-bg-3);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+}
+.admin-order-timeline p {
+  color: var(--clr-muted);
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+.admin-order-timeline p strong {
+  color: var(--clr-white-dim);
+  font-weight: 600;
+}
+.admin-timeline-empty {
+  color: var(--clr-muted);
+  font-size: 0.74rem;
+}
 .admin-order-actions {
   display: flex;
   gap: 0.6rem;
