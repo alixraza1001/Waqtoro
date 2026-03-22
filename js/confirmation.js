@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function populateConfirmation(order) {
   document.getElementById('conf-order-id').textContent = order.id;
+  const trackLink = document.getElementById('conf-track-link');
+  if (trackLink && order.id) {
+    trackLink.href = `track-order?id=${encodeURIComponent(order.id)}`;
+  }
   document.getElementById('conf-address').textContent  = order.customer.address;
   document.getElementById('conf-customer').textContent = `${order.customer.name} · ${order.customer.email}`;
   document.getElementById('conf-date').textContent     = order.date;
@@ -38,6 +42,12 @@ function populateConfirmation(order) {
 
   document.getElementById('conf-subtotal').textContent = formatPrice(order.subtotal);
   document.getElementById('conf-total').textContent    = formatPrice(order.total);
+
+  window.WaqtoroAnalytics?.track('purchase_confirmation_view', {
+    transaction_id: order.id,
+    value: order.total,
+    currency: 'PKR'
+  });
 
   const itemsEl = document.getElementById('conf-items');
   if (itemsEl) {

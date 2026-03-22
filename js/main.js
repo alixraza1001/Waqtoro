@@ -58,6 +58,36 @@ const WaqtoroErrorMonitor = window.WaqtoroErrorMonitor = {
   }
 };
 
+/* =================== ANALYTICS =================== */
+const WaqtoroAnalytics = window.WaqtoroAnalytics = {
+  storageKey: 'waqtoro_analytics_events',
+  maxItems: 200,
+
+  track(eventName, payload = {}) {
+    try {
+      const event = {
+        event: eventName,
+        payload,
+        path: window.location.pathname,
+        timestamp: Date.now()
+      };
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(event);
+
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, payload);
+      }
+
+      const existing = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+      existing.push(event);
+      localStorage.setItem(this.storageKey, JSON.stringify(existing.slice(-this.maxItems)));
+    } catch (error) {
+      console.error('Analytics tracking error:', error);
+    }
+  }
+};
+
 /* =================== CART STATE =================== */
 const WaqtoroCart = window.WaqtoroCart = {
   items: JSON.parse(localStorage.getItem('waqtoro_cart') || '[]'),
@@ -77,6 +107,15 @@ const WaqtoroCart = window.WaqtoroCart = {
       this.items.push({ id: productId, qty: 1, color: color });
     }
     this.save();
+    WaqtoroAnalytics.track('add_to_cart', {
+      item_id: product.id,
+      item_name: product.name,
+      item_brand: product.brand,
+      price: product.price,
+      quantity: 1,
+      color: color || null,
+      currency: 'PKR'
+    });
     showToast(`<strong>${product.brand} ${product.name}</strong> ${color ? `(${color}) ` : ''}added to cart`, 'cart');
   },
 
@@ -249,8 +288,10 @@ function initSearch() {
   // Search submit
   searchInput?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && searchInput.value.trim()) {
+      const keyword = searchInput.value.trim();
       const isRootPage = !window.location.pathname.includes('/pages/');
-      const searchPage = isRootPage ? `pages/shop?q=${encodeURIComponent(searchInput.value.trim())}` : `shop?q=${encodeURIComponent(searchInput.value.trim())}`;
+      const searchPage = isRootPage ? `pages/shop?q=${encodeURIComponent(keyword)}` : `shop?q=${encodeURIComponent(keyword)}`;
+      WaqtoroAnalytics.track('search', { search_term: keyword });
       window.location.href = searchPage;
     }
   });
@@ -329,6 +370,10 @@ function initNewsletter() {
 
 /* =================== INIT =================== */
 document.addEventListener('DOMContentLoaded', () => {
+  WaqtoroAnalytics.track('page_view', {
+    page_path: window.location.pathname,
+    page_title: document.title
+  });
   WaqtoroErrorMonitor.init();
   WaqtoroCart.updateCount();
   WaqtoroWishlist.updateButtons();

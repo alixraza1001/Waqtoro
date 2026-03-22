@@ -15,6 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSuggested();
   setupPromo();
 
+  document.getElementById('checkout-btn')?.addEventListener('click', () => {
+    window.WaqtoroAnalytics?.track('begin_checkout', {
+      item_count: WaqtoroCart.count(),
+      value: WaqtoroCart.total(),
+      currency: 'PKR'
+    });
+  });
+
   document.getElementById('clear-cart-btn')?.addEventListener('click', () => {
     if (confirm('Clear all items from your cart?')) {
       WaqtoroCart.items = [];
@@ -130,6 +138,10 @@ function setupPromo() {
     const code = input.value.trim().toUpperCase();
     if (PROMO_CODES[code]) {
       appliedDiscount = PROMO_CODES[code];
+      window.WaqtoroAnalytics?.track('apply_coupon', {
+        coupon: code,
+        discount_percent: Math.round(appliedDiscount * 100)
+      });
       msg.className  = 'promo-msg success';
       msg.textContent = `✓ Code applied! ${Math.round(appliedDiscount * 100)}% discount`;
       input.disabled = true;

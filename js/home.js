@@ -25,6 +25,13 @@ function initProductTabs() {
     // Show up to 8
     const show = filtered.slice(0, 8);
 
+    window.WaqtoroAnalytics?.track('view_item_list', {
+      list_id: 'home_featured',
+      list_name: 'Home Featured Products',
+      filter,
+      item_count: show.length
+    });
+
     if (!show.length) {
       grid.innerHTML = `
         <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--clr-muted);">

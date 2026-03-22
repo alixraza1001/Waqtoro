@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Order — WAQTORO</title>
+  <meta name="description" content="Track your WAQTORO order status by order ID." />
+  <link rel="icon" type="image/png" sizes="192x192" href="../favicon.png" />
+  <link rel="apple-touch-icon" href="../favicon.png" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/track-order.css" />
+</head>
+<body>
+  <nav class="checkout-nav" style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(8,8,8,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--clr-border);height:var(--navbar-h);">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:100%;">
+      <a href="../index" class="nav-logo"><span class="nav-logo-name"><span class="logo-highlight">Waqt</span>oro</span><span class="nav-logo-tagline">Fine Timepieces</span></a>
+      <a href="shop" class="btn btn-ghost btn-sm">Back to Shop</a>
+    </div>
+  </nav>
+
+  <main class="track-page">
+    <div class="container track-wrap">
+      <header style="text-align:center;margin-bottom:1.1rem;">
+        <p class="label-caps">Support</p>
+        <h1 class="display-md">Track Your Order</h1>
+        <p style="color:var(--clr-white-dim);margin-top:0.7rem;">Enter your order ID to view the latest status timeline.</p>
+      </header>
+
+      <section class="track-search">
+        <div class="track-search-grid">
+          <input type="text" id="track-order-id" placeholder="Order ID (e.g. WQT-ABC123)" />
+          <input type="email" id="track-order-email" placeholder="Email used at checkout (optional)" />
+          <button class="btn btn-primary" id="track-order-btn">Track</button>
+        </div>
+        <p class="track-search-help" id="track-search-help">Tip: You can find the order ID in your confirmation page and email.</p>
+      </section>
+
+      <section class="track-result" id="track-result">
+        <div class="track-meta">
+          <div class="track-meta-item"><span>Order ID</span><strong id="track-meta-id">—</strong></div>
+          <div class="track-meta-item"><span>Status</span><strong id="track-meta-status">—</strong></div>
+          <div class="track-meta-item"><span>Placed On</span><strong id="track-meta-date">—</strong></div>
+          <div class="track-meta-item"><span>Estimated Delivery</span><strong id="track-meta-eta">3–5 business days</strong></div>
+        </div>
+
+        <div class="track-status-list" id="track-status-list"></div>
+        <p class="track-empty" id="track-empty-msg"></p>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="../js/main.js"></script>
+  <script type="module" src="../js/track-order.js"></script>
+</body>
+</html>

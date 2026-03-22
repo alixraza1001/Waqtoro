@@ -1,0 +1,53 @@
+.policy-page {
+  padding: calc(var(--navbar-h) + 2rem) 0 4rem;
+}
+.policy-wrap {
+  max-width: 920px;
+  margin: 0 auto;
+}
+.policy-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.policy-hero p {
+  color: var(--clr-white-dim);
+  max-width: 640px;
+  margin: 0.75rem auto 0;
+}
+.policy-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.policy-card h2 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin-bottom: 0.65rem;
+}
+.policy-card p,
+.policy-card li {
+  color: var(--clr-white-dim);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+.policy-card ul {
+  list-style: disc;
+  margin-left: 1.2rem;
+}
+.policy-meta {
+  margin-top: 1.25rem;
+  color: var(--clr-muted);
+  font-size: 0.78rem;
+}
+.policy-quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+.policy-quick-links .btn {
+  font-size: 0.75rem;
+}

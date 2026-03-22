@@ -268,6 +268,14 @@ function renderShop() {
 
   grid.innerHTML = filtered.map(p => buildProductCard(p, false)).join('');
   WaqtoroWishlist.updateButtons();
+
+  window.WaqtoroAnalytics?.track('view_item_list', {
+    list_id: 'shop_catalog',
+    list_name: 'Shop Catalog',
+    item_count: filtered.length,
+    search_query: ShopState.searchQuery || null,
+    sort: ShopState.sort
+  });
 }
 
 function updateActiveTags() {

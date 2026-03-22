@@ -85,6 +85,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   activeProductId = id;
   renderProduct(product);
+  window.WaqtoroAnalytics?.track('view_product', {
+    item_id: product.id,
+    item_name: product.name,
+    item_brand: product.brand,
+    price: product.price,
+    currency: 'PKR'
+  });
   applyCachedReviewSummary(id);
   renderRelated(product);
   initTabs();

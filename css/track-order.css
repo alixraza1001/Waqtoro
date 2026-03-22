@@ -1,0 +1,102 @@
+.track-page {
+  padding: calc(var(--navbar-h) + 2rem) 0 4rem;
+}
+.track-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.track-search {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.track-search-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.75rem;
+}
+.track-search-grid input {
+  width: 100%;
+}
+.track-search-help {
+  margin-top: 0.55rem;
+  color: var(--clr-muted);
+  font-size: 0.78rem;
+}
+.track-result {
+  display: none;
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+.track-result.visible { display: block; }
+.track-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.track-meta-item {
+  background: var(--clr-bg-2);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem;
+}
+.track-meta-item span {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--clr-muted);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.track-meta-item strong {
+  color: var(--clr-white);
+  font-size: 0.92rem;
+}
+.track-status-list {
+  display: grid;
+  gap: 0.6rem;
+}
+.track-status-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.7rem;
+  align-items: start;
+}
+.track-status-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--clr-border);
+  display: grid;
+  place-items: center;
+  color: var(--clr-muted);
+  font-size: 0.72rem;
+  margin-top: 0.1rem;
+}
+.track-status-step.done .track-status-dot {
+  border-color: var(--clr-gold);
+  color: var(--clr-gold);
+  background: rgba(201,168,76,0.08);
+}
+.track-status-text strong {
+  display: block;
+  margin-bottom: 0.15rem;
+}
+.track-status-text p {
+  color: var(--clr-white-dim);
+  font-size: 0.84rem;
+}
+.track-empty {
+  color: var(--clr-white-dim);
+  font-size: 0.88rem;
+  margin-top: 0.4rem;
+}
+@media (max-width: 780px) {
+  .track-search-grid { grid-template-columns: 1fr; }
+  .track-meta { grid-template-columns: 1fr; }
+}

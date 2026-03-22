@@ -388,6 +388,10 @@ function applyPromo() {
   if (PROMO_CODES[code]) {
     promoDiscount = PROMO_CODES[code];
     appliedPromoCode = code;
+    window.WaqtoroAnalytics?.track('apply_coupon', {
+      coupon: code,
+      discount_percent: Math.round(promoDiscount * 100)
+    });
     if (msg) { msg.textContent = `✓ ${Math.round(promoDiscount * 100)}% discount applied!`; msg.style.color = 'var(--clr-green)'; }
     if (codeInput) codeInput.disabled = true;
     renderSidebar();
@@ -442,15 +446,28 @@ async function placeOrder() {
   }
 
   const orderId = 'WQT-' + Date.now().toString(36).toUpperCase();
+  const computedSubtotal = WaqtoroCart.total();
+  const computedDiscount = Math.round(computedSubtotal * promoDiscount);
+  const computedTotal = computedSubtotal - computedDiscount + shippingCost;
   const order = {
     id: orderId,
     date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
     items: [...WaqtoroCart.items],
-    subtotal: WaqtoroCart.total(),
+    subtotal: computedSubtotal,
+    discount: computedDiscount,
+    promoCode: appliedPromoCode || null,
     shippingCost,
-    total: WaqtoroCart.total() - Math.round(WaqtoroCart.total() * promoDiscount) + shippingCost,
+    total: computedTotal,
     shipping: shippingMethod,
     payment: paymentMethod,
+    status: 'placed',
+    statusTimeline: [
+      {
+        status: 'placed',
+        label: 'Order Placed',
+        at: new Date().toISOString()
+      }
+    ],
     userId: auth.currentUser ? auth.currentUser.uid : null,
     createdAt: serverTimestamp(),
     customer: {
@@ -463,6 +480,18 @@ async function placeOrder() {
   try {
     // 1. Save to Cloud Firestore
     await addDoc(collection(db, 'orders'), order);
+
+    // 1.1 Save local order history for guest tracking
+    persistOrderHistory(order);
+
+    window.WaqtoroAnalytics?.track('purchase', {
+      transaction_id: order.id,
+      value: order.total,
+      currency: 'PKR',
+      shipping: order.shippingCost,
+      coupon: order.promoCode,
+      item_count: order.items.reduce((sum, item) => sum + item.qty, 0)
+    });
 
     // 2. Clear local cart
     WaqtoroCart.items = [];
@@ -485,6 +514,12 @@ async function placeOrder() {
       btn.innerHTML = 'Place Order';
     }
   }
+}
+
+function persistOrderHistory(order) {
+  const history = JSON.parse(localStorage.getItem('waqtoro_orders_history') || '[]');
+  history.push(order);
+  localStorage.setItem('waqtoro_orders_history', JSON.stringify(history.slice(-25)));
 }
 
 async function sendEmailNotifications(order) {
