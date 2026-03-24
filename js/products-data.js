@@ -36,26 +36,29 @@ const PRODUCTS = [
   },
   {
     id: 2,
-    brand: "Omega",
-    name: "Seamaster Aqua Terra",
-    price: 6800,
-    originalPrice: 7500,
+    brand: "Rolex",
+    name: "Rolex GMT Master",
+    price: 4800,
+    originalPrice: 6800,
     gender: "men",
     category: "Luxury",
-    movement: "Automatic",
+    movement: "Quartz",
     strap: "Metal Bracelet",
     caseMaterial: "Stainless Steel",
-    dialColor: "Blue",
-    waterResistance: "150m",
+    dialColor: "Black",
+    waterResistance: "NULL",
     rating: 5,
     reviews: 189,
-    badge: "sale",
-    stock: 2,
-    img: "mens_watch_1.png",
+    badge: ["sale","new"],
+    stock: 10,
+    img: ["ROLEX GMT/GMT_1.jpeg","ROLEX GMT/GMT_2.jpeg","ROLEX GMT/GMT_3.jpeg","ROLEX GMT/GMT_4.jpeg","ROLEX GMT/GMT_5.jpeg","ROLEX GMT/GMT_6.jpeg","ROLEX GMT/GMT_7.jpeg","ROLEX GMT/GMT_8.jpeg","ROLEX GMT/GMT_9.jpeg"],
     colors: [
-      { name: "Steel / Blue Dial", strapHex: "#9ba4af", dialHex: "#1a3a8a" },
-      { name: "Steel / White Dial", strapHex: "#9ba4af", dialHex: "#f5f5f0" },
-      { name: "Steel / Black Dial", strapHex: "#9ba4af", dialHex: "#1a1a1a" }
+      { name: "Silver / Red/Blue Dial", strapHex: "#e90b0b", dialHex: "#0928f7" },
+      { name: "Silver / Blk/Blue Dial", strapHex: "#000000", dialHex: "#0928f7" },
+      { name: "Golden / Black Dial", strapHex: "#aec218", dialHex: "#1a1a1a" },
+      { name: "Silver / Blk/Red Dial", strapHex: "#000000", dialHex: "#e90b0b" },
+      { name: "Silver / Black Dial", strapHex: "#C0C0C0", dialHex: "#1a1a1a" },
+      { name: "Multi / Black Dial", strapHex: "#878d5b", dialHex: "#1a1a1a" }
     ],
     tags: ["sale", "bestseller"]
   },
@@ -318,6 +321,17 @@ function getStockInfo(stock) {
   return { label: 'In Stock', cls: 'stock-in', dot: 'dot-green' };
 }
 
+function normalizeBadgeValue(rawBadge) {
+  if (Array.isArray(rawBadge)) {
+    const firstString = rawBadge.find((value) => typeof value === 'string' && value.trim());
+    return firstString ? firstString.trim().toLowerCase() : '';
+  }
+  if (typeof rawBadge === 'string') {
+    return rawBadge.trim().toLowerCase();
+  }
+  return '';
+}
+
 function buildProductCardSkeleton() {
   return `
     <div class="product-card skeleton-card" aria-hidden="true">
@@ -360,12 +374,20 @@ function buildProductCard(product, isHome = false) {
   const liveReview = getLiveReviewSnapshot(product.id);
   const cardRating = liveReview ? (Number(liveReview.avg) || 0) : 0;
   const cardReviewCount = liveReview ? (Number(liveReview.count) || 0) : 0;
+  const normalizedBadge = normalizeBadgeValue(product.badge);
 
-  const badgeHTML = product.badge
-    ? `<span class="badge badge-${product.badge === 'sale' ? 'sale' : product.badge === 'new' ? 'new' : 'limited'}">${product.badge === 'sale' && discount ? `-${discount}% OFF` :
-      product.badge === 'new' ? 'NEW' :
-        product.badge === 'bestseller' ? '★ Bestseller' : product.badge.toUpperCase()
-    }</span>`
+  let badgeClass = 'limited';
+  if (normalizedBadge === 'sale') badgeClass = 'sale';
+  else if (normalizedBadge === 'new') badgeClass = 'new';
+
+  let badgeLabel = '';
+  if (normalizedBadge === 'sale' && discount) badgeLabel = `-${discount}% OFF`;
+  else if (normalizedBadge === 'new') badgeLabel = 'NEW';
+  else if (normalizedBadge === 'bestseller') badgeLabel = '★ Bestseller';
+  else if (normalizedBadge) badgeLabel = normalizedBadge.toUpperCase();
+
+  const badgeHTML = normalizedBadge
+    ? `<span class="badge badge-${badgeClass}">${badgeLabel}</span>`
     : '';
 
   const priceHTML = product.originalPrice
