@@ -411,32 +411,6 @@
 }
 
 @media (max-width: 768px) {
-  .navbar {
-    background: #000;
-    box-shadow: 0 1px 0 rgba(201,168,76,0.2);
-  }
-  .navbar .navbar-inner {
-    justify-content: flex-start;
-  }
-  .navbar .nav-logo,
-  .navbar .nav-action-btn {
-    display: none;
-  }
-  .navbar .nav-actions {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 0;
-  }
-  .navbar .nav-hamburger {
-    display: flex;
-    margin-left: 0.2rem;
-  }
-  .navbar .nav-hamburger span {
-    width: 34px;
-    height: 2.5px;
-    border-radius: 999px;
-  }
-
   .hero-title { font-size: 3rem; }
   .hero-stats { display: none; }
   .hero-scroll { display: none; }
