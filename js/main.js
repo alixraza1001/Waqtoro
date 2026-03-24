@@ -232,6 +232,10 @@ function initNavbar() {
 
   if (hamburger && mobileMenu) {
     hamburger.addEventListener('click', () => {
+      if (mobileMenu.classList.contains('open')) {
+        closeMobileMenu();
+        return;
+      }
       mobileMenu.classList.add('open');
       hamburger.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
