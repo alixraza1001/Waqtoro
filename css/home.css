@@ -209,8 +209,8 @@
 .collections-grid {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 1.5rem;
-  height: 460px;
+  gap: 1.08rem;
+  height: 331px;
 }
 .collection-card {
   position: relative;
@@ -236,17 +236,39 @@
   inset: 0;
   background: linear-gradient(to top, rgba(5,5,5, 0.95) 0%, rgba(5,5,5,0.5) 50%, rgba(5,5,5,0.1) 100%);
 }
+.collection-best .collection-card-bg img {
+  filter: brightness(0.82) saturate(0.9) contrast(1.05);
+}
+.collection-limited .collection-card-bg img {
+  filter: brightness(0.8) saturate(0.85) contrast(1.08);
+}
+.collection-best .collection-card-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(4, 4, 6, 0.96) 0%,
+    rgba(6, 10, 18, 0.62) 48%,
+    rgba(12, 16, 24, 0.24) 100%
+  );
+}
+.collection-limited .collection-card-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(4, 4, 6, 0.96) 0%,
+    rgba(8, 12, 20, 0.66) 46%,
+    rgba(14, 18, 28, 0.28) 100%
+  );
+}
 .collection-card-body {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 1.65rem;
+  padding: 1.19rem;
   z-index: 1;
 }
-.collection-card-body .label-caps { margin-bottom: 0.5rem; display: block; }
-.collection-card-body h3 { color: var(--clr-white); margin-bottom: 0.3rem; }
-.collection-card-body p { font-size: 0.8rem; color: var(--clr-muted); margin-bottom: 1rem; }
+.collection-card-body .label-caps { margin-bottom: 0.36rem; display: block; }
+.collection-card-body h3 { color: var(--clr-white); margin-bottom: 0.23rem; }
+.collection-card-body p { font-size: 0.8rem; color: var(--clr-muted); margin-bottom: 0.72rem; }
 .collection-cta {
   font-size: 0.72rem;
   font-weight: 600;
@@ -262,8 +284,8 @@
 .gender-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  height: 520px;
+  gap: 1.08rem;
+  height: 374px;
 }
 .gender-card {
   position: relative;
@@ -293,9 +315,9 @@
 .gender-card-body {
   position: relative;
   z-index: 1;
-  padding: 2rem;
+  padding: 1.44rem;
 }
-.gender-card-body h2 { color: var(--clr-white); margin-bottom: 0.75rem; }
+.gender-card-body h2 { color: var(--clr-white); margin-bottom: 0.54rem; }
 .gender-card-body p { font-size: 0.9rem; color: var(--clr-white-dim); max-width: 320px; }
 
 /* ---- PRODUCT TABS ---- */
