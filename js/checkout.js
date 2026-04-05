@@ -8,8 +8,7 @@ import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/fir
 
 const PROMO_CODES = { 'WAQTORO10': 0.10, 'LUXURY20': 0.20, 'WELCOME15': 0.15 };
 
-// ⚙️ WHAPI SERVER — change this to your permanent URL when you go live
-const WHAPI_SERVER_URL = 'http://localhost:3000';
+
 const CHECKOUT_STEP_HELPER_COPY = {
   1: 'Step 1 of 4 — Add your contact and shipping details.',
   2: 'Step 2 of 4 — Confirm your shipping method.',
@@ -484,11 +483,7 @@ async function placeOrder() {
     // 1. Save to Cloud Firestore
     await addDoc(collection(db, 'orders'), order);
 
-    // 1.2 Send WhatsApp confirmation via Whapi (non-blocking)
-    const customerPhone = document.getElementById('c-phone')?.value?.trim();
-    if (customerPhone) {
-      sendWhatsAppOrderConfirmation(customerPhone, order);
-    }
+
 
     // 1.1 Save local order history for guest tracking
     persistOrderHistory(order);
@@ -531,26 +526,7 @@ function persistOrderHistory(order) {
   localStorage.setItem('waqtoro_orders_history', JSON.stringify(history.slice(-25)));
 }
 
-async function sendWhatsAppOrderConfirmation(phoneNumber, order) {
-  try {
-    const orderDetails = {
-      orderId: order.id,
-      items: order.items.map(i => `${i.qty}x ${i.id}`).join(', '),
-      total: `Rs. ${order.total.toLocaleString()}`,
-      customer: order.customer.name,
-      address: order.customer.address,
-      payment: order.payment
-    };
-    await fetch(`${WHAPI_SERVER_URL}/new-order`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phoneNumber, orderDetails })
-    });
-    console.log('[Waqtoro] WhatsApp confirmation sent to', phoneNumber);
-  } catch (err) {
-    console.warn('[Waqtoro] WhatsApp notification failed (non-critical):', err.message);
-  }
-}
+
 
 async function sendEmailNotifications(order) {
   const orderDetailsText = `New Order: ${order.id}\nTotal: Rs. ${order.total.toLocaleString()}\nCustomer: ${order.customer.name}\nEmail: ${order.customer.email}\nAddress: ${order.customer.address}`;
