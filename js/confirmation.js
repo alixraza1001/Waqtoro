@@ -23,6 +23,8 @@ function populateConfirmation(order) {
   }
   document.getElementById('conf-address').textContent  = order.customer.address;
   document.getElementById('conf-customer').textContent = `${order.customer.name} · ${order.customer.email}`;
+  const phoneEl = document.getElementById('conf-phone');
+  if (phoneEl) phoneEl.textContent = order.customer.phone || '—';
   document.getElementById('conf-date').textContent     = order.date;
   const etaEl = document.getElementById('conf-eta');
   if (etaEl) {

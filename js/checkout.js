@@ -475,6 +475,7 @@ async function placeOrder() {
     customer: {
       name: `${document.getElementById('c-fname').value} ${document.getElementById('c-lname').value}`,
       email: document.getElementById('c-email').value,
+      phone: document.getElementById('c-phone').value,
       address: `${document.getElementById('c-address').value}, ${document.getElementById('c-city').value}`
     }
   };
@@ -483,8 +484,8 @@ async function placeOrder() {
     // 1. Save to Cloud Firestore
     await addDoc(collection(db, 'orders'), order);
 
-    // 1.2 Notify PakkOrder (WhatsApp automation)
-    sendToPakkOrder(order);
+    // 1.2 Notify PakkOrder (WhatsApp automation) — await so it completes before redirect
+    await sendToPakkOrder(order);
 
 
 
@@ -530,23 +531,43 @@ function persistOrderHistory(order) {
 }
 
 // ── PakkOrder: manual trigger (checkout has no <form>, so snippet can't auto-detect) ──
-function sendToPakkOrder(order) {
+async function sendToPakkOrder(order) {
   try {
     const key = document.querySelector('script[data-key]')?.getAttribute('data-key');
     if (!key) return;
     const phone = document.getElementById('c-phone')?.value?.trim();
     if (!phone) return;
-    const itemsText = order.items.map(i => `${i.qty}x ${i.id}`).join(', ');
-    fetch('https://pakkorder.com/new-order', {
+
+    // Build human-readable items list using product names
+    const itemsText = order.items.map(i => {
+      const p = (typeof PRODUCTS !== 'undefined') ? PRODUCTS.find(pr => pr.id === i.id) : null;
+      const name = p ? p.name : i.id;
+      return `${i.qty}x ${name}${i.color ? ` (${i.color})` : ''}`;
+    }).join('\n');
+
+    // PakkOrder API only has 4 fields — pack all customer details into order_details
+    const details = [
+      `Order: ${order.id}`,
+      `Customer: ${order.customer.name}`,
+      `Phone: ${phone}`,
+      `Address: ${order.customer.address}`,
+      `---`,
+      itemsText,
+      `---`,
+      `Total: Rs. ${order.total.toLocaleString()}`,
+      `Payment: ${order.payment === 'cod' ? 'Cash on Delivery' : order.payment}`,
+    ].join('\n');
+
+    await fetch('https://pakkorder.com/new-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-License-Key': key },
       body: JSON.stringify({
         buyer_phone:   phone,
-        buyer_email:   document.getElementById('c-email')?.value?.trim() || undefined,
+        buyer_email:   order.customer.email || undefined,
         order_id:      order.id,
-        order_details: `${itemsText} — Rs. ${order.total.toLocaleString()}`,
+        order_details: details,
       })
-    }).catch(e => console.warn('[PakkOrder] notification failed:', e.message));
+    });
   } catch (e) {
     console.warn('[PakkOrder] sendToPakkOrder error:', e.message);
   }
