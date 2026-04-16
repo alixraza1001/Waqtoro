@@ -535,8 +535,10 @@ async function sendToPakkOrder(order) {
   try {
     const key = document.querySelector('script[data-key]')?.getAttribute('data-key');
     if (!key) return;
-    const phone = document.getElementById('c-phone')?.value?.trim();
+    const phone   = document.getElementById('c-phone')?.value?.trim();
     if (!phone) return;
+    const address = document.getElementById('c-address')?.value?.trim() || '';
+    const city    = document.getElementById('c-city')?.value?.trim() || '';
 
     // Build items summary (products + quantities only)
     const itemsText = order.items.map(i => {
@@ -552,8 +554,8 @@ async function sendToPakkOrder(order) {
         buyer_name:    order.customer.name,
         buyer_phone:   phone,
         buyer_email:   order.customer.email || '',
-        buyer_address: order.customer.address || '',
-        buyer_city:    order.customer.city || '',
+        buyer_address: address,
+        buyer_city:    city,
         order_id:      order.id,
         order_details: itemsText,
         order_amount:  String(order.total || '')
