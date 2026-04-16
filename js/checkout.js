@@ -538,34 +538,25 @@ async function sendToPakkOrder(order) {
     const phone = document.getElementById('c-phone')?.value?.trim();
     if (!phone) return;
 
-    // Build human-readable items list using product names
+    // Build items summary (products + quantities only)
     const itemsText = order.items.map(i => {
       const p = (typeof PRODUCTS !== 'undefined') ? PRODUCTS.find(pr => pr.id === i.id) : null;
       const name = p ? p.name : i.id;
       return `${i.qty}x ${name}${i.color ? ` (${i.color})` : ''}`;
     }).join('\n');
 
-    // PakkOrder API only has 4 fields — pack all customer details into order_details
-    const details = [
-      `Order: ${order.id}`,
-      `Customer: ${order.customer.name}`,
-      `Phone: ${phone}`,
-      `Address: ${order.customer.address}`,
-      `---`,
-      itemsText,
-      `---`,
-      `Total: Rs. ${order.total.toLocaleString()}`,
-      `Payment: ${order.payment === 'cod' ? 'Cash on Delivery' : order.payment}`,
-    ].join('\n');
-
     await fetch('https://pakkorder.com/new-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-License-Key': key },
       body: JSON.stringify({
+        buyer_name:    order.customer.name,
         buyer_phone:   phone,
-        buyer_email:   order.customer.email || undefined,
+        buyer_email:   order.customer.email || '',
+        buyer_address: order.customer.address || '',
+        buyer_city:    order.customer.city || '',
         order_id:      order.id,
-        order_details: details,
+        order_details: itemsText,
+        order_amount:  String(order.total || '')
       })
     });
   } catch (e) {
